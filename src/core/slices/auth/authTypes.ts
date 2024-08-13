@@ -8,5 +8,5 @@ export interface UserData {
 
 export interface AuthState {
     userData: UserData | null
-    isAuthenticated: boolean
+    isAuthenticated: boolean | null
 }

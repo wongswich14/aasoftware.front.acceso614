@@ -1,20 +1,26 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useTokenQuery } from "../features/authServerApi";
-import { saveUserInfo, authenticate } from "../slices/auth/authSlice";
-import { useDispatch } from "react-redux";
+import { saveUserInfo, authenticate, selectIsAuthenticated } from "../slices/auth/authSlice";
+import { useDispatch, useSelector } from "react-redux";
 import LoaderBig from "src/shared/components/LoaderBig";
 
 
 const PrivateRoute: React.FC = () => {
 
-    const [isAllowed, setIsAllowed] = useState<boolean | null>(null)
-    const { data: tokenData, isLoading: tokenLoading } = useTokenQuery()
+    const isAuthenticated = useSelector(selectIsAuthenticated)
+    const [isAllowed, setIsAllowed] = useState<boolean | null>(isAuthenticated)
+
+    /*
+        No se hace la consulta si ya se tiene la información del usuario
+     */
+    const { data: tokenData, isLoading: tokenLoading } = useTokenQuery(undefined, { skip: isAuthenticated === true })
+
     const dispatch = useDispatch()
 
 
     useEffect(() => {
-        if (!tokenLoading) {
+        if (!tokenLoading && !isAuthenticated) {
             console.log(tokenData)
             if (tokenData?.dataObject) {
                 const token = tokenData.token ?? (() => {
@@ -35,7 +41,7 @@ const PrivateRoute: React.FC = () => {
                 setIsAllowed(false);
             }
         }
-    }, [tokenData, dispatch, tokenLoading])
+    }, [tokenData, dispatch, tokenLoading, isAuthenticated])
 
     if (isAllowed === null) {
         return (

@@ -6,6 +6,7 @@ import logo2 from '@assets/img/logo-aasoftware.png';
 import React, { ComponentType, ReactNode, useState } from "react";
 import Divider from "../components/Divider";
 import { MdHome, MdLocationCity } from "react-icons/md";
+import { FaUserShield } from "react-icons/fa";
 
 type MenuItem = {
     name: string;
@@ -42,8 +43,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
                 { name: 'Residenciales', link: '/residentials', icon: MdLocationCity },
                 { name: 'Viviendas', link: '/houses', icon: MdHome },
                 { name: 'Usuarios', link: '/users', icon: FaUsers },
-
-
+                { name: "Perfiles", link: '/profiles', icon: FaUserShield }
             ]
         },
         // {

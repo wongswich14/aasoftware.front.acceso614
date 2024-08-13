@@ -6,6 +6,7 @@ import { authRoutes } from "./pages/auth/authRoutes";
 import residentialRoutes from "./pages/residentials/residentialRoutes";
 import houseRoutes from "./pages/houses/houseRoutes";
 import userRoutes from "./pages/users/userRoutes";
+import profileRoutes from "./pages/profiles/profileRoutes";
 
 
 const appRoutes: RouteObject[] = [
@@ -19,7 +20,8 @@ const appRoutes: RouteObject[] = [
                     ...dashboardRoutes,
                     ...residentialRoutes,
                     ...houseRoutes,
-                    ...userRoutes
+                    ...userRoutes,
+                    ...profileRoutes
                 ]
             }
         ],

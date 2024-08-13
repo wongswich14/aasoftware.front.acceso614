@@ -4,7 +4,7 @@ import { UserData, AuthState } from "./authTypes";
 
 const initialState: AuthState = {
     userData: null,
-    isAuthenticated: false
+    isAuthenticated: null
 }
 
 const authSlice = createSlice({
@@ -19,7 +19,7 @@ const authSlice = createSlice({
         },
         logout: (state) => {
             state.userData = null
-            state.isAuthenticated = false
+            state.isAuthenticated = null
         }
     }
 })
