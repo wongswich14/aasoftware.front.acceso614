@@ -1,10 +1,12 @@
 export interface UserData {
-    username: string,
-    email: string,
+    id: string
+    name: string
+    lastName: string
+    email: string
     token: string
 }
 
 export interface AuthState {
-    userData: UserData | null,
+    userData: UserData | null
     isAuthenticated: boolean
 }

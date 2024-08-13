@@ -4,7 +4,7 @@ import { UserData, AuthState } from "./authTypes";
 
 const initialState: AuthState = {
     userData: null,
-    isAuthenticated: true
+    isAuthenticated: false
 }
 
 const authSlice = createSlice({
@@ -14,7 +14,7 @@ const authSlice = createSlice({
         saveUserInfo: (state, action: PayloadAction<UserData>) => {
             state.userData = action.payload
         },
-        autenticate: (state, action: PayloadAction<boolean>) => {
+        authenticate: (state, action: PayloadAction<boolean>) => {
             state.isAuthenticated = action.payload
         },
         logout: (state) => {
@@ -24,7 +24,7 @@ const authSlice = createSlice({
     }
 })
 
-export const { saveUserInfo, autenticate, logout } = authSlice.actions
+export const { saveUserInfo, authenticate, logout } = authSlice.actions
 
 // Selectors
 export const selectUserData = (state: RootState ) => state.auth.userData

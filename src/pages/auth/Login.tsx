@@ -4,47 +4,74 @@ import { useLoginMutation } from "src/core/features/authServerApi";
 import LoaderBig from "src/shared/components/LoaderBig";
 import logo_aa from "@assets/img/logo-aasoftware.jpg";
 import { useState } from "react";
-import { LoginRequest } from "src/core/models/auth/login.request";
+import { LoginDto } from "src/core/models/dtos/auth/loginDto";
+import { useDispatch } from "react-redux";
+import { saveUserInfo, authenticate } from "src/core/slices/auth/authSlice";
+import { extractFetchErrorMessage } from "src/core/utils/extractFetchErrorMessage";
 
 const Login: React.FC = () => {
 
   const [errorAlert, setErrorAlert] = useState<Boolean>(false);
   const [messageError, setMessageError] = useState<string>('')
   
-  const [login, { isError, isLoading, isSuccess }] = useLoginMutation();
   const navigate = useNavigate();
+  const dispatch = useDispatch();
+  const [login, { isError, isLoading, isSuccess }] = useLoginMutation();
 
   const {
     register,
     handleSubmit,
     formState: { errors },
     reset,
-} = useForm<LoginRequest>();
+} = useForm<LoginDto>();
 
-const hndlSubmit = async (data: LoginRequest) => {
-  try {
-      setErrorAlert(false)
-      const result = await login(data)
-      console.info(result);
-      if (result.data.statusCode == 404) {
-          setErrorAlert(true)
-          setMessageError('No se encontró información con estos datos.')
-      }
-      else if (result.data.message == 'OK') {
-          const jsonData = JSON.stringify(result.data.dataObject);
-          // var encryptedJsonData = encryptData(jsonData);
-          // Cookies.set('userData', encryptedJsonData);
-          navigate("/")
-      }
-  }
-  catch (err) {
-      console.log(err)
-  }
+const submitForm = async (data: LoginDto) => {
+    try {
+        setErrorAlert(false)
+        const res = await login(data)
+
+        if (res.error) {
+            setErrorAlert(true);
+
+            const message = extractFetchErrorMessage(res.error);
+
+            setMessageError(message);
+            throw new Error(message);
+        }
+
+        if (res.data?.statusCode === 404) {
+            setErrorAlert(true);
+            setMessageError('Credenciales incorrectas');
+            return;
+        }
+
+        reset()
+        const userData = res.data?.dataObject;
+
+        if (!userData || !res.data?.token) {
+            return;
+        }
+
+        localStorage.setItem('userData', JSON.stringify(userData));
+        localStorage.setItem('auth', JSON.stringify(res.data.token));
+
+        dispatch(saveUserInfo({
+            id: userData.id,
+            name: userData.name,
+            lastName: userData.lastName,
+            email: userData.email,
+            token: res.data.token,
+        }));
+
+        dispatch(authenticate(true));
+        navigate('/');
+    }
+    catch (error) {
+        console.error(error)
+    }
 };
 
-const onSubmit = handleSubmit((data) => {
-  hndlSubmit(data);
-});
+
 
 
   return (
@@ -65,7 +92,7 @@ const onSubmit = handleSubmit((data) => {
                     Acceso 614
                 </h1>
                 <form
-                    onSubmit={onSubmit}
+                    onSubmit={handleSubmit(submitForm)}
                     className="w-full max-w-sm bg-white px-10 py8 rounded-lg"
                 >
                     <h3 className="text-3xl text-center font-medium mb-5 text-gray-500">

@@ -18,6 +18,7 @@ const Header: React.FC<HeaderProps> = ({ mostrar, children }) => {
 
     const handleLogout = () => {
         dispatch(logout())
+        localStorage.clear()
         navigate('/login')
     }
 
