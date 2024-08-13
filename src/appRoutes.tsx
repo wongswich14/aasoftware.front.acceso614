@@ -11,10 +11,10 @@ import userRoutes from "./pages/users/userRoutes";
 const appRoutes: RouteObject[] = [
     {
         path: '/',
-        element: <LayoutAdmin />,
+        element: <PrivateRoute />,
         children: [
             {
-                element: <PrivateRoute />,
+                element: <LayoutAdmin />,
                 children: [
                     ...dashboardRoutes,
                     ...residentialRoutes,

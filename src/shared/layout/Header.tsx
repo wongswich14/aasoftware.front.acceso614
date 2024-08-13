@@ -4,6 +4,7 @@ import { FaChevronDown, FaSignOutAlt } from 'react-icons/fa'
 import { useDispatch } from 'react-redux'
 import { logout } from 'src/core/slices/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
+import { serverApi } from 'src/core/serverApi'
 
 type HeaderProps = {
     mostrar: boolean,
@@ -18,6 +19,7 @@ const Header: React.FC<HeaderProps> = ({ mostrar, children }) => {
 
     const handleLogout = () => {
         dispatch(logout())
+        dispatch(serverApi.util.resetApiState())
         localStorage.clear()
         navigate('/login')
     }
