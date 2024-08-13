@@ -9,7 +9,7 @@ import LoaderBig from "src/shared/components/LoaderBig";
 const PrivateRoute: React.FC = () => {
 
     const [isAllowed, setIsAllowed] = useState<boolean | null>(null)
-    const { data: tokenData, error: tokenError, isLoading: tokenLoading } = useTokenQuery()
+    const { data: tokenData, isLoading: tokenLoading } = useTokenQuery()
     const dispatch = useDispatch()
 
 

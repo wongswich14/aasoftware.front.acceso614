@@ -16,7 +16,7 @@ const Login: React.FC = () => {
   
   const navigate = useNavigate();
   const dispatch = useDispatch();
-  const [login, { isError, isLoading, isSuccess }] = useLoginMutation();
+  const [login, { isLoading }] = useLoginMutation();
 
   const {
     register,

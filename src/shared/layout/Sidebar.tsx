@@ -1,9 +1,8 @@
-import { FaChevronRight, FaShuttleVan, FaTasks } from "react-icons/fa";
+import { FaChevronRight } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
-import { FaCog, FaUserCog, FaUserShield, FaUsers } from "react-icons/fa";
+import { FaCog, FaUsers } from "react-icons/fa";
 import { Link } from 'react-router-dom';
 import logo2 from '@assets/img/logo-aasoftware.png';
-import { GrDocumentText } from "react-icons/gr";
 import React, { ComponentType, ReactNode, useState } from "react";
 import Divider from "../components/Divider";
 import { MdHome, MdLocationCity } from "react-icons/md";
@@ -33,7 +32,7 @@ type SubmenuProps = {
 
 const Sidebar: React.FC<SidebarProps> = () => {
 
-    const [open, setOpen] = useState(true)
+    const [open] = useState(true)
     
     const menus  = [
         { name: 'Dashboard', link: '/', icon: AiFillDashboard, hasChild: false },
