@@ -8,6 +8,14 @@ const profileRoutes: RouteObject[] = [
             {
                 path: "",
                 element: <ProfilesList/>
+            },
+            {
+                path: "update/:id",
+                element: <ProfilesList/>
+            },
+            {
+                path: 'create',
+                element: <ProfilesList/>
             }
         ]
     }

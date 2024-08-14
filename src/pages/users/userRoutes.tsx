@@ -8,6 +8,14 @@ const userRoutes: RouteObject[] = [
             {
                 path: "",
                 element: <UsersList/>
+            },
+            {
+                path: "update/:id",
+                element: <UsersList/>
+            },
+            {
+                path: 'create',
+                element: <UsersList/>
             }
         ]
     }

@@ -57,7 +57,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
     ];
 
     return (
-        <section className='flex h-screen z-50 fixed gap-6'>
+        <section className='flex h-screen z-30 fixed gap-6'>
             <div className={`${open ? ' w-60' : 'w-16'} bg-[#0e0e0e] min-h-screen duration-500 text-gray-100 px-4 `}>
                 <div className='flex flex-col justify-between h-full'>
                     <div className=''>

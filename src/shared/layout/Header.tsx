@@ -1,8 +1,8 @@
 import React, { useState } from 'react'
 import yo from "@assets/img/yo.jpeg"
 import { FaChevronDown, FaSignOutAlt } from 'react-icons/fa'
-import { useDispatch } from 'react-redux'
-import { logout } from 'src/core/slices/auth/authSlice'
+import { useDispatch, useSelector } from 'react-redux'
+import { logout, selectUserData } from 'src/core/slices/auth/authSlice'
 import { useNavigate } from 'react-router-dom'
 import { serverApi } from 'src/core/serverApi'
 
@@ -13,6 +13,7 @@ type HeaderProps = {
 
 const Header: React.FC<HeaderProps> = ({ mostrar, children }) => {
     const [isOpen, setIsOpen] = useState(false);
+    const userData = useSelector(selectUserData)
     const size = window.innerWidth
     const dispatch = useDispatch()
     const navigate = useNavigate()
@@ -39,7 +40,7 @@ const Header: React.FC<HeaderProps> = ({ mostrar, children }) => {
                     >
                         <img src={yo} className='rounded-full border border-gray-200 h-10 w-10' />
                         <div className='flex-col ml-1 '>
-                            <h2 className='borde text-sm text-gray-500 font-semibold'>Alberto Wong</h2>
+                            <h2 className='borde text-sm text-gray-500 font-semibold'>{ `${userData?.name} ${userData?.lastName}` }</h2>
                             <h2 className='borde text-sm text-white font-semibold bg-cyan-500 rounded-full text-center'>Developer</h2>
                         </div>
                         <FaChevronDown className={`ml-2.5`} />
