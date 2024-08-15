@@ -1,13 +1,17 @@
 import { useEffect, useState } from "react"
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
-import { useListProfilesQuery, useSoftDeleteProfileMutation } from "src/core/features/profileServerApi"
+import { profileServerApi, useListProfilesQuery, useSoftDeleteProfileMutation } from "src/core/features/profileServerApi"
 import { ProfileDto } from "src/core/models/dtos/profiles/profileDto"
 import UpdateProfileModal from "./UpdateProfileModal"
-import { lazyUpdateList, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid"
 import { ProfileUpdateDto } from "src/core/models/dtos/profiles/profileUpdateDto"
 import CreateProfileModal from "./CreateProfileModal"
 import DeleteModal from "src/shared/components/DeleteModal"
+import SkeletonTable from "src/shared/components/SkeletonTable"
+import { toast } from "sonner"
+import { serverApi } from "src/core/serverApi"
+import { useAppDispatch } from "src/core/store"
+import { LazyUpdateModes, updateCache } from "src/core/utils/lazyUpdateListByGuid"
 
 const ProfilesList: React.FC = () => {
 
@@ -23,15 +27,23 @@ const ProfilesList: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { id } = useParams<{id: string}>()
+    const dispatch = useAppDispatch()
 
     const handleDelete =  async (id: string) => {
-        try {
-            await softDelete(id)
-            lazyDeleteProfile(id)
-        }
-        catch (error) {
-            console.error(error)
-        }
+        const softDeletePromise = softDelete(id).unwrap()
+
+        toast.promise(softDeletePromise, {
+            loading: "Eliminando...",
+            success: () => {
+                lazyDeleteProfile(id)
+                toggleDeleteModal()
+                return "Perfil eliminado"
+            },
+            error: (err) => {
+                console.error(err)
+                return "Error al eliminar perfil"
+            }
+        })
     }
 
     const toggleUpdateModal = (id?: string) => {
@@ -61,17 +73,36 @@ const ProfilesList: React.FC = () => {
         setOpenDeleteModal(!openDeleteModal)
     }
 
-    const lazyUploadProfile = (id: string, newItem: ProfileUpdateDto) => {
-        const newList = lazyUpdateList(profiles!, LazyUpdateModes.UPDATE, id, newItem)
-        setProfiles(newList)
+    const lazyUpdateProfile = (id: string, newItem: ProfileUpdateDto) => {
+        updateCache({
+            api: profileServerApi,
+            endpoint: "listProfiles",
+            mode: LazyUpdateModes.UPDATE,
+            dispatch,
+            newItem,
+            id    
+        })
     }
 
     const lazyDeleteProfile = (id: string) => {
-        const newList = lazyUpdateList(profiles!, LazyUpdateModes.DELETE, id)
-        setProfiles(newList)
+        updateCache({
+            api: profileServerApi,
+            endpoint: "listProfiles",
+            mode: LazyUpdateModes.DELETE,
+            dispatch,
+            id
+        });
     }
 
-    // const la
+    const lazyAddProfile = (newItem: ProfileDto) => {
+        updateCache({
+            api: profileServerApi,
+            endpoint: "listProfiles",
+            mode: LazyUpdateModes.ADD,
+            dispatch,
+            newItem
+        });
+    }
 
     useEffect(() => {
         if (profilesData && !profilesIsLoading) {
@@ -80,9 +111,20 @@ const ProfilesList: React.FC = () => {
     }, [profilesData, profilesIsLoading])
 
     useEffect(() => {
-        if (id) setOpenUpdateProfileModal(true)
-        else if (location.pathname.includes("create")) setOpenCreateProfileModal(true)
+        if (id) {
+            setOpenUpdateProfileModal(true)
+        } else {
+            setOpenUpdateProfileModal(false)
+        }
+            
+        if (location.pathname.includes("create")) {
+            setOpenCreateProfileModal(true)   
+        } else {
+            setOpenCreateProfileModal(false)
+        }
     }, [id, location])
+
+    if (profilesIsLoading) return <SkeletonTable />
 
     return (
         <div className='w-full bg-white min-h-full rounded-md'>
@@ -127,14 +169,14 @@ const ProfilesList: React.FC = () => {
             {openUpdateProfileModal && 
                 <UpdateProfileModal 
                     toggleUpdateModal={toggleUpdateModal}
-                    lazyUploadProfile={lazyUploadProfile}
+                    lazyUpdateProfile={lazyUpdateProfile}
                 />
             }
 
             {openCreateProfileModal && 
                 <CreateProfileModal 
                     toggleCreateModal={toggleCreateModal}
-                    refetchProfiles={refetchProfiles}
+                    lazyAddProfile={lazyAddProfile}
                 />
             }
 

@@ -24,7 +24,7 @@ export const userServerApi = serverApi.injectEndpoints({
 
         updateUser: builder.mutation<UserResponse, UserUpdateDto>({
             query: (updatedUser) => ({
-                url: `/user/${updatedUser.id}`,
+                url: `/user`,
                 method: 'PUT',
                 body: updatedUser,
             }),
@@ -32,7 +32,7 @@ export const userServerApi = serverApi.injectEndpoints({
 
         softDeleteUser: builder.mutation<UserResponse, string>({
             query: (id) => ({
-                url: `/user/${id}`,
+                url: `/user/softdelete/${id}`,
                 method: 'DELETE',
             }),
         }),

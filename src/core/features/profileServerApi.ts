@@ -24,7 +24,7 @@ export const profileServerApi = serverApi.injectEndpoints({
 
         updateProfile: builder.mutation<ProfileResponse, ProfileUpdateDto>({
             query: (updatedProfile) => ({
-                url: `/profile/${updatedProfile.id}`,
+                url: `/profile`,
                 method: 'PUT',
                 body: updatedProfile,
             }),
@@ -32,7 +32,7 @@ export const profileServerApi = serverApi.injectEndpoints({
 
         softDeleteProfile: builder.mutation<ProfileResponse, string>({
             query: (id) => ({
-                url: `/profile/${id}`,
+                url: `/profile/softdelete/${id}`,
                 method: 'DELETE',
             }),
         }),

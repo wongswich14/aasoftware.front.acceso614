@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { lazyUpdateList, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid";
 import DeleteModal from "src/shared/components/DeleteModal";
 import CreateUserModal from "./CreateUserModal";
 import UpdateUserModal from "./UpdateUserModal";
-import { useListUsersQuery, useSoftDeleteUserMutation } from "src/core/features/userServerApi";
+import { useListUsersQuery, userServerApi, useSoftDeleteUserMutation } from "src/core/features/userServerApi";
 import { UserDto } from "src/core/models/dtos/users/userDto";
 import { UserUpdateDto } from "src/core/models/dtos/users/userUpdateDto";
+import SkeletonTable from "src/shared/components/SkeletonTable";
+import { useAppDispatch } from "src/core/store";
+import { LazyUpdateModes, updateCache } from "src/core/utils/lazyUpdateListByGuid";
+import { toast } from "sonner";
 
 const UsersList: React.FC = () => {
 
@@ -17,21 +20,29 @@ const UsersList: React.FC = () => {
     const [openCreateUserModal, setOpenCreateUserModal] = useState<boolean>(false)
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-    const { data: profilesData, error: profilesError, isLoading: profilesIsLoading, refetch: refetchUsers } = useListUsersQuery()
+    const { data: usersData, error: usersError, isLoading: usersIsLoading, refetch: refetchUsers } = useListUsersQuery()
     const [softDelete, { data: softDeleteData, status: softDeleteStatus, isLoading: softDeleteIsLoading }] = useSoftDeleteUserMutation()
 
     const navigate = useNavigate()
     const location = useLocation()
     const { id } = useParams<{id: string}>()
+    const dispatch = useAppDispatch()
 
     const handleDelete =  async (id: string) => {
-        try {
-            await softDelete(id)
-            lazyDeleteUser(id)
-        }
-        catch (error) {
-            console.error(error)
-        }
+        const softDeletePromise = softDelete(id).unwrap()
+
+        toast.promise(softDeletePromise, {
+            loading: "Eliminando...",
+            success: () => {
+                lazyDeleteUser(id)
+                toggleDeleteModal()
+                return "Usuario eliminado"
+            },
+            error: (err) => {
+                console.error(err)
+                return "Error al eliminar usuario"
+            }
+        })
     }
 
     const toggleUpdateModal = (id?: string) => {
@@ -61,28 +72,58 @@ const UsersList: React.FC = () => {
         setOpenDeleteModal(!openDeleteModal)
     }
 
-    const lazyUploadUser = (id: string, newItem: UserUpdateDto) => {
-        const newList = lazyUpdateList(users!, LazyUpdateModes.UPDATE, id, newItem)
-        setUsers(newList)
+    const lazyUpdateUser = (id: string, newItem: UserUpdateDto) => {
+        updateCache({
+            api: userServerApi,
+            endpoint: 'listUsers',
+            mode: LazyUpdateModes.UPDATE,
+            dispatch,
+            newItem,
+            id
+        })
     }
 
     const lazyDeleteUser = (id: string) => {
-        const newList = lazyUpdateList(users!, LazyUpdateModes.DELETE, id)
-        setUsers(newList)
+        updateCache({
+            api: userServerApi,
+            endpoint: 'listUsers',
+            mode: LazyUpdateModes.DELETE,
+            dispatch,
+            id
+        })
     }
 
-    // const la
+    const lazyAddUser = (newItem: UserDto) => {
+        updateCache({
+            api: userServerApi,
+            endpoint: 'listUsers',
+            mode: LazyUpdateModes.ADD,
+            dispatch,
+            newItem
+        })
+    }
 
     useEffect(() => {
-        if (profilesData && !profilesIsLoading) {
-            setUsers(profilesData.listDataObject || [])
+        if (usersData && !usersIsLoading) {
+            setUsers(usersData.listDataObject || [])
         }
-    }, [profilesData, profilesIsLoading])
+    }, [usersData, usersIsLoading])
 
     useEffect(() => {
-        if (id) setOpenUpdateUserModal(true)
-        else if (location.pathname.includes("create")) setOpenCreateUserModal(true)
+        if (id) {
+            setOpenUpdateUserModal(true)
+        } else {
+            setOpenUpdateUserModal(false)
+        }
+            
+        if (location.pathname.includes("create")) {
+            setOpenCreateUserModal(true)   
+        } else {
+            setOpenCreateUserModal(false)
+        }
     }, [id, location])
+
+    if (usersIsLoading) return <SkeletonTable />
 
     return (
         <div className='w-full bg-white min-h-full rounded-md'>
@@ -129,14 +170,14 @@ const UsersList: React.FC = () => {
             {openUpdateUserModal && 
                 <UpdateUserModal 
                     toggleUpdateModal={toggleUpdateModal}
-                    lazyUploadUser={lazyUploadUser}
+                    lazyUpdateUser={lazyUpdateUser}
                 />
             }
 
             {openCreateUserModal && 
                 <CreateUserModal 
                     toggleCreateModal={toggleCreateModal}
-                    refetchUsers={refetchUsers}
+                    lazyAddUser={lazyAddUser}
                 />
             }
 

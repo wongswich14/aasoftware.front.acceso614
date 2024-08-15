@@ -8,7 +8,7 @@ export const authServerApi = serverApi.injectEndpoints({
 
         registerUser: builder.mutation<AuthResponse, RegisterDto>({
             query: (newUser) => ({
-                url: '/Auth',
+                url: '/Auth/Register',
                 method: 'POST',
                 body: newUser,
             }),

@@ -9,10 +9,10 @@ import { useEffect } from "react";
 
 interface UpdateProfileModalProps {
     toggleUpdateModal: () => void
-    lazyUploadProfile: (id: string, newItem: ProfileDto) => void
+    lazyUpdateProfile: (id: string, newItem: ProfileDto) => void
 }
 
-const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ toggleUpdateModal, lazyUploadProfile }) => {
+const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ toggleUpdateModal, lazyUpdateProfile }) => {
 
     const { id } = useParams<{ id: string }>()
     const { data: profileData, isLoading: profileLoading } = useGetProfileQuery(id ?? '')
@@ -32,7 +32,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ toggleUpdateMod
         toast.promise(updateProfilePromise, {
             loading: "Actualizando...",
             success: () => {
-                lazyUploadProfile(id!, data)
+                lazyUpdateProfile(id!, data)
                 navigate(`/profiles`)
                 return "Perfil actualizado"
             },
@@ -45,9 +45,10 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ toggleUpdateMod
 
     useEffect(() => {
         if (!profileLoading && profileData) {
-            console.log(profileData)
+            setValue("title", profileData.dataObject?.title || "")
+            setValue("description", profileData.dataObject?.description || "")
+            setValue("id", profileData.dataObject?.id || "")
         }
-        // setValue("id", id!)
     }, [profileLoading, profileData])
 
     return (

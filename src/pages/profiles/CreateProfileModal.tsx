@@ -4,13 +4,14 @@ import { useNavigate } from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateProfileMutation } from "src/core/features/profileServerApi";
 import { ProfileCreateDto } from "src/core/models/dtos/profiles/profileCreateDto";
+import { ProfileDto } from "src/core/models/dtos/profiles/profileDto";
 
 interface CreateProfileModalProps {
     toggleCreateModal: () => void
-    refetchProfiles: () => void
+    lazyAddProfile: (newItem: ProfileDto) => void
 }
 
-const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateModal, refetchProfiles }) => {
+const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateModal, lazyAddProfile }) => {
 
     const [createProfile, { isLoading }] = useCreateProfileMutation()
     const navigate = useNavigate()
@@ -27,9 +28,12 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateMod
 
         toast.promise(createProfilePromise, {
             loading: "Creando...",
-            success: () => {
-                // lazyUploadProfile(id!, data)
-                refetchProfiles()
+            success: (res) => {
+                lazyAddProfile({
+                    id: res.dataObject?.id || "",
+                    title: data.title,
+                    description: data.description
+                })
                 navigate(`/profiles`)
                 return "Perfil creado"
             },

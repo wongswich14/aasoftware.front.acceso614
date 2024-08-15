@@ -1,18 +1,23 @@
+import { useEffect } from "react"
 import { useForm } from "react-hook-form"
 import { IoClose } from "react-icons/io5"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
+import { useRegisterUserMutation } from "src/core/features/authServerApi"
 import { useCreateUserMutation } from "src/core/features/userServerApi"
+import { RegisterDto } from "src/core/models/dtos/auth/registerDto"
 import { UserCreateDto } from "src/core/models/dtos/users/userCreateDto"
+import { UserDto } from "src/core/models/dtos/users/userDto"
 
 interface CreateUserModalProps {
     toggleCreateModal: () => void
-    refetchUsers: () => void
+    lazyAddUser: (newItem: UserDto) => void
 }
 
-const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, refetchUsers }) => {
+const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, lazyAddUser }) => {
 
-    const [createUser, { isLoading }] = useCreateUserMutation()
+    // const [createUser, { isLoading }] = useCreateUserMutation()
+    const [registerUser, { isLoading }] = useRegisterUserMutation()
     const navigate = useNavigate()
     const {
         register,
@@ -20,16 +25,27 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, re
         formState: { errors },
         reset,
         setValue
-    } = useForm<UserCreateDto>();
+    } = useForm<RegisterDto>();
 
-    const submitForm = async (data: UserCreateDto) => {
-        const createUserPromise = createUser(data).unwrap()
+    const submitForm = async (data: RegisterDto) => {
+        const createUserPromise = registerUser(data).unwrap()
 
         toast.promise(createUserPromise, {
             loading: "Creando...",
-            success: () => {
-                // lazyUploadUser(id!, data)
-                refetchUsers()
+            success: (res) => {
+                lazyAddUser({
+                    id: res.dataObject?.id || "",
+                    profileId: res.dataObject?.profileId || "",
+                    profileName: res.dataObject?.profileName || "",
+                    name: data.name,
+                    lastName: data.lastName,
+                    email: data.email,
+                    emailConfirmed: res.dataObject?.emailConfirmed || false,
+                    enabled: res.dataObject?.enabled || false,
+                    isDeleted: res.dataObject?.isDeleted || false,
+                    changedDate: res.dataObject?.changedDate || "",
+                    createdDate: res.dataObject?.createdDate || "",
+                })
                 navigate(`/users`)
                 return "Perfil creado"
             },
@@ -39,6 +55,11 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, re
             }
         })
     }
+
+    // TODO: solo en dev PERFIL DE PRUEBA
+    useEffect(() => {
+        setValue("profileId", "5c7b15e7-f91c-4aae-b074-6301d678b370")
+    }, [setValue])
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
@@ -116,7 +137,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, re
                         {errors.password && <span className="form-error">{errors.password.message}</span>}
                     </div>
 
-                    <div className="input-container">
+                    {/* <div className="input-container">
                         <label htmlFor="companyId" className="label-form">Empresa</label>
                         <input
                             id="companyId"
@@ -127,7 +148,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, re
                             })}
                         />
                         {errors.companyId && <span className="form-error">{errors.companyId.message}</span>}
-                    </div>
+                    </div> */}
 
                     <div className="flex justify-end gap-5">
                         <button

@@ -7,6 +7,38 @@
   resolved "https://registry.npmjs.org/@alloc/quick-lru/-/quick-lru-5.2.0.tgz"
   integrity sha512-UrcABB+4bUrFABwbluTIBErXwvbsU/V7TZWfmbgJfbkwiBuziS9gxdODUyuiecfdGQ85jglMW6juS3+z5TsKLw==
 
+"@brillout/import@^0.2.3", "@brillout/import@0.2.3":
+  version "0.2.3"
+  resolved "https://registry.npmjs.org/@brillout/import/-/import-0.2.3.tgz"
+  integrity sha512-1T8WlD75eeFSMrptGy8jiLHmfHgMmSjWvLOIUvHmSVZt+6k0eQqYUoK4KbmE4T9pVLIfxvZSOm2D68VEqKRHRw==
+
+"@brillout/json-serializer@^0.5.6":
+  version "0.5.13"
+  resolved "https://registry.npmjs.org/@brillout/json-serializer/-/json-serializer-0.5.13.tgz"
+  integrity sha512-9FpmgpuoSISw6fAPVB2qwW1dGAADN28YbWpfwOErfcZxpBH4lsnejuY89qcivInnWXYJvyyPwghCuOTbtuaYFg==
+
+"@brillout/picocolors@^1.0.9":
+  version "1.0.14"
+  resolved "https://registry.npmjs.org/@brillout/picocolors/-/picocolors-1.0.14.tgz"
+  integrity sha512-XhyZY3/FUh56mDuLIjv5kN9qy+oQj7A/d2uQ6cJJ4uVv55+velua3abcrM5WIvs2RHZGA3EE7S9FWo+TjF10ew==
+
+"@brillout/require-shim@^0.1.2":
+  version "0.1.2"
+  resolved "https://registry.npmjs.org/@brillout/require-shim/-/require-shim-0.1.2.tgz"
+  integrity sha512-3I4LRHnVZXoSAsEoni5mosq9l6eiJED58d9V954W4CIZ88AUfYBanWGBGbJG3NztaRTpFHEA6wB3Hn93BmmJdg==
+
+"@brillout/vite-plugin-import-build@^0.2.18":
+  version "0.2.22"
+  resolved "https://registry.npmjs.org/@brillout/vite-plugin-import-build/-/vite-plugin-import-build-0.2.22.tgz"
+  integrity sha512-n5sv0HdCB5WC2QJSnTN6iS/F+sJsF0AmtsCCaQ+5+dRjgsoGGsa3auinJV8tuEog5WsX+3MF8RIwn3A/u0e04w==
+  dependencies:
+    "@brillout/import" "^0.2.3"
+
+"@esbuild/linux-x64@0.17.19":
+  version "0.17.19"
+  resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.17.19.tgz"
+  integrity sha512-68ngA9lg2H6zkZcyp22tsVt38mlhWde8l3eJLWkyLrp4HwMUr3c1s/M2t7+kHIhvMjglIBrFpncX1SzMckomGw==
+
 "@esbuild/linux-x64@0.21.5":
   version "0.21.5"
   resolved "https://registry.npmjs.org/@esbuild/linux-x64/-/linux-x64-0.21.5.tgz"
@@ -137,6 +169,11 @@
   version "0.11.0"
   resolved "https://registry.npmjs.org/@pkgjs/parseargs/-/parseargs-0.11.0.tgz"
   integrity sha512-+1VkjdD0QBLPodGrJUeqarH8VAIvQODIbwh9XpP5Syisf7YoQgsJKPNFoqqLQlu+VQ/tVSshMR6loPMn8U+dPg==
+
+"@polka/url@^1.0.0-next.24":
+  version "1.0.0-next.25"
+  resolved "https://registry.npmjs.org/@polka/url/-/url-1.0.0-next.25.tgz"
+  integrity sha512-j7P6Rgr3mmtdkeDGTe0E/aYyWEWVtc5yFXtHCRHs28/jptDEWfaVOc5T7cblqy1XKPPfCxJc/8DwQ5YgLOZOVQ==
 
 "@reduxjs/toolkit@^2.2.7":
   version "2.2.7"
@@ -327,7 +364,7 @@ acorn-jsx@^5.3.2:
   resolved "https://registry.npmjs.org/acorn-jsx/-/acorn-jsx-5.3.2.tgz"
   integrity sha512-rq9s+JNhf0IChjtDXxllJ7g41oZk5SlXtp0LHwyA5cejwn7vKmKp4pPri6YEePv2PU65sAsegbXtIinmDFDXgQ==
 
-"acorn@^6.0.0 || ^7.0.0 || ^8.0.0", acorn@^8.12.0:
+"acorn@^6.0.0 || ^7.0.0 || ^8.0.0", acorn@^8.12.0, acorn@^8.8.2:
   version "8.12.1"
   resolved "https://registry.npmjs.org/acorn/-/acorn-8.12.1.tgz"
   integrity sha512-tcpGyI9zbizT9JbV6oYE477V6mTlXvvi0T0G3SNIYE2apm/G5huBa1+K89VGeovbg+jycCrfhl3ADxErOuO6Jg==
@@ -445,6 +482,16 @@ browserslist@^4.23.3, "browserslist@>= 4.21.0":
     electron-to-chromium "^1.5.4"
     node-releases "^2.0.18"
     update-browserslist-db "^1.1.0"
+
+buffer-from@^1.0.0:
+  version "1.1.2"
+  resolved "https://registry.npmjs.org/buffer-from/-/buffer-from-1.1.2.tgz"
+  integrity sha512-E+XQCRwSbaaiChtv6k6Dwgc+bx+Bs6vuKJHHl5kox/BaKbhiXzqQOwK4cO22yElGp2OCmjwVhT3HmxgyPGnJfQ==
+
+cac@^6.7.14:
+  version "6.7.14"
+  resolved "https://registry.npmjs.org/cac/-/cac-6.7.14.tgz"
+  integrity sha512-b6Ilus+c3RrdDk+JhLKUAQfzzgLEPy6wcXqS7f/xe1EETvsDP6GORG7SFuOs6cID5YkqchW/LXZbX5bc8j7ZcQ==
 
 callsites@^3.0.0:
   version "3.1.0"
@@ -573,6 +620,39 @@ emoji-regex@^9.2.2:
   version "9.2.2"
   resolved "https://registry.npmjs.org/emoji-regex/-/emoji-regex-9.2.2.tgz"
   integrity sha512-L18DaJsXSUk2+42pv8mLs5jJT2hqFkFE4j21wOmgbUqsZ2hL72NsUU785g9RXgo3s0ZNgVl42TiHp3ZtOv/Vyg==
+
+es-module-lexer@^1.3.0:
+  version "1.5.4"
+  resolved "https://registry.npmjs.org/es-module-lexer/-/es-module-lexer-1.5.4.tgz"
+  integrity sha512-MVNK56NiMrOwitFB7cqDwq0CQutbw+0BvLshJSse0MUNU+y1FC3bUS/AQg7oUng+/wKrrki7JfmwtVHkVfPLlw==
+
+esbuild@^0.17.18:
+  version "0.17.19"
+  resolved "https://registry.npmjs.org/esbuild/-/esbuild-0.17.19.tgz"
+  integrity sha512-XQ0jAPFkK/u3LcVRcvVHQcTIqD6E2H1fvZMA5dQPSOWb3suUbWbfbRf94pjc0bNzRYLfIrDRQXr7X+LHIm5oHw==
+  optionalDependencies:
+    "@esbuild/android-arm" "0.17.19"
+    "@esbuild/android-arm64" "0.17.19"
+    "@esbuild/android-x64" "0.17.19"
+    "@esbuild/darwin-arm64" "0.17.19"
+    "@esbuild/darwin-x64" "0.17.19"
+    "@esbuild/freebsd-arm64" "0.17.19"
+    "@esbuild/freebsd-x64" "0.17.19"
+    "@esbuild/linux-arm" "0.17.19"
+    "@esbuild/linux-arm64" "0.17.19"
+    "@esbuild/linux-ia32" "0.17.19"
+    "@esbuild/linux-loong64" "0.17.19"
+    "@esbuild/linux-mips64el" "0.17.19"
+    "@esbuild/linux-ppc64" "0.17.19"
+    "@esbuild/linux-riscv64" "0.17.19"
+    "@esbuild/linux-s390x" "0.17.19"
+    "@esbuild/linux-x64" "0.17.19"
+    "@esbuild/netbsd-x64" "0.17.19"
+    "@esbuild/openbsd-x64" "0.17.19"
+    "@esbuild/sunos-x64" "0.17.19"
+    "@esbuild/win32-arm64" "0.17.19"
+    "@esbuild/win32-ia32" "0.17.19"
+    "@esbuild/win32-x64" "0.17.19"
 
 esbuild@^0.21.3:
   version "0.21.5"
@@ -724,7 +804,7 @@ fast-deep-equal@^3.1.1, fast-deep-equal@^3.1.3:
   resolved "https://registry.npmjs.org/fast-deep-equal/-/fast-deep-equal-3.1.3.tgz"
   integrity sha512-f3qQ9oQy9j2AhBe/H9VC91wLmKBCCU/gDOnKNAYG5hswO7BLKj09Hc5HYNz9cGI++xlpDCIgDaitVs03ATR84Q==
 
-fast-glob@^3.2.9, fast-glob@^3.3.0:
+fast-glob@^3.2.12, fast-glob@^3.2.9, fast-glob@^3.3.0:
   version "3.3.2"
   resolved "https://registry.npmjs.org/fast-glob/-/fast-glob-3.3.2.tgz"
   integrity sha512-oX2ruAFQwf/Orj8m737Y5adxDQO0LAB7/S5MnxCdTNDd4p6BsyIVsv9JQsATbTSq8KHRpLwIHbVlUNatxd+1Ow==
@@ -1077,6 +1157,11 @@ minimatch@^9.0.4:
   version "7.1.2"
   resolved "https://registry.npmjs.org/minipass/-/minipass-7.1.2.tgz"
   integrity sha512-qOOzS1cBTWYF4BH8fVePDBOO9iptMnGUEZwNc/cMWnTV2nVLZ7VoNWEPHkYczZA0pdoA7dl6e7FL659nX9S2aw==
+
+mrmime@^2.0.0:
+  version "2.0.0"
+  resolved "https://registry.npmjs.org/mrmime/-/mrmime-2.0.0.tgz"
+  integrity sha512-eu38+hdgojoyq63s+yTpN4XMBdt5l8HhMhc4VKLO9KM5caLIBvUm4thi7fFaxyTmCKeNnXZ5pAlBwCUnhA09uw==
 
 ms@2.1.2:
   version "2.1.2"
@@ -1438,6 +1523,15 @@ signal-exit@^4.0.1:
   resolved "https://registry.npmjs.org/signal-exit/-/signal-exit-4.1.0.tgz"
   integrity sha512-bzyZ1e88w9O1iNJbKnOlvYTrWPDl46O1bG0D3XInv+9tkPrxrN8jUUTiFlDkkmKWgn1M6CfIA13SuGqOa9Korw==
 
+sirv@^2.0.2:
+  version "2.0.4"
+  resolved "https://registry.npmjs.org/sirv/-/sirv-2.0.4.tgz"
+  integrity sha512-94Bdh3cC2PKrbgSOUqTiGPWVZeSiXfKOVZNJniWoqrWrRkB1CJzBU3NEbiTsPcYy1lDsANA/THzS+9WBiy5nfQ==
+  dependencies:
+    "@polka/url" "^1.0.0-next.24"
+    mrmime "^2.0.0"
+    totalist "^3.0.0"
+
 slash@^3.0.0:
   version "3.0.0"
   resolved "https://registry.npmjs.org/slash/-/slash-3.0.0.tgz"
@@ -1452,6 +1546,19 @@ source-map-js@^1.2.0:
   version "1.2.0"
   resolved "https://registry.npmjs.org/source-map-js/-/source-map-js-1.2.0.tgz"
   integrity sha512-itJW8lvSA0TXEphiRoawsCksnlf8SyvmFzIhltqAHluXd88pkCd+cXJVHTDwdCr0IzwptSm035IHQktUu1QUMg==
+
+source-map-support@^0.5.21:
+  version "0.5.21"
+  resolved "https://registry.npmjs.org/source-map-support/-/source-map-support-0.5.21.tgz"
+  integrity sha512-uBHU3L3czsIyYXKX88fdrGovxdSCoTGDRZ6SYXtSRxLZUzHg5P/66Ht6uoUlHu9EZod+inXhKo3qQgwXUT/y1w==
+  dependencies:
+    buffer-from "^1.0.0"
+    source-map "^0.6.0"
+
+source-map@^0.6.0:
+  version "0.6.1"
+  resolved "https://registry.npmjs.org/source-map/-/source-map-0.6.1.tgz"
+  integrity sha512-UjgapumWlbMhkBgzT7Ykc5YXUT46F0iKu8SGXq0bcwP5dz/h0Plj6enJqjz1Zbq2l5WaqYnrVbwWOWMyF3F47g==
 
 "string-width-cjs@npm:string-width@^4.2.0":
   version "4.2.3"
@@ -1585,6 +1692,11 @@ to-regex-range@^5.0.1:
   dependencies:
     is-number "^7.0.0"
 
+totalist@^3.0.0:
+  version "3.0.1"
+  resolved "https://registry.npmjs.org/totalist/-/totalist-3.0.1.tgz"
+  integrity sha512-sf4i37nQ2LBx4m3wB74y+ubopq6W/dIzXg0FDGjsYnZHVa1Da8FH853wlL2gtUhg+xJXjfk3kUZS3BRoQeoQBQ==
+
 ts-api-utils@^1.3.0:
   version "1.3.0"
   resolved "https://registry.npmjs.org/ts-api-utils/-/ts-api-utils-1.3.0.tgz"
@@ -1646,6 +1758,24 @@ util-deprecate@^1.0.2:
   resolved "https://registry.npmjs.org/util-deprecate/-/util-deprecate-1.0.2.tgz"
   integrity sha512-EPD5q1uXyFxJpCrLnCc1nHnq3gOa6DZBocAIiI2TaSCA7VCJ1UJDMagCzIkXNsUYfD1daK//LTEQ8xiIbrHtcw==
 
+vite-plugin-ssr@^0.4.142:
+  version "0.4.142"
+  resolved "https://registry.npmjs.org/vite-plugin-ssr/-/vite-plugin-ssr-0.4.142.tgz"
+  integrity sha512-ZDgpocnTEUmhYxGgMah8ZNK1Sfy5CFVcdXu+Ll3zRtGIPyWT5vYvASs2BLYEneqantHpde2b31Khzb0hxmP62w==
+  dependencies:
+    "@brillout/import" "0.2.3"
+    "@brillout/json-serializer" "^0.5.6"
+    "@brillout/picocolors" "^1.0.9"
+    "@brillout/require-shim" "^0.1.2"
+    "@brillout/vite-plugin-import-build" "^0.2.18"
+    acorn "^8.8.2"
+    cac "^6.7.14"
+    es-module-lexer "^1.3.0"
+    esbuild "^0.17.18"
+    fast-glob "^3.2.12"
+    sirv "^2.0.2"
+    source-map-support "^0.5.21"
+
 vite-tsconfig-paths@^5.0.1:
   version "5.0.1"
   resolved "https://registry.npmjs.org/vite-tsconfig-paths/-/vite-tsconfig-paths-5.0.1.tgz"
@@ -1655,7 +1785,7 @@ vite-tsconfig-paths@^5.0.1:
     globrex "^0.1.2"
     tsconfck "^3.0.3"
 
-vite@*, "vite@^4 || ^5", vite@^5.4.0:
+vite@*, "vite@^4 || ^5", vite@^5.4.0, vite@>=3.1.0:
   version "5.4.0"
   resolved "https://registry.npmjs.org/vite/-/vite-5.4.0.tgz"
   integrity sha512-5xokfMX0PIiwCMCMb9ZJcMyh5wbBun0zUzKib+L65vAZ8GY9ePZMXxFrHbr/Kyll2+LSCY7xtERPpxkBDKngwg==
