@@ -1,11 +1,15 @@
-import { useEffect } from "react"
+import { useEffect, useState } from "react"
 import { useForm } from "react-hook-form"
 import { IoClose } from "react-icons/io5"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useRegisterUserMutation } from "src/core/features/authServerApi"
+import { useListProfilesQuery } from "src/core/features/profileServerApi"
+import { useListResidentialsQuery } from "src/core/features/residentialServerApi"
 import { useCreateUserMutation } from "src/core/features/userServerApi"
 import { RegisterDto } from "src/core/models/dtos/auth/registerDto"
+import { ProfileDto } from "src/core/models/dtos/profiles/profileDto"
+import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto"
 import { UserCreateDto } from "src/core/models/dtos/users/userCreateDto"
 import { UserDto } from "src/core/models/dtos/users/userDto"
 
@@ -16,36 +20,38 @@ interface CreateUserModalProps {
 
 const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, lazyAddUser }) => {
 
-    // const [createUser, { isLoading }] = useCreateUserMutation()
-    const [registerUser, { isLoading }] = useRegisterUserMutation()
+    const [profiles, setProfiles] = useState<ProfileDto[]>()
+    const [residentials, setResidentials] = useState<ResidentialDto[]>()
+
+    const [createUser, { isLoading }] = useCreateUserMutation()
+    // const [registerUser, { isLoading }] = useRegisterUserMutation()
     const navigate = useNavigate()
+
+    const { data: profilesData, 
+        isLoading: profilesIsLoading } = useListProfilesQuery()
+
+    const { data: residentialsData, 
+        isLoading: residentialsIdLoading } = useListResidentialsQuery()
+ 
     const {
         register,
         handleSubmit,
         formState: { errors },
         reset,
-        setValue
-    } = useForm<RegisterDto>();
+        setValue,
+        watch
+    } = useForm<UserCreateDto>();
 
-    const submitForm = async (data: RegisterDto) => {
-        const createUserPromise = registerUser(data).unwrap()
+    const residentialId = watch("residentialId")
+
+    const submitForm = async (data: UserCreateDto) => {
+        // const createUserPromise = registerUser(data).unwrap()
+        const createUserPromise = createUser({ newUser: data, residentialId: residentialId }).unwrap()
 
         toast.promise(createUserPromise, {
             loading: "Creando...",
             success: (res) => {
-                lazyAddUser({
-                    id: res.dataObject?.id || "",
-                    profileId: res.dataObject?.profileId || "",
-                    profileName: res.dataObject?.profileName || "",
-                    name: data.name,
-                    lastName: data.lastName,
-                    email: data.email,
-                    emailConfirmed: res.dataObject?.emailConfirmed || false,
-                    enabled: res.dataObject?.enabled || false,
-                    isDeleted: res.dataObject?.isDeleted || false,
-                    changedDate: res.dataObject?.changedDate || "",
-                    createdDate: res.dataObject?.createdDate || "",
-                })
+                lazyAddUser(res.dataObject!)
                 navigate(`/users`)
                 return "Perfil creado"
             },
@@ -57,13 +63,24 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
     }
 
     // TODO: solo en dev PERFIL DE PRUEBA
+    // useEffect(() => {
+    //     setValue("profileId", "5c7b15e7-f91c-4aae-b074-6301d678b370")
+    // }, [setValue])
+
     useEffect(() => {
-        setValue("profileId", "5c7b15e7-f91c-4aae-b074-6301d678b370")
-    }, [setValue])
+        if (profilesData && !profilesIsLoading) {
+            setProfiles(profilesData.listDataObject)
+        }
+    }, [profilesData, profilesIsLoading])
+
+    useEffect(() => {
+        if (residentialsData && !residentialsIdLoading) 
+            setResidentials(residentialsData.listDataObject)
+    }, [residentialsData, residentialsIdLoading])
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
-            <section className="bg-white rounded-lg p-10 relative min-w-[40%]">
+            <section className="bg-white rounded-lg p-10 relative min-w-[55%]">
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
@@ -128,27 +145,50 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                             type="password"
                             {...register("password", {
                                 required: "Este campo es obligatorio",
-                                minLength: {
-                                    value: 6,
-                                    message: "La contraseña debe tener al menos 6 caracteres"
-                                }
+                                // minLength: {
+                                //     value: 6,
+                                //     message: "La contraseña debe tener al menos 6 caracteres"
+                                // }
                             })}
                         />
                         {errors.password && <span className="form-error">{errors.password.message}</span>}
                     </div>
 
-                    {/* <div className="input-container">
-                        <label htmlFor="companyId" className="label-form">Empresa</label>
-                        <input
-                            id="companyId"
-                            className="input-form"
-                            type="text"
-                            {...register("companyId", {
+                    <div className="input-container">
+                        <label htmlFor="residentialId" className="label-form">Residencial</label>
+
+                        <select 
+                            className="input-form" 
+                            id="residentialId"
+                            {...register("residentialId", {
                                 required: "Este campo es obligatorio"
                             })}
-                        />
-                        {errors.companyId && <span className="form-error">{errors.companyId.message}</span>}
-                    </div> */}
+                        >
+                            <option value="" selected >-- Seleccione una --</option>
+                            {residentials && residentials.map(residential => (
+                                <option value={residential.id}>{residential.name}</option>
+                            ))}
+                        </select>
+                        {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
+                    </div>
+
+                    <div className="input-container">
+                        <label htmlFor="profileId" className="label-form">Perfil</label>
+
+                        <select 
+                            className="input-form" 
+                            id="profileId"
+                            {...register("profileId", {
+                                required: "Este campo es obligatorio"
+                            })}
+                        >
+                            <option value="" selected >-- Seleccione una --</option>
+                            {profiles && profiles.map(profile => (
+                                <option value={profile.id}>{profile.title}</option>
+                            ))}
+                        </select>
+                        {errors.profileId && <span className="form-error">{errors.profileId.message}</span>}
+                    </div>
 
                     <div className="flex justify-end gap-5">
                         <button

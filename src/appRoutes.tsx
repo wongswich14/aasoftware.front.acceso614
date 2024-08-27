@@ -21,7 +21,7 @@ const appRoutes: RouteObject[] = [
                     ...residentialRoutes,
                     ...houseRoutes,
                     ...userRoutes,
-                    ...profileRoutes
+                    ...profileRoutes,
                 ]
             }
         ],

@@ -5,5 +5,7 @@ export interface UserUpdateDto {
     email: string;
     password: string;
     emailConfirmed: boolean;
-    companyId: string;
+    residentialId: string;
+    profileId: string
+    homeId: string
 }

@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useTokenQuery } from "../features/authServerApi";
-import { saveUserInfo, authenticate, selectIsAuthenticated } from "../slices/auth/authSlice";
+import { saveUserInfo, authenticate, selectIsAuthenticated, selectUserData } from "../slices/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoaderBig from "src/shared/components/LoaderBig";
 
@@ -9,12 +9,14 @@ import LoaderBig from "src/shared/components/LoaderBig";
 const PrivateRoute: React.FC = () => {
 
     const isAuthenticated = useSelector(selectIsAuthenticated)
+    const storagedToken = localStorage.getItem("auth");
+    const parsedToken = storagedToken ? JSON.parse(storagedToken) : null;
     const [isAllowed, setIsAllowed] = useState<boolean | null>(isAuthenticated)
 
     /*
-        No se hace la consulta si ya se tiene la información del usuario
+        No se hace la consulta si ya se tiene la información del usuario o no hay token que validar
      */
-    const { data: tokenData, isLoading: tokenLoading } = useTokenQuery(undefined, { skip: isAuthenticated === true })
+    const { data: tokenData, isLoading: tokenLoading } = useTokenQuery(undefined, { skip: isAuthenticated === true || !parsedToken })
 
     const dispatch = useDispatch()
 
@@ -33,7 +35,8 @@ const PrivateRoute: React.FC = () => {
                     name: tokenData.dataObject.name,
                     lastName: tokenData.dataObject.lastName,
                     email: tokenData.dataObject.email,
-                    token
+                    token,
+                    profileName: tokenData.dataObject.profileName,
                 }));
                 dispatch(authenticate(true));
                 setIsAllowed(true);
@@ -44,12 +47,8 @@ const PrivateRoute: React.FC = () => {
     }, [tokenData, dispatch, tokenLoading, isAuthenticated])
 
     if (isAllowed === null) {
-        return (
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center z-40">
-                <div className="absolute top-0 left-0 right-0 bottom-0 bg-gray-300 bg-opacity-50 blur-lg z-50" />
-                <LoaderBig message={'Espere...'} />
-            </div>
-        )
+        return <LoaderBig message={'Espere...'} />
+  
     }
 
     if (!isAllowed) {

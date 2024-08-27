@@ -40,8 +40,8 @@ const Sidebar: React.FC<SidebarProps> = () => {
         {
             name: 'Administración', icon: FaCog, hasChild: true,
             childrens: [
-                // { name: 'Residenciales', link: '/residentials', icon: MdLocationCity },
-                // { name: 'Viviendas', link: '/houses', icon: MdHome },
+                { name: 'Residenciales', link: '/residentials', icon: MdLocationCity },
+                { name: 'Viviendas', link: '/houses', icon: MdHome },
                 { name: 'Usuarios', link: '/users', icon: FaUsers },
                 { name: "Perfiles", link: '/profiles', icon: FaUserShield }
             ]

@@ -1,5 +1,6 @@
 export interface ProfileUpdateDto {
     id: string
     title: string
-    description: string
+    description: string,
+    permissionsId: string[]
 }

@@ -3,39 +3,65 @@
 @tailwind utilities;
 
 @layer components {
-    .input-container {
-      @apply flex flex-col relative pb-8
-    }
-  
-    .input-form {
-      @apply block w-full placeholder:px-1.5 px-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-700 sm:text-sm sm:leading-6 outline-none;
-    }
-  
-    .label-form {
-      @apply font-semibold mb-1;
-    }
-  
-    .form-error {
-      @apply text-red-500 text-sm ml-4 absolute bottom-2 left-0
-    }
-  
-    .divisor {
-      @apply border border-gray-300 w-full
-    }
-  
-    .divisor-dashed {
-      @apply border-[1.3px] border-gray-300 border-dashed w-full
-    }
-  
-    .glass-efect {
-      @apply bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 border z-50
-    }
-  
-    .submit-button {
-      @apply bg-blue-400 text-white font-semibold py-1 text-sm px-4 rounded
-    }
-  
-    .cancel-button {
-      @apply bg-red-400 text-white font-semibold py-1 text-sm px-4 rounded
-    }
+  .input-container {
+    @apply flex flex-col relative pb-8
   }
+
+  .input-form {
+    @apply block w-full placeholder:px-1.5 px-3 rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-400 placeholder:text-gray-400 focus:ring-1 focus:ring-inset focus:ring-gray-700 sm:text-sm sm:leading-6 outline-none;
+  }
+
+  .label-form {
+    @apply font-semibold mb-1;
+  }
+
+  .form-error {
+    @apply text-red-500 text-sm ml-4 absolute bottom-2 left-0
+  }
+
+  .divisor {
+    @apply border border-gray-300 w-full
+  }
+
+  .divisor-dashed {
+    @apply border-[1.3px] border-gray-300 border-dashed w-full
+  }
+
+  .glass-efect {
+    @apply bg-gray-400 rounded-md bg-clip-padding backdrop-filter backdrop-blur-sm bg-opacity-20 border z-50
+  }
+
+  .submit-button {
+    @apply bg-blue-400 text-white font-semibold py-1 text-sm px-4 rounded
+  }
+
+  .cancel-button {
+    @apply bg-red-400 text-white font-semibold py-1 text-sm px-4 rounded
+  }
+
+}
+
+/* Scrollbar para navegadores WebKit (Chrome, Safari) */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background-color: transparent;
+  /* Fondo del track */
+}
+
+::-webkit-scrollbar-thumb {
+  background-color: rgba(128, 128, 128, 0.8);
+  /* Gris con opacidad */
+  border-radius: 10px;
+  /* Bordes redondeados */
+}
+
+/* Scrollbar para Firefox */
+* {
+  scrollbar-width: thin;
+  /* Scrollbar delgada */
+  scrollbar-color: rgba(128, 128, 128, 0.8) transparent;
+  /* Colores de thumb y track */
+}

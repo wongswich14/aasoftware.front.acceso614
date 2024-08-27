@@ -170,6 +170,7 @@ const ProfilesList: React.FC = () => {
                 <UpdateProfileModal 
                     toggleUpdateModal={toggleUpdateModal}
                     lazyUpdateProfile={lazyUpdateProfile}
+                    refetchProfiles={refetchProfiles}
                 />
             }
 
@@ -177,6 +178,7 @@ const ProfilesList: React.FC = () => {
                 <CreateProfileModal 
                     toggleCreateModal={toggleCreateModal}
                     lazyAddProfile={lazyAddProfile}
+                    refetchProfiles={refetchProfiles}
                 />
             }
 

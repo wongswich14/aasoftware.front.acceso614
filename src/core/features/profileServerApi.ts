@@ -1,5 +1,6 @@
 import { ProfileCreateDto } from "../models/dtos/profiles/profileCreateDto";
 import { ProfileUpdateDto } from "../models/dtos/profiles/profileUpdateDto";
+import { PermissionResponse } from "../models/responses/permission.response";
 import { ProfileResponse } from "../models/responses/profile.response";
 import { serverApi } from "../serverApi";
 
@@ -36,6 +37,10 @@ export const profileServerApi = serverApi.injectEndpoints({
                 method: 'DELETE',
             }),
         }),
+
+        listPermissions: builder.query<PermissionResponse, void>({
+            query: () => `/permission`
+        })
     
     }),
     overrideExisting: false,
@@ -46,5 +51,6 @@ export const {
     useGetProfileQuery,
     useCreateProfileMutation,
     useUpdateProfileMutation,
-    useSoftDeleteProfileMutation
+    useSoftDeleteProfileMutation,
+    useListPermissionsQuery
 } = profileServerApi

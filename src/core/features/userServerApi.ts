@@ -1,4 +1,5 @@
 import { UserCreateDto } from "../models/dtos/users/userCreateDto";
+import { UserDto } from "../models/dtos/users/userDto";
 import { UserUpdateDto } from "../models/dtos/users/userUpdateDto";
 import { UserResponse } from "../models/responses/user.response";
 import { serverApi } from "../serverApi";
@@ -14,9 +15,9 @@ export const userServerApi = serverApi.injectEndpoints({
             query: (id) => `user/${id}`
         }),
 
-        createUser: builder.mutation<UserResponse, UserCreateDto>({
-            query: (newUser) => ({
-                url: '/user',
+        createUser: builder.mutation<UserResponse, { newUser:UserCreateDto, residentialId: string }>({
+            query: ({ newUser, residentialId }) => ({
+                url: `user/residentialid/${residentialId}`,
                 method: 'POST',
                 body: newUser,
             }),

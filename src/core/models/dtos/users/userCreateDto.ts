@@ -4,5 +4,7 @@ export interface UserCreateDto {
     email: string;
     password: string;
     emailConfirmed: boolean
-    companyId: string;
+    residentialId: string
+    profileId: string
+    homeId: string
 }

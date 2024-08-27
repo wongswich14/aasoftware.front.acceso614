@@ -4,6 +4,7 @@ export interface UserData {
     lastName: string
     email: string
     token: string
+    profileName: string
 }
 
 export interface AuthState {

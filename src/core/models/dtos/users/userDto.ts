@@ -11,4 +11,12 @@ export interface UserDto {
     createdDate: string
     changedDate: string
     deletedDate?: string
+    residentialId: string
+    home: Home[]
+}
+
+interface Home {
+    id: string
+    residentialId: string
+    
 }

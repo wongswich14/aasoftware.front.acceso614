@@ -61,6 +61,7 @@ const submitForm = async (data: LoginDto) => {
             lastName: userData.lastName,
             email: userData.email,
             token: res.data.token,
+            profileName: userData.profileName
         }));
 
         dispatch(authenticate(true));

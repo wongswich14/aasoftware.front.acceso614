@@ -8,6 +8,14 @@ const residentialRoutes: RouteObject[] = [
             {
                 path: "",
                 element: <ResidentialsList />,
+            },
+            {
+                path: "update/:id",
+                element: <ResidentialsList />,
+            },
+            {
+                path: "create",
+                element: <ResidentialsList />,
             }
         ]
     }
