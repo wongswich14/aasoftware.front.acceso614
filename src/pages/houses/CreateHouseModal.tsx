@@ -81,12 +81,6 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
                 <form className="flex flex-col mt-5 text-gray-700 text-base" onSubmit={handleSubmit(submitForm)}>
                     <div className="input-container">
                         <label htmlFor="residentialId" className="label-form">Residencial</label>
-                        {/* <input
-                            type="text"
-                            id="residentialId"
-                            className="input-form"
-                            {...register('residentialId', { required: 'Este campo es obligatorio' })}
-                        /> */}
                         <select
                             id="residentialId"
                             className="input-form"
@@ -155,16 +149,6 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
                     </div>
 
                     {/* <div className="input-container">
-                        <label htmlFor="reference" className="label-form">Referencia</label>
-                        <input
-                            type="text"
-                            id="reference"
-                            className="input-form"
-                            {...register('address.reference')}
-                        />
-                    </div> */}
-
-                    <div className="input-container">
                         <label htmlFor="isPrincipal" className="label-form">¿Es Principal?</label>
 
                         <Switcher
@@ -172,7 +156,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
                             isChecked={watch('address.isPrincipal')}
                             onChange={() => setValue('address.isPrincipal', !watch('address.isPrincipal'))}
                         />
-                    </div>
+                    </div> */}
 
                     <div className="input-container">
                         <label htmlFor="personContact" className="label-form">Persona de Contacto</label>

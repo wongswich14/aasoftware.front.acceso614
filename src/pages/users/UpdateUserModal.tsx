@@ -57,9 +57,14 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
         })
     }
 
+    const handleCloseModal = () => {
+        reset()
+        toggleUpdateModal()
+    }
+
     useEffect(() => {
-        if (!userLoading && userData) {
-            const serverData = userData.listDataObject?.[0]
+        if (!userLoading && userData && residentialsData && !residentialsIdLoading && profilesData && !profilesIsLoading) {
+            const serverData = userData.dataObject
             setValue("id", serverData?.id || "")
             setValue("name", serverData?.name || "")
             setValue("lastName", serverData?.lastName || "")
@@ -69,7 +74,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
             setValue("profileId", serverData?.profileId || "")
             // setValue("homeId", userData.dataObject?.home[0].id || "")
         }
-    }, [userLoading, userData])
+    }, [userLoading, userData, residentialsData, profilesData, residentialsIdLoading, profilesIsLoading])
 
     useEffect(() => {
         if (profilesData && !profilesIsLoading) {
@@ -82,6 +87,14 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
             setResidentials(residentialsData.listDataObject)
     }, [residentialsData, residentialsIdLoading])
 
+    useEffect(() => {
+        return () => {
+            setProfiles([]);
+            setResidentials([]);
+            reset();
+        };
+    }, []);
+
     if (userLoading || profilesIsLoading || residentialsIdLoading) return <LoaderBig message="Cargando datos..." />
 
     return (
@@ -90,7 +103,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
-                    onClick={() => toggleUpdateModal()}
+                    onClick={handleCloseModal}
                 />
                 <h3 className="p-2 text-lg text-gray-500 font-semibold">
                     Editar Usuario
@@ -207,7 +220,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
 
                         <button
                             type="button"
-                            onClick={() => toggleUpdateModal()}
+                            onClick={handleCloseModal}
                             className="cancel-button"
                         >
                             Cancelar

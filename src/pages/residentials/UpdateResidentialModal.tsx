@@ -6,6 +6,7 @@ import { toast } from "sonner";
 import { useGetResidentialQuery, useUpdateResidentialMutation } from "src/core/features/residentialServerApi";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import { ResidentialUpdateDto } from "src/core/models/dtos/residentials/ResidentialUpdateDto";
+import LoaderBig from "src/shared/components/LoaderBig";
 
 
 interface UpdateResidentialModalProps {
@@ -57,6 +58,8 @@ const UpdateResidentialModal: React.FC<UpdateResidentialModalProps> = ({ toggleU
         }
     }, [residentialLoading, residentialData])
 
+    if (residentialLoading) return <LoaderBig message="Cargando datos..."/>
+
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
             <section className="bg-white rounded-lg p-10 relative min-w-[55%]">
@@ -66,7 +69,7 @@ const UpdateResidentialModal: React.FC<UpdateResidentialModalProps> = ({ toggleU
                     onClick={() => toggleUpdateModal()}
                 />
                 <h3 className="p-2 text-lg text-gray-500 font-semibold">
-                    Editar Usuario
+                    Editar Residencial
                 </h3>
 
                 <form

@@ -38,6 +38,13 @@ export const residentialServerApi = serverApi.injectEndpoints({
             }),
         }),
 
+        hardDeleteResidential: builder.mutation<ResidentialResponse, string>({
+            query: (id) => ({
+                url: `/residential/harddelete/${id}`,
+                method: 'DELETE',
+            }),
+        }),
+
     }),
     overrideExisting: false
 })
@@ -47,5 +54,6 @@ export const {
     useGetResidentialQuery,
     useCreateResidentialMutation,
     useUpdateResidentialMutation,
-    useSoftDeleteResidentialMutation
+    useSoftDeleteResidentialMutation,
+    useHardDeleteResidentialMutation
 } = residentialServerApi

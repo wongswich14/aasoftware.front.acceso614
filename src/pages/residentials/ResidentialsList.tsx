@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { useSoftDeleteResidentialMutation, residentialServerApi, useListResidentialsQuery } from "src/core/features/residentialServerApi";
+import { useSoftDeleteResidentialMutation, residentialServerApi, useListResidentialsQuery, useHardDeleteResidentialMutation } from "src/core/features/residentialServerApi";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import { ResidentialUpdateDto } from "src/core/models/dtos/residentials/ResidentialUpdateDto";
 import { useAppDispatch } from "src/core/store";
@@ -22,6 +22,7 @@ const ResidentialsList: React.FC = () => {
 
     const { data: residentialsData, error: residentialsError, isLoading: residentialsIsLoading, refetch: refetchResidentials } = useListResidentialsQuery()
     const [softDelete, { data: softDeleteData, status: softDeleteStatus, isLoading: softDeleteIsLoading }] = useSoftDeleteResidentialMutation()
+    const [hardDelete, { data: hardDeleteData, status: hardDeleteStatus, isLoading: hardDeleteIsLoading }] = useHardDeleteResidentialMutation()
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -29,9 +30,10 @@ const ResidentialsList: React.FC = () => {
     const dispatch = useAppDispatch()
 
     const handleDelete =  async (id: string) => {
-        const softDeletePromise = softDelete(id).unwrap()
+        // const softDeletePromise = softDelete(id).unwrap()
+        const hardDeletePromise = hardDelete(id).unwrap()
 
-        toast.promise(softDeletePromise, {
+        toast.promise(hardDeletePromise, {
             loading: "Eliminando...",
             success: () => {
                 lazyDeleteResidential(id)

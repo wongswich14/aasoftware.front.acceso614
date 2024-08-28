@@ -3,6 +3,7 @@ export interface HouseUpdateDto {
     residentialId: string;
     name: string;
     address: {
+      id: string
       street: string;
       streetDetail: string;
       number: string;

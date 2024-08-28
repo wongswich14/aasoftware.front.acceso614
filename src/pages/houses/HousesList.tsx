@@ -74,14 +74,15 @@ const HousesList: React.FC = () => {
     }
 
     const lazyUpdateHouse = (id: string, newItem: HouseUpdateDto) => {
-        updateCache({
-            api: houseServerApi,
-            endpoint: 'listHouses',
-            mode: LazyUpdateModes.UPDATE,
-            dispatch,
-            newItem,
-            id
-        })
+        // updateCache({
+        //     api: houseServerApi,
+        //     endpoint: 'listHouses',
+        //     mode: LazyUpdateModes.UPDATE,
+        //     dispatch,
+        //     newItem,
+        //     id
+        // })
+        refetchHouses()
     }
 
     const lazyDeleteHouse = (id: string) => {
@@ -141,6 +142,7 @@ const HousesList: React.FC = () => {
                     <tr>
                         <th>#</th>
                         <th className='text-left'>Alias</th>
+                        <th className='text-left'>Residencial</th>
                         <th className='text-left'>Calle</th>
                         <th className='text-left'>N. Casa</th>
                         <th className="text-left">Código postal</th>
@@ -156,9 +158,10 @@ const HousesList: React.FC = () => {
                             < tr key={house.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer" >
                                 <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.name}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address.street}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address.number}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address.zip}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.residential?.name}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address?.street}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address?.number}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address?.zip}</td>
                                 <td className='flex gap-6 items-center justify-center ml-5 py-4'>
                                     <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(house.id)} />
                                     <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(house.id)} />

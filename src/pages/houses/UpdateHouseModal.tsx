@@ -21,14 +21,17 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
     const [residentials, setResidentials] = useState<ResidentialDto[]>()
     const { id } = useParams<{ id: string }>()
 
-    const { data: houseData, isLoading: houseLoading } = useGetHouseQuery(id ?? '')
-    const [updateHouse, { isLoading }] = useUpdateHouseMutation()
-    const navigate = useNavigate()
-
     const {
         data: residentialsData,
         isLoading: residentialsIsLoading
     } = useListResidentialsQuery()
+    const { 
+        data: houseData, 
+        isLoading: houseLoading 
+    } = useGetHouseQuery(id!, { skip: !id })
+    const [updateHouse, { isLoading }] = useUpdateHouseMutation()
+    const navigate = useNavigate()
+
 
     const {
         register,
@@ -57,23 +60,30 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
         })
     }
 
+    const handleCloseModal = () => {
+        reset()
+        toggleUpdateModal()
+    }
+
     useEffect(() => {
-        if (!houseLoading && houseData) {
+        if (!houseLoading && houseData && residentialsData && !residentialsIsLoading) {
             if (houseData.dataObject) {
                 const serverData = houseData.dataObject
+                setValue("id", serverData.id)
                 setValue("residentialId", serverData.residentialId)
                 setValue("name", serverData.name)
-                setValue("address.street", serverData.address.street)
-                setValue("address.streetDetail", serverData.address.streetDetail)
-                setValue("address.number", serverData.address.number)
-                setValue("address.zip", serverData.address.zip)
-                setValue("address.isPrincipal", serverData.address.isPrincipal)
+                setValue("address.id", serverData.address?.id)
+                setValue("address.street", serverData.address?.street)
+                setValue("address.streetDetail", serverData.address?.streetDetail)
+                setValue("address.number", serverData.address?.number)
+                setValue("address.zip", serverData.address?.zip)
+                // setValue("address.isPrincipal", serverData.address?.isPrincipal)
                 setValue("enabled", serverData.enabled)
                 setValue("personContact", serverData.personContact)
                 setValue("phoneContact", serverData.phoneContact)
             }
         }
-    }, [houseLoading, houseData])
+    }, [houseLoading, houseData, residentialsData, residentialsIsLoading])
 
     useEffect(() => {
         if (residentialsData && !residentialsIsLoading) {
@@ -88,7 +98,14 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
         setValue("enabled", true)
     }, [])
 
-    if (residentialsIsLoading || houseLoading) return <LoaderBig message="Cargando" />
+    useEffect(() => {
+        return () => {
+            setResidentials([]);
+            reset();
+        }
+    }, []);
+
+    if (residentialsIsLoading || houseLoading || !residentials) return <LoaderBig message="Cargando datos..." />
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">
@@ -96,19 +113,12 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
-                    onClick={() => toggleUpdateModal()}
+                    onClick={handleCloseModal}
                 />
                 <h3 className="p-2 text-lg text-gray-500 font-semibold">Editar Vivienda</h3>
 
                 <form className="flex flex-col mt-5 text-gray-700 text-base" onSubmit={handleSubmit(submitForm)}>
                     <div className="input-container">
-                        <label htmlFor="residentialId" className="label-form">Residencial</label>
-                        {/* <input
-                            type="text"
-                            id="residentialId"
-                            className="input-form"
-                            {...register('residentialId', { required: 'Este campo es obligatorio' })}
-                        /> */}
                         <select
                             id="residentialId"
                             className="input-form"
@@ -162,7 +172,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                             className="input-form"
                             {...register('address.number', { required: 'Este campo es obligatorio' })}
                         />
-                        {errors.address?.number && <span className="form-error">{errors.address.number.message}</span>}
+                        {errors.address?.number && <span className="form-error">{errors.address?.number.message}</span>}
                     </div>
 
                     <div className="input-container">
@@ -173,27 +183,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                             className="input-form"
                             {...register('address.zip', { required: 'Este campo es obligatorio' })}
                         />
-                        {errors.address?.zip && <span className="form-error">{errors.address.zip.message}</span>}
-                    </div>
-
-                    {/* <div className="input-container">
-                        <label htmlFor="reference" className="label-form">Referencia</label>
-                        <input
-                            type="text"
-                            id="reference"
-                            className="input-form"
-                            {...register('address.reference')}
-                        />
-                    </div> */}
-
-                    <div className="input-container">
-                        <label htmlFor="isPrincipal" className="label-form">¿Es Principal?</label>
-
-                        <Switcher
-                            id="isPrincipal" 
-                            isChecked={watch('address.isPrincipal')}
-                            onChange={() => setValue('address.isPrincipal', !watch('address.isPrincipal'))}
-                        />
+                        {errors.address?.zip && <span className="form-error">{errors.address?.zip.message}</span>}
                     </div>
 
                     <div className="input-container">
@@ -221,7 +211,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                     <div className="flex justify-end gap-5">
                         <button type="submit" className="submit-button">Guardar</button>
 
-                        <button type="button" onClick={() => toggleUpdateModal()} className="cancel-button">Cancelar</button>
+                        <button type="button" onClick={handleCloseModal} className="cancel-button">Cancelar</button>
                     </div>
                 </form>
             </section>
