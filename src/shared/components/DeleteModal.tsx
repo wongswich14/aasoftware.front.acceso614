@@ -29,16 +29,16 @@ const DeleteModal: React.FC<DeleteModalProps> = ({ toggleDeleteModal, softDelete
 
                 <div className="flex gap-7 justify-center text-white font-medium text-lg">
                     <button
-                        className="bg-gray-400 rounded-lg px-7 py-1 "
-                    onClick={() => toggleDeleteModal()}
-                    >
-                        Cancelar
-                    </button>
-                    <button
                         className="bg-red-400 rounded-lg px-7 py-1"
                         onClick={() => deleteAction(softDeleteId)}
                     >
                         Eliminar
+                    </button>
+                    <button
+                        className="bg-gray-400 rounded-lg px-7 py-1 "
+                    onClick={() => toggleDeleteModal()}
+                    >
+                        Cancelar
                     </button>
                 </div>
             </section>

@@ -40,15 +40,13 @@ export interface HouseDto {
   id: string;
   residentialId: string;
   residential?: Residential;
-  address: Address;
-  name: string;
-  zip: string;
-  personContact: string;
-  phoneContact: string;
-  enabled: boolean;
-  isDeleted: boolean;
-  createdDate: string;
-  changedDate: string;
-  deletedDate: string;
-  users?: User[];
+  name: string
+  personContactId: string
+  phoneContact: string
+  street: string
+  streetDetail: string
+  number: string
+  zip:string
+  enabled: boolean
+  isDeleted: boolean
 }

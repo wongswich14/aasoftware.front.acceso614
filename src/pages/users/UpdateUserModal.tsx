@@ -45,7 +45,6 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
         toast.promise(updateUserPromise, {
             loading: "Actualizando...",
             success: () => {
-                lazyUpdateUser(id!, data)
                 reset()
                 navigate(`/users`)
                 return "Usuario actualizado"

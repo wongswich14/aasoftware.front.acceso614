@@ -4,10 +4,12 @@ import { IoClose } from "react-icons/io5"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useRegisterUserMutation } from "src/core/features/authServerApi"
+import { useListHousesQuery } from "src/core/features/houseServerApi"
 import { useListProfilesQuery } from "src/core/features/profileServerApi"
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi"
-import { useCreateUserMutation } from "src/core/features/userServerApi"
+import { useAppendUserToHomeMutation, useAppendUserToResidentialMutation, useCreateUserMutation } from "src/core/features/userServerApi"
 import { RegisterDto } from "src/core/models/dtos/auth/registerDto"
+import { HouseDto } from "src/core/models/dtos/houses/houseDto"
 import { ProfileDto } from "src/core/models/dtos/profiles/profileDto"
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto"
 import { UserCreateDto } from "src/core/models/dtos/users/userCreateDto"
@@ -22,8 +24,11 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
 
     const [profiles, setProfiles] = useState<ProfileDto[]>()
     const [residentials, setResidentials] = useState<ResidentialDto[]>()
+    const [houses, setHouses] = useState<HouseDto[]>()
 
     const [createUser, { isLoading }] = useCreateUserMutation()
+    const [appendUserToResidential, { isLoading: appendUserToResidentialIsLoading }] = useAppendUserToResidentialMutation()
+    const [appendUserToHome, { isLoading: appendUserToHomeIsLoading }] = useAppendUserToHomeMutation()
     // const [registerUser, { isLoading }] = useRegisterUserMutation()
     const navigate = useNavigate()
 
@@ -32,6 +37,9 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
 
     const { data: residentialsData, 
         isLoading: residentialsIdLoading } = useListResidentialsQuery()
+
+    const { data: housesData,
+        isLoading: housesIsLoading } = useListHousesQuery()
  
     const {
         register,
@@ -51,21 +59,41 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
         toast.promise(createUserPromise, {
             loading: "Creando...",
             success: (res) => {
-                lazyAddUser(res.dataObject!)
                 navigate(`/users`)
-                return "Perfil creado"
+                return "Usuario creado"
             },
             error: (err) => {
                 console.error(err)
-                return "Error al crear perfil"
+                return "Error al crear"
             }
         })
-    }
 
-    // TODO: solo en dev PERFIL DE PRUEBA
-    // useEffect(() => {
-    //     setValue("profileId", "5c7b15e7-f91c-4aae-b074-6301d678b370")
-    // }, [setValue])
+        // toast.promise(
+        //     createUserPromise.then(async (createdUser) => {
+        //         await appendUserToResidential({
+        //             userId: createdUser.dataObject?.id || "",
+        //             residentialId: residentialId,
+        //             profileId: data.profileId,
+        //         }).unwrap();
+
+        //         await appendUserToHome({
+        //             homeIdl: data.homeId,
+        //             userId: createdUser.dataObject?.id || "",
+        //             residentialId: residentialId,
+        //             profileId: data.profileId,
+        //         }).unwrap();
+                
+    
+        //         navigate(`/users`);
+        //         return "Usuario creado";
+        //     }),
+        //     {
+        //         loading: "Creando y asociando usuario...",
+        //         success: (res) => res,
+        //         error: "Error al crear usuario o asociar",
+        //     }
+        // );
+    }
 
     useEffect(() => {
         if (profilesData && !profilesIsLoading) {
@@ -77,6 +105,11 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
         if (residentialsData && !residentialsIdLoading) 
             setResidentials(residentialsData.listDataObject)
     }, [residentialsData, residentialsIdLoading])
+
+    useEffect(() => {
+        if (housesData && !housesIsLoading)
+            setHouses(housesData.listDataObject)
+    }, [housesData, housesIsLoading])
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
@@ -171,6 +204,24 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                         </select>
                         {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
                     </div>
+
+                    {/* <div className="input-container">
+                        <label htmlFor="homeId" className="label-form">Vivienda</label>
+
+                        <select 
+                            className="input-form" 
+                            id="homeId"
+                            {...register("homeId", {
+                                required: "Este campo es obligatorio"
+                            })}
+                        >
+                            <option value="" >-- Seleccione una --</option>
+                            {houses && houses.map(house => (
+                                <option value={house.id}>{house.name}</option>
+                            ))}
+                        </select>
+                        {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
+                    </div> */}
 
                     <div className="input-container">
                         <label htmlFor="profileId" className="label-form">Perfil</label>

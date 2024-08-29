@@ -1,3 +1,5 @@
+import { AppendUserToHomeDto } from "../models/dtos/users/appendUserToHomeDto";
+import { AppendUserToResidentialDto } from "../models/dtos/users/appendUserToResidentialDto";
 import { UserCreateDto } from "../models/dtos/users/userCreateDto";
 import { UserDto } from "../models/dtos/users/userDto";
 import { UserUpdateDto } from "../models/dtos/users/userUpdateDto";
@@ -8,7 +10,8 @@ export const userServerApi = serverApi.injectEndpoints({
     endpoints: (builder) => ({
 
         listUsers: builder.query<UserResponse, void>({
-            query: () => `user`
+            query: () => `user`,
+            providesTags: ["User"]
         }),
 
         getUser: builder.query<UserResponse, string>({
@@ -21,6 +24,7 @@ export const userServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newUser,
             }),
+            invalidatesTags: ["User"]
         }),
 
         updateUser: builder.mutation<UserResponse, UserUpdateDto>({
@@ -29,6 +33,7 @@ export const userServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedUser,
             }),
+            invalidatesTags: ["User"]
         }),
 
         softDeleteUser: builder.mutation<UserResponse, string>({
@@ -36,6 +41,25 @@ export const userServerApi = serverApi.injectEndpoints({
                 url: `/user/softdelete/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ["User"]
+        }),
+
+        appendUserToHome: builder.mutation<void, AppendUserToHomeDto>({
+            query: (appendUserToHome) => ({
+                url: `/homeuser/appendusertohome`,
+                method: 'POST',
+                body: appendUserToHome,
+            }),
+            invalidatesTags: ["User"]
+        }),
+
+        appendUserToResidential: builder.mutation<void, AppendUserToResidentialDto>({
+            query: (appendUserToResidential) => ({
+                url: `/homeuser/appendusertoresidential`,
+                method: 'POST',
+                body: appendUserToResidential,
+            }),
+            invalidatesTags: ["User"]
         }),
 
     }),
@@ -47,5 +71,7 @@ export const {
     useGetUserQuery,
     useCreateUserMutation,
     useUpdateUserMutation,
-    useSoftDeleteUserMutation
+    useSoftDeleteUserMutation,
+    useAppendUserToResidentialMutation,
+    useAppendUserToHomeMutation
 } = userServerApi

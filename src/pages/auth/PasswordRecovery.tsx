@@ -1,87 +1,88 @@
-import { useForm } from "react-hook-form";
-import { Link, useNavigate } from "react-router-dom";
-import { useLoginMutation } from "src/core/features/authServerApi";
-import LoaderBig from "src/shared/components/LoaderBig";
-import logo_aa from "@assets/img/logo-aasoftware.jpg";
 import { useState } from "react";
-import { LoginDto } from "src/core/models/dtos/auth/loginDto";
+import { useForm } from "react-hook-form";
 import { useDispatch } from "react-redux";
+import { useNavigate } from "react-router-dom";
+import { useLoginMutation } from "src/core/features/authServerApi";
+import { LoginDto } from "src/core/models/dtos/auth/loginDto";
 import { saveUserInfo, authenticate } from "src/core/slices/auth/authSlice";
 import { extractFetchErrorMessage } from "src/core/utils/extractFetchErrorMessage";
+import LoaderBig from "src/shared/components/LoaderBig";
+import logo_aa from "@assets/img/logo-aasoftware.jpg";
 
-const Login: React.FC = () => {
+interface PasswordRecoveryDto {
+    email: string
+}
 
-  const [errorAlert, setErrorAlert] = useState<Boolean>(false);
-  const [messageError, setMessageError] = useState<string>('')
+const PasswordRecovery: React.FC = () => {
+
+    const [errorAlert, setErrorAlert] = useState<Boolean>(false);
+    const [messageError, setMessageError] = useState<string>('')
+    
+    const navigate = useNavigate();
+    const dispatch = useDispatch();
+    // const [login, { isLoading }] = useLoginMutation();
   
-  const navigate = useNavigate();
-  const dispatch = useDispatch();
-  const [login, { isLoading }] = useLoginMutation();
+    const {
+      register,
+      handleSubmit,
+      formState: { errors },
+      reset,
+  } = useForm<PasswordRecoveryDto>();
+  
+  const submitForm = async (data: PasswordRecoveryDto) => {
+    //   try {
+    //       setErrorAlert(false)
+    //       const res = await login(data)
+  
+    //       if (res.error) {
+    //           setErrorAlert(true);
+  
+    //           const message = extractFetchErrorMessage(res.error);
+  
+    //           setMessageError(message);
+    //           throw new Error(message);
+    //       }
+  
+    //       if (res.data?.statusCode === 404) {
+    //           setErrorAlert(true);
+    //           setMessageError('Credenciales incorrectas');
+    //           return;
+    //       }
+  
+    //       reset()
+    //       const userData = res.data?.dataObject;
+  
+    //       if (!userData || !res.data?.token) {
+    //           return;
+    //       }
+  
+    //       localStorage.setItem('userData', JSON.stringify(userData));
+    //       localStorage.setItem('auth', JSON.stringify(res.data.token));
+  
+    //       dispatch(saveUserInfo({
+    //           id: userData.id,
+    //           name: userData.name,
+    //           lastName: userData.lastName,
+    //           email: userData.email,
+    //           token: res.data.token,
+    //           profileName: userData.profileName
+    //       }));
+  
+    //       dispatch(authenticate(true));
+    //       navigate('/');
+    //   }
+    //   catch (error) {
+    //       console.error(error)
+    //   }
+  };
 
-  const {
-    register,
-    handleSubmit,
-    formState: { errors },
-    reset,
-} = useForm<LoginDto>();
-
-const submitForm = async (data: LoginDto) => {
-    try {
-        setErrorAlert(false)
-        const res = await login(data)
-
-        if (res.error) {
-            setErrorAlert(true);
-
-            const message = extractFetchErrorMessage(res.error);
-
-            setMessageError(message);
-            throw new Error(message);
-        }
-
-        if (res.data?.statusCode === 404) {
-            setErrorAlert(true);
-            setMessageError('Credenciales incorrectas');
-            return;
-        }
-
-        reset()
-        const userData = res.data?.dataObject;
-
-        if (!userData || !res.data?.token) {
-            return;
-        }
-
-        localStorage.setItem('userData', JSON.stringify(userData));
-        localStorage.setItem('auth', JSON.stringify(res.data.token));
-
-        dispatch(saveUserInfo({
-            id: userData.id,
-            name: userData.name,
-            lastName: userData.lastName,
-            email: userData.email,
-            token: res.data.token,
-            profileName: userData.profileName
-        }));
-
-        dispatch(authenticate(true));
-        navigate('/');
-    }
-    catch (error) {
-        console.error(error)
-    }
-};
-
-
-
-
-  return (
-    <main className="flex justify-center items-center bg-gray-100 bgwhite min-h-screen">
-        {isLoading && (
+    return (
+        <main className="flex justify-center items-center bg-gray-100 bgwhite min-h-screen">
+        {/* {isLoading && (
             <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
                 <LoaderBig message={'Espere...'} />
             </div>
-        )}
+        )} */}
         <div className="flex flex-col bg-white rounded-lg shadowlg wfull md:w[85%] lg:w[75%] brder">
             <div className="flex flex-col justify-center items-center p-8">
                 <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
@@ -97,12 +98,12 @@ const submitForm = async (data: LoginDto) => {
                     className="w-full max-w-sm bg-white px-10 py8 rounded-lg"
                 >
                     <h3 className="text-3xl text-center font-medium mb-5 text-gray-500">
-                        Iniciar sesión
+                        Recuperar contraseña
                     </h3>
                     <div className="mb-5">
                         {errorAlert && (
                             <div className="bg-red-500 text-white py-4 px-8 rounded-lg text-center">
-                                <p className="text-lg">El usuario o contraseña son incorrectos.</p>
+                                <p className="text-lg">El correo no existe.</p>
                             </div>
                         )}
                     </div>
@@ -125,7 +126,7 @@ const submitForm = async (data: LoginDto) => {
                         />
                         {errors.email && <span className="text-red-500">{errors.email.message as string}</span>}
                     </div>
-                    <div className="mb-5">
+                    {/* <div className="mb-5">
                         <label htmlFor="password" className="text-lg">
                             Contraseña
                         </label>
@@ -139,10 +140,10 @@ const submitForm = async (data: LoginDto) => {
                             })}
                         />
                         {errors.password && <span className="text-red-500">{errors.password.message as string}</span>}
-                    </div>
+                    </div> */}
                     <div className="mt-12">
                         <button type="submit" className="bg-black text-white block mx-auto px-10 py-2 font-medium rounded-lg mb-8">
-                            Iniciar Sesión
+                            Enviar correo
                         </button>
                         {/* <button className="block mx-auto">
                             <Link to="/ResetPassword" className="cursor-pointer text-center hover:underline">
@@ -154,7 +155,7 @@ const submitForm = async (data: LoginDto) => {
             </div>
         </div>
     </main>
-);
+    )
 }
 
-export default Login
+export default PasswordRecovery

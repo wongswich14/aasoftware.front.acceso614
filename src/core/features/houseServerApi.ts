@@ -6,11 +6,12 @@ import { serverApi } from "../serverApi";
 export const houseServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
         listHouses: builder.query<HouseResponse, void>({
-            query: () => `home`
+            query: () => `home`,
+            providesTags: ["House"]
         }),
 
         getHouse: builder.query<HouseResponse, string>({
-            query: (id) => `home/${id}`
+            query: (id) => `home/${id}`,
         }),
 
         createHouse: builder.mutation<HouseResponse, HouseCreateDto>({
@@ -18,7 +19,8 @@ export const houseServerApi = serverApi.injectEndpoints({
                 url: '/home',
                 method: 'POST',
                 body: newHouse,
-            })
+            }),
+            invalidatesTags: ["House"]
         }),
 
         updateHouse: builder.mutation<HouseResponse, HouseUpdateDto>({
@@ -26,14 +28,16 @@ export const houseServerApi = serverApi.injectEndpoints({
                 url: `/home`,
                 method: 'PUT',
                 body: updatedHouse,
-            })
+            }),
+            invalidatesTags: ["House"]
         }),
 
         softDeleteHouse: builder.mutation<HouseResponse, string>({
             query: (id) => ({
                 url: `/home/softdelete/${id}`,
                 method: "DELETE"
-            })
+            }),
+            invalidatesTags: ["House"]
         })
     }),
     overrideExisting: false

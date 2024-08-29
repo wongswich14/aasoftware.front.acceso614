@@ -73,7 +73,7 @@ const HousesList: React.FC = () => {
         setOpenDeleteModal(!openDeleteModal)
     }
 
-    const lazyUpdateHouse = (id: string, newItem: HouseUpdateDto) => {
+    const lazyUpdateHouse = (id: string, newItem: HouseDto) => {
         // updateCache({
         //     api: houseServerApi,
         //     endpoint: 'listHouses',
@@ -145,7 +145,7 @@ const HousesList: React.FC = () => {
                         <th className='text-left'>Residencial</th>
                         <th className='text-left'>Calle</th>
                         <th className='text-left'>N. Casa</th>
-                        <th className="text-left">Código postal</th>
+                        <th className="text-left">Contacto</th>
                         {/* <th className='text-left'>Correo</th> */}
 
                         <th>Acciones</th>
@@ -159,9 +159,9 @@ const HousesList: React.FC = () => {
                                 <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.name}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.residential?.name}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address?.street}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address?.number}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.address?.zip}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.street}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.number}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.phoneContact}</td>
                                 <td className='flex gap-6 items-center justify-center ml-5 py-4'>
                                     <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(house.id)} />
                                     <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(house.id)} />
