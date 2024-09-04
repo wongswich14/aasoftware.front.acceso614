@@ -18,9 +18,9 @@ export const userServerApi = serverApi.injectEndpoints({
             query: (id) => `user/${id}`
         }),
 
-        createUser: builder.mutation<UserResponse, { newUser:UserCreateDto, residentialId: string }>({
-            query: ({ newUser, residentialId }) => ({
-                url: `user/residentialid/${residentialId}`,
+        createUser: builder.mutation<UserResponse, UserCreateDto>({
+            query: (newUser) => ({
+                url: `user/residentialid`,
                 method: 'POST',
                 body: newUser,
             }),
@@ -46,7 +46,7 @@ export const userServerApi = serverApi.injectEndpoints({
 
         appendUserToHome: builder.mutation<void, AppendUserToHomeDto>({
             query: (appendUserToHome) => ({
-                url: `/homeuser/appendusertohome`,
+                url: `/homeuser/appendusertohouse`,
                 method: 'POST',
                 body: appendUserToHome,
             }),

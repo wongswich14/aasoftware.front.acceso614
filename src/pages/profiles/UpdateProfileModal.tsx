@@ -85,14 +85,14 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ toggleUpdateMod
     }
 
     useEffect(() => {
-        if (!profileLoading && profileData) {
+        if (!profileLoading && profileData && !permissionIsLoading && permissions) {
             console.log(profileData)
             setValue("title", profileData.dataObject?.title || "")
             setValue("description", profileData.dataObject?.description || "")
             setValue("id", profileData.dataObject?.id || "")
             setValue("permissionsId", profileData.dataObject?.permissions?.map(p => p.id) || [])
         }
-    }, [profileLoading, profileData])
+    }, [profileLoading, profileData, permissionIsLoading, permissions])
 
     useEffect(() => {
         if (permissionData && !permissionIsLoading) {

@@ -1,5 +1,5 @@
 export interface AppendUserToHomeDto {
-    homeIdl: string
+    homeId1: string
     userId: string
     residentialId: string
     profileId: string

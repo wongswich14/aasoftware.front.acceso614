@@ -142,6 +142,8 @@ const UsersList: React.FC = () => {
                             <th className='text-left'>Nombre</th>
                             <th className='text-left'>Perfil</th>
                             <th className='text-left'>Correo</th>
+                            <th className="text-left">Residencial</th>
+                            <th className="text-left">Casa</th>
 
                             <th>Acciones</th>
                         </tr>
@@ -155,6 +157,8 @@ const UsersList: React.FC = () => {
                                     <td className='whitespace-nowrap py-4 font-normal text-left'>{`${user.name} ${user.lastName}`}</td>
                                     <td className='whitespace-nowrap py-4 font-normal text-left'>{user.profileName}</td>
                                     <td className='whitespace-nowrap py-4 font-normal text-left'>{user.email}</td>
+                                    <td className='whitespace-nowrap py-4 font-normal text-left'>{user.residentialId || "N/A"}</td>
+                                    <td className='whitespace-nowrap py-4 font-normal text-left'>{user.home?.[0]?.id || "N/A" }</td>
                                     <td className='flex gap-6 items-center justify-center ml-5 py-4'>
                                         <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(user.id)} />
                                         <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(user.id)} />

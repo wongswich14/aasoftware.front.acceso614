@@ -62,18 +62,18 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
     }
 
     useEffect(() => {
-        if (!userLoading && userData && residentialsData && !residentialsIdLoading && profilesData && !profilesIsLoading) {
+        if (!userLoading && userData && residentials && !residentialsIdLoading && profiles && !profilesIsLoading) {
             const serverData = userData.dataObject
             setValue("id", serverData?.id || "")
             setValue("name", serverData?.name || "")
             setValue("lastName", serverData?.lastName || "")
             setValue("email", serverData?.email || "")
             setValue("emailConfirmed", serverData?.emailConfirmed || true)
-            setValue("residentialId", serverData?.residentialId || "")
+            setValue("residentialId", serverData?.residentials?.[0]?.id || "")
             setValue("profileId", serverData?.profileId || "")
-            // setValue("homeId", userData.dataObject?.home[0].id || "")
+            setValue("homeId", userData.dataObject?.home?.[0]?.id || "")
         }
-    }, [userLoading, userData, residentialsData, profilesData, residentialsIdLoading, profilesIsLoading])
+    }, [userLoading, userData, residentials, profiles, residentialsIdLoading, profilesIsLoading])
 
     useEffect(() => {
         if (profilesData && !profilesIsLoading) {
@@ -190,6 +190,24 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
                         </select>
                         {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
                     </div>
+
+                    {/* <div className="input-container">
+                        <label htmlFor="homeId" className="label-form">Vivienda</label>
+
+                        <select 
+                            className="input-form" 
+                            id="homeId"
+                            {...register("homeId1", {
+                                required: "Este campo es obligatorio"
+                            })}
+                        >
+                            <option value="" >-- Seleccione una --</option>
+                            {houses && houses.map(house => (
+                                <option value={house.id}>{house.name}</option>
+                            ))}
+                        </select>
+                        {errors.homeId1 && <span className="form-error">{errors.homeId1.message}</span>}
+                    </div> */}
 
                     <div className="input-container">
                         <label htmlFor="profileId" className="label-form">Perfil</label>

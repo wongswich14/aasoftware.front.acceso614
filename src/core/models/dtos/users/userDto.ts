@@ -1,3 +1,5 @@
+import { ResidentialDto } from "../residentials/ResidentialDto"
+
 export interface UserDto {
     id: string
     profileId: string
@@ -13,6 +15,7 @@ export interface UserDto {
     deletedDate?: string
     residentialId: string
     home: Home[]
+    residentials: ResidentialDto[]
 }
 
 interface Home {
@@ -20,3 +23,4 @@ interface Home {
     residentialId: string
     
 }
+

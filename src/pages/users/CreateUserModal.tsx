@@ -54,45 +54,45 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
 
     const submitForm = async (data: UserCreateDto) => {
         // const createUserPromise = registerUser(data).unwrap()
-        const createUserPromise = createUser({ newUser: data, residentialId: residentialId }).unwrap()
+        const createUserPromise = createUser(data).unwrap()
 
-        toast.promise(createUserPromise, {
-            loading: "Creando...",
-            success: (res) => {
-                navigate(`/users`)
-                return "Usuario creado"
-            },
-            error: (err) => {
-                console.error(err)
-                return "Error al crear"
-            }
-        })
+        // toast.promise(createUserPromise, {
+        //     loading: "Creando...",
+        //     success: (res) => {
+        //         navigate(`/users`)
+        //         return "Usuario creado"
+        //     },
+        //     error: (err) => {
+        //         console.error(err)
+        //         return "Error al crear"
+        //     }
+        // })
 
-        // toast.promise(
-        //     createUserPromise.then(async (createdUser) => {
-        //         await appendUserToResidential({
-        //             userId: createdUser.dataObject?.id || "",
-        //             residentialId: residentialId,
-        //             profileId: data.profileId,
-        //         }).unwrap();
+        toast.promise(
+            createUserPromise.then(async (createdUser) => {
+                await appendUserToResidential({
+                    userId: createdUser.dataObject?.id || "",
+                    residentialId: residentialId,
+                    profileId: data.profileId,
+                }).unwrap();
 
-        //         await appendUserToHome({
-        //             homeIdl: data.homeId,
-        //             userId: createdUser.dataObject?.id || "",
-        //             residentialId: residentialId,
-        //             profileId: data.profileId,
-        //         }).unwrap();
+                await appendUserToHome({
+                    homeId1: data.homeId1,
+                    userId: createdUser.dataObject?.id || "",
+                    residentialId: residentialId,
+                    profileId: data.profileId,
+                }).unwrap();
                 
     
-        //         navigate(`/users`);
-        //         return "Usuario creado";
-        //     }),
-        //     {
-        //         loading: "Creando y asociando usuario...",
-        //         success: (res) => res,
-        //         error: "Error al crear usuario o asociar",
-        //     }
-        // );
+                navigate(`/users`);
+                return "Usuario creado";
+            }),
+            {
+                loading: "Creando y asociando usuario...",
+                success: (res) => res,
+                error: "Error al crear usuario o asociar",
+            }
+        );
     }
 
     useEffect(() => {
@@ -205,13 +205,13 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                         {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
                     </div>
 
-                    {/* <div className="input-container">
+                    <div className="input-container">
                         <label htmlFor="homeId" className="label-form">Vivienda</label>
 
                         <select 
                             className="input-form" 
                             id="homeId"
-                            {...register("homeId", {
+                            {...register("homeId1", {
                                 required: "Este campo es obligatorio"
                             })}
                         >
@@ -220,8 +220,8 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                                 <option value={house.id}>{house.name}</option>
                             ))}
                         </select>
-                        {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
-                    </div> */}
+                        {errors.homeId1 && <span className="form-error">{errors.homeId1.message}</span>}
+                    </div>
 
                     <div className="input-container">
                         <label htmlFor="profileId" className="label-form">Perfil</label>

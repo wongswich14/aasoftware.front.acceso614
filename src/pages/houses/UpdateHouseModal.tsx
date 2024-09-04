@@ -76,7 +76,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
     }
 
     useEffect(() => {
-        if (!houseLoading && houseData && residentialsData && !residentialsIsLoading) {
+        if (!houseLoading && houseData && residentials && !residentialsIsLoading && users && !usersIsLoading) {
             if (houseData.dataObject) {
                 const serverData = houseData.dataObject
                 setValue("id", serverData.id)
@@ -91,7 +91,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                 setValue("enabled", serverData.enabled)
             }
         }
-    }, [houseLoading, houseData, residentialsData, residentialsIsLoading])
+    }, [houseLoading, houseData, residentials, residentialsIsLoading, users, usersIsLoading])
 
     useEffect(() => {
         if (residentialsData && !residentialsIsLoading) {
@@ -117,7 +117,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
         }
     }, []);
 
-    if (residentialsIsLoading || houseLoading || !residentials) return <LoaderBig message="Cargando datos..." />
+    if (residentialsIsLoading || houseLoading) return <LoaderBig message="Cargando datos..." />
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">

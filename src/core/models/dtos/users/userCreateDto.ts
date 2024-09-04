@@ -6,5 +6,5 @@ export interface UserCreateDto {
     emailConfirmed: boolean
     residentialId: string
     profileId: string
-    homeId: string
+    homeId1: string
 }
