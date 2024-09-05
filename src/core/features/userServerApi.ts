@@ -20,7 +20,7 @@ export const userServerApi = serverApi.injectEndpoints({
 
         createUser: builder.mutation<UserResponse, UserCreateDto>({
             query: (newUser) => ({
-                url: `user/residentialid`,
+                url: `user`,
                 method: 'POST',
                 body: newUser,
             }),

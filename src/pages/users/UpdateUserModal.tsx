@@ -3,14 +3,17 @@ import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import { useParams, useNavigate } from "react-router-dom";
 import { toast } from "sonner";
+import { useListHousesQuery } from "src/core/features/houseServerApi";
 import { useListProfilesQuery } from "src/core/features/profileServerApi";
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi";
 import { useGetUserQuery, useUpdateUserMutation } from "src/core/features/userServerApi";
+import { HouseDto } from "src/core/models/dtos/houses/houseDto";
 import { ProfileDto } from "src/core/models/dtos/profiles/profileDto";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import { UserDto } from "src/core/models/dtos/users/userDto";
 import { UserUpdateDto } from "src/core/models/dtos/users/userUpdateDto";
 import LoaderBig from "src/shared/components/LoaderBig";
+import Switcher from "src/shared/components/Switcher";
 
 interface UpdateUserModalProps {
     toggleUpdateModal: () => void
@@ -23,12 +26,18 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
     const { id } = useParams<{ id: string }>()
     const [profiles, setProfiles] = useState<ProfileDto[]>()
     const [residentials, setResidentials] = useState<ResidentialDto[]>()
+    const [houses, setHouses] = useState<HouseDto[]>()
+
     const { data: userData, isLoading: userLoading } = useGetUserQuery(id ?? '')
     const { data: profilesData,
         isLoading: profilesIsLoading } = useListProfilesQuery()
 
     const { data: residentialsData,
         isLoading: residentialsIdLoading } = useListResidentialsQuery()
+
+    const { data: housesData,
+        isLoading: housesIsLoading } = useListHousesQuery()
+
     const [updateUser, { isLoading }] = useUpdateUserMutation()
     const navigate = useNavigate()
     const {
@@ -36,8 +45,11 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
         handleSubmit,
         formState: { errors },
         reset,
-        setValue
+        setValue,
+        watch
     } = useForm<UserUpdateDto>();
+
+    const isPrincipal = watch("isPrincipal", false);
 
     const submitForm = async (data: UserUpdateDto) => {
         const updateUserPromise = updateUser(data).unwrap()
@@ -62,18 +74,19 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
     }
 
     useEffect(() => {
-        if (!userLoading && userData && residentials && !residentialsIdLoading && profiles && !profilesIsLoading) {
+        if (!userLoading && userData && residentials && !residentialsIdLoading && profiles && !profilesIsLoading && houses && !housesIsLoading) {
             const serverData = userData.dataObject
             setValue("id", serverData?.id || "")
             setValue("name", serverData?.name || "")
             setValue("lastName", serverData?.lastName || "")
             setValue("email", serverData?.email || "")
             setValue("emailConfirmed", serverData?.emailConfirmed || true)
-            setValue("residentialId", serverData?.residentials?.[0]?.id || "")
+            setValue("residentialId", serverData?.residentialId || "")
             setValue("profileId", serverData?.profileId || "")
-            setValue("homeId", userData.dataObject?.home?.[0]?.id || "")
+            setValue("homeId", userData.dataObject?.homeId || "")
+            setValue("isPrincipal", serverData?.isPrincipal || false)
         }
-    }, [userLoading, userData, residentials, profiles, residentialsIdLoading, profilesIsLoading])
+    }, [userLoading, userData, residentials, profiles, residentialsIdLoading, profilesIsLoading, houses, housesIsLoading])
 
     useEffect(() => {
         if (profilesData && !profilesIsLoading) {
@@ -87,6 +100,11 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
     }, [residentialsData, residentialsIdLoading])
 
     useEffect(() => {
+        if (housesData && !housesIsLoading)
+            setHouses(housesData.listDataObject)
+    }, [housesData, housesIsLoading])
+
+    useEffect(() => {
         return () => {
             setProfiles([]);
             setResidentials([]);
@@ -94,7 +112,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
         };
     }, []);
 
-    if (userLoading || profilesIsLoading || residentialsIdLoading) return <LoaderBig message="Cargando datos..." />
+    if (userLoading || profilesIsLoading || residentialsIdLoading || housesIsLoading) return <LoaderBig message="Cargando datos..." />
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
@@ -185,19 +203,28 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
                         >
                             <option value="" >-- Seleccione una --</option>
                             {residentials && residentials.map(residential => (
-                                <option value={residential.id}>{residential.name}</option>
+                                <option key={residential.id} value={residential.id}>{residential.name}</option>
                             ))}
                         </select>
                         {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
                     </div>
 
-                    {/* <div className="input-container">
+                    <div className="input-container">
+                        <label htmlFor="isPrincipal" className="label-form">¿Es responsable de casa?</label>
+                        <Switcher
+                            isChecked={isPrincipal}
+                            onChange={() => setValue('isPrincipal', !isPrincipal)}
+                        />
+                        {errors.isPrincipal && <span className="form-error">{errors.isPrincipal.message}</span>}
+                    </div>
+
+                    <div className="input-container">
                         <label htmlFor="homeId" className="label-form">Vivienda</label>
 
-                        <select 
-                            className="input-form" 
+                        <select
+                            className="input-form"
                             id="homeId"
-                            {...register("homeId1", {
+                            {...register("homeId", {
                                 required: "Este campo es obligatorio"
                             })}
                         >
@@ -206,8 +233,8 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
                                 <option value={house.id}>{house.name}</option>
                             ))}
                         </select>
-                        {errors.homeId1 && <span className="form-error">{errors.homeId1.message}</span>}
-                    </div> */}
+                        {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
+                    </div>
 
                     <div className="input-container">
                         <label htmlFor="profileId" className="label-form">Perfil</label>

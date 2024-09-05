@@ -8,4 +8,5 @@ export interface UserUpdateDto {
     residentialId: string;
     profileId: string
     homeId: string
+    isPrincipal: boolean
 }

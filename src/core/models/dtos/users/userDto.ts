@@ -14,13 +14,14 @@ export interface UserDto {
     changedDate: string
     deletedDate?: string
     residentialId: string
-    home: Home[]
-    residentials: ResidentialDto[]
+    home: Home
+    homeId: string
+    residential: ResidentialDto
+    isPrincipal: boolean
 }
 
 interface Home {
     id: string
     residentialId: string
-    
 }
 

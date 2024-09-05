@@ -82,7 +82,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                 setValue("id", serverData.id)
                 setValue("residentialId", serverData.residentialId)
                 setValue("name", serverData.name)
-                setValue("personContactId", serverData.personContactId)
+                // setValue("personContactId", serverData.personContactId)
                 setValue("phoneContact", serverData.phoneContact)
                 setValue("street", serverData.street)
                 setValue("streetDetail", serverData.streetDetail)
@@ -157,7 +157,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                         {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
                     </div>
 
-                    <div className="input-container">
+                    {/* <div className="input-container">
                         <label htmlFor="personContactId" className="label-form">Contacto</label>
                         <select
                             id="personContactId"
@@ -170,7 +170,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                             ))}
                         </select>
                         {errors.personContactId && <span className="form-error">{errors.personContactId.message}</span>}
-                    </div>
+                    </div> */}
 
                     <div className="input-container">
                         <label htmlFor="phoneContact" className="label-form">Teléfono de Contacto</label>

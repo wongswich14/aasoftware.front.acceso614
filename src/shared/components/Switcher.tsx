@@ -1,7 +1,7 @@
 import { useState } from "react"
 
 interface SwitcherProps {
-    id: string
+    id?: string
     isChecked: boolean
     onChange: () => void
 }

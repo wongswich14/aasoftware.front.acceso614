@@ -5,6 +5,6 @@ export const CONFIG = {
 
     },
     dev: {
-        baseUrl: 'http://api-acceso614.gruporosanegra.com/api/',
+        baseUrl: 'http://localhost:5188/api',
     }
 }

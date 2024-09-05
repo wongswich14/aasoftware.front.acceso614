@@ -77,7 +77,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                 }).unwrap();
 
                 await appendUserToHome({
-                    homeId1: data.homeId1,
+                    homeId1: data.homeId,
                     userId: createdUser.dataObject?.id || "",
                     residentialId: residentialId,
                     profileId: data.profileId,
@@ -211,7 +211,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                         <select 
                             className="input-form" 
                             id="homeId"
-                            {...register("homeId1", {
+                            {...register("homeId", {
                                 required: "Este campo es obligatorio"
                             })}
                         >
@@ -220,7 +220,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                                 <option value={house.id}>{house.name}</option>
                             ))}
                         </select>
-                        {errors.homeId1 && <span className="form-error">{errors.homeId1.message}</span>}
+                        {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
                     </div>
 
                     <div className="input-container">

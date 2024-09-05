@@ -6,5 +6,6 @@ export interface UserCreateDto {
     emailConfirmed: boolean
     residentialId: string
     profileId: string
-    homeId1: string
+    homeId: string
+    isPrincipal: boolean
 }

@@ -119,7 +119,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
                         {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
                     </div>
 
-                    <div className="input-container">
+                    {/* <div className="input-container">
                         <label htmlFor="personContactId" className="label-form">Contacto</label>
                         <select
                             id="personContactId"
@@ -132,7 +132,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
                             ))}
                         </select>
                         {errors.personContactId && <span className="form-error">{errors.personContactId.message}</span>}
-                    </div>
+                    </div> */}
 
                     <div className="input-container">
                         <label htmlFor="phoneContact" className="label-form">Teléfono de Contacto</label>
