@@ -13,7 +13,7 @@ export const authRoutes: RouteObject[] = [
         element: <Register />,
     },
     {
-        path: '/password-recovery',
+        path: '/password-recovery/:token',
         element: <PasswordRecovery />,
     }
 ]
