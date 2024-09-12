@@ -144,11 +144,11 @@ const submitForm = async (data: LoginDto) => {
                         <button type="submit" className="bg-black text-white block mx-auto px-10 py-2 font-medium rounded-lg mb-8">
                             Iniciar Sesión
                         </button>
-                        {/* <button className="block mx-auto">
-                            <Link to="/ResetPassword" className="cursor-pointer text-center hover:underline">
+                        <button className="block mx-auto">
+                            <Link to="/password-recovery" className="cursor-pointer text-center hover:underline">
                                 ¿Olvidaste tu contraseña?
                             </Link>
-                        </button> */}
+                        </button>
                     </div>
                 </form>
             </div>

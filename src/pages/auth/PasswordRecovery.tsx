@@ -1,160 +1,145 @@
-import { useState } from "react";
 import { useForm } from "react-hook-form";
-import { useDispatch } from "react-redux";
-import { useNavigate } from "react-router-dom";
-import { useLoginMutation } from "src/core/features/authServerApi";
-import { LoginDto } from "src/core/models/dtos/auth/loginDto";
-import { saveUserInfo, authenticate } from "src/core/slices/auth/authSlice";
-import { extractFetchErrorMessage } from "src/core/utils/extractFetchErrorMessage";
-import LoaderBig from "src/shared/components/LoaderBig";
+import { useNavigate, useParams } from "react-router-dom";
 import logo_aa from "@assets/img/logo-aasoftware.jpg";
-
-interface PasswordRecoveryDto {
-    email: string
-}
+import { toast } from "sonner";
+import { RecoveryPasswordDto } from "src/core/models/dtos/auth/recoveryPasswordDto";
+import { useChangePasswordMutation } from "src/core/features/authServerApi";
+import { useEffect } from "react";
+import { useDispatch } from "react-redux";
+import { authenticate, saveUserInfo } from "src/core/slices/auth/authSlice";
 
 const PasswordRecovery: React.FC = () => {
 
-    const [errorAlert, setErrorAlert] = useState<Boolean>(false);
-    const [messageError, setMessageError] = useState<string>('')
-    
-    const navigate = useNavigate();
-    const dispatch = useDispatch();
-    // const [login, { isLoading }] = useLoginMutation();
-  
+    const [recoveryPassword] = useChangePasswordMutation()
+    const navigate = useNavigate()
+    const dispatch = useDispatch()
+    const { token, email } = useParams<string>()
+
     const {
-      register,
-      handleSubmit,
-      formState: { errors },
-      reset,
-  } = useForm<PasswordRecoveryDto>();
-  
-  const submitForm = async (data: PasswordRecoveryDto) => {
-    //   try {
-    //       setErrorAlert(false)
-    //       const res = await login(data)
-  
-    //       if (res.error) {
-    //           setErrorAlert(true);
-  
-    //           const message = extractFetchErrorMessage(res.error);
-  
-    //           setMessageError(message);
-    //           throw new Error(message);
-    //       }
-  
-    //       if (res.data?.statusCode === 404) {
-    //           setErrorAlert(true);
-    //           setMessageError('Credenciales incorrectas');
-    //           return;
-    //       }
-  
-    //       reset()
-    //       const userData = res.data?.dataObject;
-  
-    //       if (!userData || !res.data?.token) {
-    //           return;
-    //       }
-  
-    //       localStorage.setItem('userData', JSON.stringify(userData));
-    //       localStorage.setItem('auth', JSON.stringify(res.data.token));
-  
-    //       dispatch(saveUserInfo({
-    //           id: userData.id,
-    //           name: userData.name,
-    //           lastName: userData.lastName,
-    //           email: userData.email,
-    //           token: res.data.token,
-    //           profileName: userData.profileName
-    //       }));
-  
-    //       dispatch(authenticate(true));
-    //       navigate('/');
-    //   }
-    //   catch (error) {
-    //       console.error(error)
-    //   }
-  };
+        register,
+        handleSubmit,
+        formState: { errors },
+        reset,
+        watch,
+        setValue
+    } = useForm<RecoveryPasswordDto>()
+
+    const password = watch("body.password")
+
+    const submitForm = (data: RecoveryPasswordDto) => {
+        const recoveryPasswordPromise = recoveryPassword(data).unwrap()
+
+        toast.promise(recoveryPasswordPromise, {
+            loading: "Restableciendo contraseña...",
+            success: (res) => {
+
+                const userData = res.dataObject!
+
+                localStorage.setItem("userData", JSON.stringify(userData))
+                localStorage.setItem("auth", JSON.stringify(res.token))
+
+                dispatch(saveUserInfo({
+                    id: userData.id,
+                    name: userData.name,
+                    lastName: userData.lastName,
+                    email: userData.email,
+                    token: res.token!,
+                    profileName: userData.profileName,
+                }))
+
+                dispatch(authenticate(true))
+
+                navigate("/")
+                return "Contraseña cambiada con éxito"
+            },
+            error: (err) => {
+                console.log(err)
+                return "Error al cambiar la contraseña"
+            }
+        })
+    }
+
+    useEffect(() => {
+        setValue("token", token!)
+        setValue("email", email!)
+    }, [token])
 
     return (
         <main className="flex justify-center items-center bg-gray-100 bgwhite min-h-screen">
-        {/* {isLoading && (
-            <div className="absolute top-0 left-0 right-0 bottom-0 flex justify-center items-center bg-gray-500 bg-opacity-50 z-50">
-                <LoaderBig message={'Espere...'} />
-            </div>
-        )} */}
-        <div className="flex flex-col bg-white rounded-lg shadowlg wfull md:w[85%] lg:w[75%] brder">
-            <div className="flex flex-col justify-center items-center p-8">
+            <div className="flex flex-col bg-white rounded-lg shadowlg wfull md:w[85%] lg:w[75%] brder p-8">
                 <h1 className="text-4xl font-bold mb-6 text-center text-gray-800">
                     <img
                         src={logo_aa}
                         alt="Image login"
-                        className="w-2/4 mb-5 mx-auto"
+                        className="mb-5 mx-auto max-h-[38px]"
                     />
                     Acceso 614
                 </h1>
-                <form
-                    onSubmit={handleSubmit(submitForm)}
-                    className="w-full max-w-sm bg-white px-10 py8 rounded-lg"
-                >
-                    <h3 className="text-3xl text-center font-medium mb-5 text-gray-500">
-                        Recuperar contraseña
-                    </h3>
-                    <div className="mb-5">
-                        {errorAlert && (
-                            <div className="bg-red-500 text-white py-4 px-8 rounded-lg text-center">
-                                <p className="text-lg">El correo no existe.</p>
-                            </div>
-                        )}
-                    </div>
-                    <div className="mb-5">
-                        <label htmlFor="email" className="text-lg">
-                            Correo
-                        </label>
-                        <input
-                            type="text"
-                            placeholder="Escribe tu correo"
-                            id="email"
-                            className="w-full text-md placeholder-text-[#b1b1b1] placeholder-italic placeholder-font-light border-[1.5px] border-[#b1b1b1] p-2 rounded-md ring-0 focus:outline-none focus:border-gray-500"
-                            {...register('email', {
-                                required: 'Este campo es obligatorio',
-                                pattern: {
-                                    value: /^[A-Z0-9._%+-]+@[A-Z0-9.-]+\.[A-Z]{2,4}$/i,
-                                    message: 'Dirección de correo electrónico inválida',
-                                },
-                            })}
-                        />
-                        {errors.email && <span className="text-red-500">{errors.email.message as string}</span>}
-                    </div>
-                    {/* <div className="mb-5">
-                        <label htmlFor="password" className="text-lg">
-                            Contraseña
-                        </label>
-                        <input
-                            type="password"
-                            placeholder="*****"
-                            id="password"
-                            className="w-full text-md placeholder-text-[#b1b1b1] placeholder-italic placeholder-font-light border-[1.5px] border-[#b1b1b1] p-2 rounded-lg ring-0 focus:outline-none focus:border-gray-500"
-                            {...register('password', {
-                                required: 'Este campo es obligatorio',
-                            })}
-                        />
-                        {errors.password && <span className="text-red-500">{errors.password.message as string}</span>}
-                    </div> */}
-                    <div className="mt-12">
+
+                <div>
+                    <form
+                        onSubmit={handleSubmit(submitForm)}
+                        className="w-full max-w-sm px-10"
+                    >
+                        <h3 className="text-3xl text-center font-medium mb-5 text-gray-500">
+                            Reestablecer contraseña
+                        </h3>
+
+                        <div className="mb-5">
+                            <label
+                                htmlFor="password"
+                                className="text-lg"
+                            >
+                                Nueva contraseña
+                            </label>
+                            <input
+                                type="password"
+                                id="password"
+                                {...register('body.password', {
+                                    required: 'La contraseña es requerida',
+                                })}
+                                className="w-full text-md placeholder-text-[#b1b1b1] placeholder-italic placeholder-font-light border-[1.5px] border-[#b1b1b1] p-2 rounded-md ring-0 focus:outline-none focus:border-gray-500"
+                            />
+                            {errors.body?.password && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.body?.password.message}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="mb-5">
+                            <label
+                                htmlFor="validatePassword"
+                                className="text-lg"
+                            >
+                                Confirmar contraseña
+                            </label>
+                            <input
+                                type="validatePassword"
+                                id="validatePassword"
+                                {...register('body.validatePassword', {
+                                    required: 'La confirmación de la contraseña es requerida',
+                                    validate: (value) => 
+                                        value === password || "Las contraseñas no coinciden",
+                                })}
+                                className="w-full text-md placeholder-text-[#b1b1b1] placeholder-italic placeholder-font-light border-[1.5px] border-[#b1b1b1] p-2 rounded-md ring-0 focus:outline-none focus:border-gray-500"
+                            />
+                            {errors.body?.validatePassword && (
+                                <span className="text-red-500 text-sm">
+                                    {errors.body?.validatePassword.message}
+                                </span>
+                            )}
+                        </div>
+
+                        <div className="mt-12">
                         <button type="submit" className="bg-black text-white block mx-auto px-10 py-2 font-medium rounded-lg mb-8">
-                            Enviar correo
+                            Reestablecer contraseña
                         </button>
-                        {/* <button className="block mx-auto">
-                            <Link to="/ResetPassword" className="cursor-pointer text-center hover:underline">
-                                ¿Olvidaste tu contraseña?
-                            </Link>
-                        </button> */}
                     </div>
-                </form>
+                    </form>
+                </div>
             </div>
-        </div>
-    </main>
+        </main>
     )
 }
 
