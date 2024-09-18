@@ -169,6 +169,7 @@ const UpdateProfileModal: React.FC<UpdateProfileModalProps> = ({ toggleUpdateMod
                                             return (
                                                 <div key={permission.id} className="flex items-center gap-2">
                                                     <Switcher
+                                                        key={permission.id}
                                                         id={permission.id}
                                                         isChecked={isChecked}
                                                         onChange={() => {
