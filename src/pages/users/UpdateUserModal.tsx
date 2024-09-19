@@ -167,7 +167,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
-            <section className="bg-white rounded-lg p-10 relative min-w-[55%] max-h-[80svh]">
+            <section className="bg-white rounded-lg p-10 relative min-w-[55%] max-h-[80svh] overflow-y-auto">
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
