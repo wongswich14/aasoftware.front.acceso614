@@ -5,24 +5,20 @@ import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
 import { useCreateHouseMutation } from "src/core/features/houseServerApi"
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi"
-import { useListUsersQuery } from "src/core/features/userServerApi"
 import { HouseCreateDto } from "src/core/models/dtos/houses/houseCreateDto"
 import { HouseDto } from "src/core/models/dtos/houses/houseDto"
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto"
-import { UserDto } from "src/core/models/dtos/users/userDto"
 import LoaderBig from "src/shared/components/LoaderBig"
-import Switcher from "src/shared/components/Switcher"
 
 interface CreateHouseModalProps {
     toggleCreateModal: () => void
     lazyAddHouse: (newItem: HouseDto) => void
 }
 
-const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, lazyAddHouse }) => {
+const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }) => {
 
     const [residentials, setResidentials] = useState<ResidentialDto[]>()
-    const [users, setUsers] = useState<UserDto[]>()
-    const [createHouse, { isLoading }] = useCreateHouseMutation()
+    const [createHouse] = useCreateHouseMutation()
     const navigate = useNavigate()
 
     const {
@@ -30,18 +26,12 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
         isLoading: residentialsIsLoading
     } = useListResidentialsQuery()
 
-    const {
-        data: userData,
-        isLoading: usersIsLoading
-    } = useListUsersQuery()
 
     const {
         register,
         handleSubmit,
         formState: { errors },
-        reset,
         setValue,
-        watch
     } = useForm<HouseCreateDto>();
 
 
@@ -50,7 +40,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
 
         toast.promise(createHousePromise, {
             loading: "Creando...",
-            success: (res) => {
+            success: () => {
                 // lazyAddHouse(res.dataObject!)
                 navigate(`/houses`)
                 return "Vivienda creada"
@@ -68,18 +58,12 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal, 
         }
     }, [residentialsData, residentialsIsLoading])
 
-    useEffect(() => {
-        if (userData && !usersIsLoading) {
-            setUsers(userData.listDataObject)
-        }
-    }, [userData, usersIsLoading])
-
     // TODO: Quitarlo cuando se repare
     useEffect(() => {
         setValue("enabled", true)
     }, [])
 
-    if (residentialsIsLoading || usersIsLoading) return <LoaderBig message="Cargando" />
+    if (residentialsIsLoading ) return <LoaderBig message="Cargando" />
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">

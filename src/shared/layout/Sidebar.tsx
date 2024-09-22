@@ -7,6 +7,7 @@ import React, { ComponentType, ReactNode, useState } from "react";
 import Divider from "../components/Divider";
 import { MdHome, MdLocationCity } from "react-icons/md";
 import { FaUserShield } from "react-icons/fa";
+import { BsDoorOpenFill } from "react-icons/bs";
 
 type MenuItem = {
     name: string;
@@ -42,6 +43,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
             childrens: [
                 { name: 'Residenciales', link: '/residentials', icon: MdLocationCity },
                 { name: 'Viviendas', link: '/houses', icon: MdHome },
+                { name: "Puertas", link: "/doors", icon: BsDoorOpenFill },
                 { name: 'Usuarios', link: '/users', icon: FaUsers },
                 { name: "Perfiles", link: '/profiles', icon: FaUserShield }
             ]
