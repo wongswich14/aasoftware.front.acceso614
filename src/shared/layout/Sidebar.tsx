@@ -1,4 +1,4 @@
-import { FaChevronRight } from "react-icons/fa";
+import { FaChevronRight, FaIdCard } from "react-icons/fa";
 import { AiFillDashboard } from "react-icons/ai";
 import { FaCog, FaUsers } from "react-icons/fa";
 import { Link } from 'react-router-dom';
@@ -44,18 +44,11 @@ const Sidebar: React.FC<SidebarProps> = () => {
                 { name: 'Residenciales', link: '/residentials', icon: MdLocationCity },
                 { name: 'Viviendas', link: '/houses', icon: MdHome },
                 { name: "Puertas", link: "/doors", icon: BsDoorOpenFill },
+                { name: "RFID", link: '/rfid', icon: FaIdCard },
                 { name: 'Usuarios', link: '/users', icon: FaUsers },
-                { name: "Perfiles", link: '/profiles', icon: FaUserShield }
+                { name: "Perfiles", link: '/profiles', icon: FaUserShield },
             ]
         },
-        // {
-        //     name: 'REPSE', icon: FaShuttleVan, hasChild: true,
-        //     childrens: [
-        //         { name: 'Provedores', link: '/provider', icon: FaTasks },
-        //         { name: 'Documentos', link: '/provider/documentation', icon: GrDocumentText },
-
-        //     ]
-        // },
     ];
 
     return (

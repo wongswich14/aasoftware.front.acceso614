@@ -20,3 +20,5 @@ const doorRoutes: RouteObject[] = [
         ]
     }
 ]
+
+export default doorRoutes;

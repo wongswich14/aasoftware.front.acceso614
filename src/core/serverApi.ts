@@ -36,6 +36,6 @@ export const serverApi = createApi({
             return headers;
         },
     }),
-    tagTypes: ["Auth", "House", "Profile", "Residential", "User"],
+    tagTypes: ["Auth", "House", "Profile", "Residential", "User", "Door", "Rfid"],
     endpoints: () => ({}),
 })

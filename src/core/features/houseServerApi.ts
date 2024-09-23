@@ -2,6 +2,7 @@ import { HouseCreateDto } from "../models/dtos/houses/houseCreateDto";
 import { HouseUpdateDto } from "../models/dtos/houses/houseUpdateDto";
 import { HouseResponse } from "../models/responses/house.response";
 import { serverApi } from "../serverApi";
+import { useHardDeleteResidentialMutation } from "./residentialServerApi";
 
 export const houseServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
@@ -38,6 +39,14 @@ export const houseServerApi = serverApi.injectEndpoints({
                 method: "DELETE"
             }),
             invalidatesTags: ["House"]
+        }),
+
+        hardDeleteHouse: builder.mutation<HouseResponse, string>({
+            query: id => ({
+                url: `/home/harddelete/${id}`,
+                method: "DELETE"
+            }),
+
         })
     }),
     overrideExisting: false
@@ -48,5 +57,6 @@ export const {
     useGetHouseQuery,
     useCreateHouseMutation,
     useUpdateHouseMutation,
-    useSoftDeleteHouseMutation
+    useSoftDeleteHouseMutation,
+    useHardDeleteHouseMutation
 } = houseServerApi

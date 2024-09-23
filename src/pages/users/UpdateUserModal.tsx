@@ -122,9 +122,9 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
             setValue("lastName", serverData?.lastName || "")
             setValue("email", serverData?.email || "")
             setValue("emailConfirmed", serverData?.emailConfirmed || true)
-            setValue("residentialId", serverData?.residentialId || "")
+            setValue("residentialId", serverData?.residential?.id || "")
             setValue("profileId", serverData?.profileId || "")
-            setValue("homeId", userData.dataObject?.homeId || "")
+            setValue("homeId", userData.dataObject?.home?.id || "")
             setValue("isPrincipal", serverData?.isPrincipal || false)
         }
     }, [userLoading, userData, residentials, profiles, residentialsIdLoading, profilesIsLoading, houses, housesIsLoading])

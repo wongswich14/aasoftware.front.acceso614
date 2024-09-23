@@ -2,7 +2,7 @@ import { useState, useEffect } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { houseServerApi, useListHousesQuery } from "src/core/features/houseServerApi";
+import { houseServerApi, useHardDeleteHouseMutation, useListHousesQuery } from "src/core/features/houseServerApi";
 import { HouseDto } from "src/core/models/dtos/houses/houseDto";
 import { HouseUpdateDto } from "src/core/models/dtos/houses/houseUpdateDto";
 import { useAppDispatch } from "src/core/store";
@@ -22,7 +22,9 @@ const HousesList: React.FC = () => {
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
     const { data: housesData, error: housesError, isLoading: housesIsLoading, refetch: refetchHouses } = useListHousesQuery()
-    const [softDelete, { data: softDeleteData, status: softDeleteStatus, isLoading: softDeleteIsLoading }] = useSoftDeleteHouseMutation()
+    const [softDelete] = useSoftDeleteHouseMutation()
+    const [hardDelete] = useHardDeleteHouseMutation()
+
 
     const navigate = useNavigate()
     const location = useLocation()
@@ -30,7 +32,7 @@ const HousesList: React.FC = () => {
     const dispatch = useAppDispatch()
 
     const handleDelete =  async (id: string) => {
-        const softDeletePromise = softDelete(id).unwrap()
+        const softDeletePromise = hardDelete(id).unwrap()
 
         toast.promise(softDeletePromise, {
             loading: "Eliminando...",
