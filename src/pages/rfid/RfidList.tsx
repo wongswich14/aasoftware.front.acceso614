@@ -1,6 +1,6 @@
 import { useEffect, useState } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useListRfidsQuery } from "src/core/features/rfidServerApi";
 import { RfidDto } from "src/core/models/dtos/rfids/rfidDto";
 import DeleteModal from "src/shared/components/DeleteModal";
@@ -19,10 +19,11 @@ const RfidList = () => {
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
     const navigate = useNavigate()
+    const location = useLocation()
     const { id } = useParams<{ id: string }>()
 
     const { data: rfidData, isFetching: rfidIsFetching } = useListRfidsQuery()
-    
+
     const toggleUpdateModal = (id?: string) => {
         setOpenUpdateRfidModal(!openUpdateRfidModal)
         if (id) {

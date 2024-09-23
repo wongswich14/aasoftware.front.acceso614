@@ -1,9 +1,14 @@
 import { useState, useEffect } from "react";
 import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
+import { useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { toast } from "sonner";
+import { useListHousesQuery } from "src/core/features/houseServerApi";
+import { useCreateRfidMutation } from "src/core/features/rfidServerApi";
 import { HouseDto } from "src/core/models/dtos/houses/houseDto";
 import { RfidCreateDto } from "src/core/models/dtos/rfids/rfidCreateDto";
+import { selectUserData } from "src/core/slices/auth/authSlice";
 import LoaderBig from "src/shared/components/LoaderBig";
 
 interface CreateRfidModalProps {
@@ -15,24 +20,45 @@ const CreateRfidModal: React.FC<CreateRfidModalProps> = ({ toggleModal }) => {
     const [homes, setHomes] = useState<HouseDto[]>()
 
     const navigate = useNavigate()
+    const userData = useSelector(selectUserData)
 
-    const { data: homesData, isFetching: homesIsFetching } = useListHomesQuery()
+    const { data: homesData, isFetching: homesIsFetching } = useListHousesQuery()
+
+    const [createRfid] = useCreateRfidMutation()
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue
     } = useForm<RfidCreateDto>()
 
     const submitForm = (data: RfidCreateDto) => {
+        const createRfidPromise = createRfid(data).unwrap()
 
+        toast.promise(createRfidPromise, {
+            loading: "Creando RFID...",
+            success: () => {
+                navigate("/rfid")
+
+                return "RFID creado"
+            },
+            error: (err) => {
+                console.error(err)
+                return "Error al crear RFID"
+            }
+        })
     }
 
     useEffect(() => {
         if (homesData && !homesIsFetching) {
-            setHomes(homesData)
+            setHomes(homesData.listDataObject)
         }
     }, [homesData, homesIsFetching])
+
+    useEffect(() => {
+        setValue("userCreatedId", userData?.id!)
+    }, [userData])
 
     if (homesIsFetching) return <LoaderBig message="Cargando..." />
 
@@ -67,34 +93,21 @@ const CreateRfidModal: React.FC<CreateRfidModalProps> = ({ toggleModal }) => {
                         </div>
 
                         <div className="input-container">
-                            <label htmlFor="userCreatedId" className="label-form">ID de Usuario Creador</label>
-                            <input
-                                id="userCreatedId"
-                                className="input-form"
-                                type="text"
-                                {...register("userCreatedId", {
+                            <label htmlFor="homeId" className="label-form">Vivienda</label>
+                            <select
+                                className="input-form h-full"
+                                id="homeId"
+                                {...register("homeId", {
                                     required: "Este campo es obligatorio"
                                 })}
-                            />
-                            {errors.userCreatedId && <span className="form-error">{errors.userCreatedId.message}</span>}
+                            >
+                                <option value="" >-- Seleccione una --</option>
+                                {homes && homes.map(home => (
+                                    <option key={home.id} value={home.id}>{home.name}</option>
+                                ))}
+                            </select>
+                            {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
                         </div>
-                    </div>
-
-                    <div className="input-container">
-                        <label htmlFor="homeId" className="label-form">ID de Vivienda</label>
-                        <select
-                            className="input-form"
-                            id="homeId"
-                            {...register("homeId", {
-                                required: "Este campo es obligatorio"
-                            })}
-                        >
-                            <option value="" >-- Seleccione una --</option>
-                            {homes && homes.map(home => (
-                                <option key={home.id} value={home.id}>{home.name}</option>
-                            ))}
-                        </select>
-                        {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
                     </div>
 
                     <div className="input-container">
@@ -133,7 +146,3 @@ const CreateRfidModal: React.FC<CreateRfidModalProps> = ({ toggleModal }) => {
 }
 
 export default CreateRfidModal;
-
-function useListHomesQuery(): { data: any; isFetching: any; } {
-    throw new Error("Function not implemented.");
-}
