@@ -1,5 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import ResidentialsList from "./ResidentialsList";
+import ResidentialDetails from "./ResidentialDetails";
 
 const residentialRoutes: RouteObject[] = [
     {
@@ -16,6 +17,10 @@ const residentialRoutes: RouteObject[] = [
             {
                 path: "create",
                 element: <ResidentialsList />,
+            },
+            {
+                path: "details/:id",
+                element: <ResidentialDetails />,
             }
         ]
     }

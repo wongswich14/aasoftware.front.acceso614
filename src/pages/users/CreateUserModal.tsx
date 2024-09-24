@@ -61,21 +61,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
         const createUserPromise = createUser(data).unwrap()
 
         toast.promise(
-            createUserPromise.then(async (createdUser) => {
-                await appendUserToResidential({
-                    userId: createdUser.dataObject?.id || "",
-                    residentialId: residentialId,
-                    profileId: data.profileId,
-                }).unwrap();
-
-                await appendUserToHome({
-                    homeId1: data.homeId,
-                    userId: createdUser.dataObject?.id || "",
-                    residentialId: residentialId,
-                    profileId: data.profileId,
-                }).unwrap();
-
-
+            createUserPromise.then(async () => {
                 navigate(`/users`);
                 return "Usuario creado";
             }),

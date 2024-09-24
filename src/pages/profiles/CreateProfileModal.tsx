@@ -16,34 +16,6 @@ interface CreateProfileModalProps {
     refetchProfiles?: () => void
 }
 
-const permissionGroups: { [key: string]: string[] } = {
-    "Usuarios": ["getUsers", "createUsers", "updateUsers", "deleteUsers"],
-    "Perfiles": ["getProfiles", "createProfiles", "updateProfiles", "deleteProfiles"],
-    "Residenciales": ["getResidentials", "createResidentials", "updateResidentials", "deleteResidentials"],
-    "Casas": ["getHouses", "createHouses", "updateHouses", "deleteHouses"],
-    "Acceso Total": ["superAccess"]
-};
-
-const permissionTranslations: { [key: string]: string } = {
-    "getUsers": "Ver usuarios",
-    "deleteResidentials": "Eliminar residenciales",
-    "getHouses": "Ver casas",
-    "updateUsers": "Actualizar usuarios",
-    "updateProfiles": "Actualizar perfiles",
-    "getResidentials": "Ver residenciales",
-    "createResidentials": "Crear residenciales",
-    "createUsers": "Crear usuarios",
-    "updateHouses": "Actualizar casas",
-    "deleteProfiles": "Eliminar perfiles",
-    "createHouses": "Crear casas",
-    "deleteHouses": "Eliminar casas",
-    "superAccess": "Acceso total",
-    "updateResidentials": "Actualizar residenciales",
-    "deleteUsers": "Eliminar usuarios",
-    "createProfiles": "Crear perfiles",
-    "getProfiles": "Ver perfiles"
-};
-
 const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateModal, lazyAddProfile, refetchProfiles }) => {
 
     const [createProfile, { isLoading }] = useCreateProfileMutation()
@@ -59,6 +31,16 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateMod
     } = useForm<ProfileCreateDto>();
 
     const permissionsId = watch('permissionsId', []);
+
+    const groupedPermissions = permissions && permissions.reduce<Record<string, PermissionDto[]>>((acc, permission) => {
+        const { resource } = permission;
+        if (!acc[resource]) {
+            acc[resource] = [];
+        }
+        acc[resource].push(permission);
+        return acc;
+    }, {});
+
 
     const {
         data: permissionData,
@@ -93,7 +75,7 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateMod
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
-            <section className="bg-white rounded-lg p-10 relative min-w-[55%] max-h-[80%] overflow-y-auto scrol">
+            <section className="bg-white rounded-lg p-10 relative min-w-[55%] max-h-[80svh] overflow-y-auto scrol">
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
@@ -144,38 +126,43 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateMod
                         <label htmlFor="permissions" className="label-form mb-3">Permisos</label>
 
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-5 ml-3 ">
-                            {permissions && Object.keys(permissionGroups).map((groupName) => (
-                                <div key={groupName} className="mb-4">
-                                    <h4 className="text-sm font-semibold mb-1 text-gray-500">{groupName}</h4>
-                                    <div className="flex flex-col gap-3">
-                                        {permissionGroups[groupName].map((permissionKey) => {
-                                            const permission = permissions.find(p => p.title === permissionKey);
-                                            if (!permission) return null;
-
+                            {groupedPermissions && Object.entries(groupedPermissions).length > 0 ? (
+                                Object.entries(groupedPermissions).map(([resource, permissions]) => (
+                                    <div key={resource}>
+                                        <h3 className="text-sm font-semibold mb-2 text-gray-600">{resource}</h3>
+                                        {permissions.map((permission) => {
                                             const isChecked = permissionsId.includes(permission.id);
-                                            const translatedTitle = permissionTranslations[permission.title] || permission.title;
-
                                             return (
-                                                <div key={permission.id} className="flex items-center gap-2">
-                                                    <Switcher
-                                                        id={permission.id}
-                                                        isChecked={isChecked}
-                                                        onChange={() => {
-                                                            if (isChecked) {
-                                                                setValue('permissionsId', permissionsId.filter(id => id !== permission.id));
-                                                            } else {
-                                                                setValue('permissionsId', [...permissionsId, permission.id]);
-                                                            }
-                                                        }}
-                                                    />
-                                                    <label className="text-gray-600" htmlFor={permission.id}>{translatedTitle}</label>
+                                                <div key={permission.id} className="mb-4">
+                                                    {/* <h4 className="text-sm font-semibold mb-1 text-gray-500">{permission.translation}</h4> */}
+                                                    <div className="flex flex-col gap-3">
+                                                        <div key={permission.id} className="flex items-center gap-2">
+                                                            <Switcher
+                                                                id={permission.id}
+                                                                isChecked={isChecked}
+                                                                onChange={() => {
+                                                                    if (isChecked) {
+                                                                        setValue('permissionsId', permissionsId.filter(id => id !== permission.id));
+                                                                    } else {
+                                                                        setValue('permissionsId', [...permissionsId, permission.id]);
+                                                                    }
+                                                                }}
+                                                            />
+                                                            <label className="text-gray-600" htmlFor={permission.id}>
+                                                                {permission.translation}
+                                                            </label>
+                                                        </div>
+                                                    </div>
                                                 </div>
                                             );
                                         })}
                                     </div>
-                                </div>
-                            ))}
+                                ))
+                            ) : (
+                                <p className="text-gray-600">No hay permisos disponibles.</p>
+                            )}
                         </div>
+
                         {errors.description && <span className="form-error">{errors.description.message}</span>}
                     </div>
 

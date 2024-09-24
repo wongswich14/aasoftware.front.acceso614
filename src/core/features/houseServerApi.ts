@@ -15,6 +15,11 @@ export const houseServerApi = serverApi.injectEndpoints({
             query: (id) => `home/${id}`,
         }),
 
+        listHousesByResidential: builder.query<HouseResponse, string>({
+            query: (residentialId) => `home/residential/${residentialId}`,
+            providesTags: ["House"]
+        }),
+
         createHouse: builder.mutation<HouseResponse, HouseCreateDto>({
             query: newHouse => ({
                 url: '/home',
@@ -55,6 +60,7 @@ export const houseServerApi = serverApi.injectEndpoints({
 export const {
     useListHousesQuery,
     useGetHouseQuery,
+    useListHousesByResidentialQuery,
     useCreateHouseMutation,
     useUpdateHouseMutation,
     useSoftDeleteHouseMutation,

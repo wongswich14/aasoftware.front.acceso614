@@ -1,45 +1,14 @@
-interface Residential {
-  id: string;
-  name: string;
-  description: string;
-  homes?: string[];
-}
-
-interface Address {
-  id: string;
-  customerId: string;
-  street: string;
-  streetDetail: string;
-  number: string;
-  zip: string;
-  reference: string;
-  isPrincipal: boolean;
-  enabled: boolean;
-  isDeleted: boolean;
-  createdDate: string;
-  changedDate: string;
-}
-
-interface User {
-  id: string;
-  profileId: string;
-  profileName: string;
-  homes: string[];
-  name: string;
-  lastName: string;
-  email: string;
-  emailConfirmed: boolean;
-  enabled: boolean;
-  isDeleted: boolean;
-  createdDate: string;
-  changedDate: string;
-  deletedDate: string;
-}
+import { ResidentialDto } from "../residentials/ResidentialDto";
+import { RfidDto } from "../rfids/rfidDto";
+import { UserDto } from "../users/userDto";
 
 export interface HouseDto {
   id: string;
   residentialId: string;
-  residential?: Residential;
+  residential?: ResidentialDto;
+  users?: UserDto[]
+  rfids?: RfidDto[]
+  principal?: UserDto
   name: string
   personContactId: string
   phoneContact: string

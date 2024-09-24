@@ -2,7 +2,7 @@ export interface HouseUpdateDto {
     id: string
     residentialId: string
     name: string
-    // personContactId: string
+    maxRfid: number
     phoneContact: string
     street: string
     streetDetail: string
