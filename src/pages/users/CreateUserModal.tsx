@@ -99,6 +99,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
             if (res?.dataObject) {
                 // Setea el ID en el formulario antes de que los datos se actualicen en el estado
                 setValue('homeId', res.dataObject.id);
+                await refetchHouses();
                 toast.success("Vivienda generada exitosamente");
             } else {
                 toast.error("Error inesperado: No se recibió el objeto de datos esperado.");
@@ -129,7 +130,6 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
         if (houses && houses.length > 0) {
             const createdHouseId = watch("homeId");
             const createdHouse = houses.find(house => house.id === createdHouseId);
-            console.log("createdHouse", createdHouse);
             if (createdHouse) {
                 setValue('homeId', createdHouse.id);
             }
@@ -227,7 +227,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                             >
                                 <option value="" selected >-- Seleccione una --</option>
                                 {residentials && residentials.map(residential => (
-                                    <option key={residential.id} value={residential.id}>{residential.name}</option>
+                                    <option value={residential.id}>{residential.name}</option>
                                 ))}
                             </select>
                             {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
@@ -250,7 +250,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                             >
                                 <option value="" >-- Seleccione una --</option>
                                 {houses && houses.map(house => (
-                                    <option key={house.id} value={house.id}>{house.name}</option>
+                                    <option value={house.id}>{house.name}</option>
                                 ))}
                             </select>
                             {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
@@ -270,7 +270,7 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                             >
                                 <option value="" selected >-- Seleccione una --</option>
                                 {profiles && profiles.map(profile => (
-                                    <option key={profile.id} value={profile.id}>{profile.title}</option>
+                                    <option value={profile.id}>{profile.title}</option>
                                 ))}
                             </select>
                             {errors.profileId && <span className="form-error">{errors.profileId.message}</span>}

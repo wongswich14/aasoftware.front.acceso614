@@ -21,7 +21,7 @@ interface UpdateUserModalProps {
 }
 
 
-const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ toggleUpdateModal }) => {
+const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggleUpdateModal }) => {
 
     const { id } = useParams<{ id: string }>()
     const [profiles, setProfiles] = useState<ProfileDto[]>()
@@ -87,6 +87,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ toggleUpdateModal }) 
         }
 
         try {
+            // Crea la casa sin usar `toast.promise`
             const res = await createHouse({
                 residentialId: formData.residentialId,
                 name: `Casa de familia ${formData.lastName}`,
@@ -98,9 +99,15 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ toggleUpdateModal }) 
                 enabled: true
             }).unwrap();
 
-            setValue('homeId', res.dataObject?.id!);
-            toast.success("Vivienda generada exitosamente");
-
+            // Refetch de las casas
+            if (res?.dataObject) {
+                // Setea el ID en el formulario antes de que los datos se actualicen en el estado
+                setValue('homeId', res.dataObject.id);
+                await refetchHouses();
+                toast.success("Vivienda generada exitosamente");
+            } else {
+                toast.error("Error inesperado: No se recibió el objeto de datos esperado.");
+            }
         } catch (error) {
             console.error("Error al crear la vivienda:", error);
             toast.error("Error al generar la vivienda");
@@ -139,16 +146,15 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ toggleUpdateModal }) 
     }, [housesData, housesIsLoading, housesIsFetching])
 
     useEffect(() => {
-        if (houses && houses.length > 0 && !housesIsFetching) {
+        if (houses && houses.length > 0) {
             const createdHouseId = watch("homeId");
             const createdHouse = houses.find(house => house.id === createdHouseId);
-            
             if (createdHouse) {
                 setValue('homeId', createdHouse.id);
             }
         }
-    }, [houses, housesIsFetching, watch("homeId")]);
-    
+    }, [houses, watch("homeId")]);
+
     useEffect(() => {
         return () => {
             setProfiles([]);
@@ -261,9 +267,9 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ toggleUpdateModal }) 
                         <div className="input-container">
                             <div className="flex items-center justify-between">
                                 <label htmlFor="homeId" className="label-form">Vivienda</label>
-                                {/* <button disabled={createHouseIsLoaing} type="button" onClick={handleCreateFamilyHouse} className="disabled:text-gray-500 text-sm text-sky-500 hover:underline">
+                                <button disabled={createHouseIsLoaing} type="button" onClick={handleCreateFamilyHouse} className="disabled:text-gray-500 text-sm text-sky-500 hover:underline">
                                     Generar Vivienda
-                                </button> */}
+                                </button>
                             </div>
 
                             <select

@@ -15,8 +15,7 @@ export const userServerApi = serverApi.injectEndpoints({
         }),
 
         getUser: builder.query<UserResponse, string>({
-            query: (id) => `user/${id}`,
-            providesTags: ["User"]
+            query: (id) => `user/${id}`
         }),
 
         createUser: builder.mutation<UserResponse, UserCreateDto>({

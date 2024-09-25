@@ -15,7 +15,7 @@ import Switcher from "src/shared/components/Switcher"
 
 interface UpdateHouseModalProps {
     toggleUpdateModal: () => void
-    lazyUpdateHouse: (id: string, newItem: HouseDto) => void
+        lazyUpdateHouse: (id: string, newItem: HouseDto) => void
 }
 
 const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, lazyUpdateHouse }) => {
@@ -41,7 +41,6 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
     const [updateHouse, { isLoading }] = useUpdateHouseMutation()
 
     const navigate = useNavigate()
-
 
     const {
         register,

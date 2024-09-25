@@ -23,6 +23,7 @@ const PrivateRoute: React.FC = () => {
 
     useEffect(() => {
         if (!tokenLoading && !isAuthenticated) {
+            console.log(tokenData)
             if (tokenData?.dataObject) {
                 const token = tokenData.token ?? (() => {
                     const authData = localStorage.getItem('auth');

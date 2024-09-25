@@ -1,22 +1,22 @@
 import { DoorCreateDto } from "../models/dtos/doors/doorCreateDto";
-import { DoorUpdateDto } from "../models/dtos/doors/doorUpdateDto";
-import { DoorResponse } from "../models/responses/door.response";
-import { serverApi } from "../serverApi";
+                import { DoorUpdateDto } from "../models/dtos/doors/doorUpdateDto";
+                import { DoorResponse } from "../models/responses/door.response";
+                import { serverApi } from "../serverApi";
 
-export const doorServerApi = serverApi.injectEndpoints({
-    endpoints: builder => ({
-        listDoors: builder.query<DoorResponse, void>({
-            query: () => `door`,
-            providesTags: ["Door"]
-        }),
-        
-        getDoor: builder.query<DoorResponse, string>({
-            query: (id) => `door/${id}`,
+                export const doorServerApi = serverApi.injectEndpoints({
+                    endpoints: builder => ({
+                        listDoors: builder.query<DoorResponse, void>({
+                            query: () => `doors`,
+                            providesTags: ["Door"]
+                        }),
+
+                        getDoor: builder.query<DoorResponse, string>({
+                            query: (id) => `doors/${id}`,
         }),
 
         createDoor: builder.mutation<DoorResponse, DoorCreateDto>({
             query: newDoor => ({
-                url: '/door',
+                url: '/doors',
                 method: 'POST',
                 body: newDoor,
             }),
@@ -25,7 +25,7 @@ export const doorServerApi = serverApi.injectEndpoints({
 
         updateDoor: builder.mutation<DoorResponse, DoorUpdateDto>({
             query: updatedDoor => ({
-                url: `/door`,
+                url: `/doors`,
                 method: 'PUT',
                 body: updatedDoor,
             }),
@@ -34,10 +34,18 @@ export const doorServerApi = serverApi.injectEndpoints({
 
         softDeleteDoor: builder.mutation<DoorResponse, string>({
             query: (id) => ({
-                url: `/door/softdelete/${id}`,
+                url: `/doors/softdelete/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["Door"]
         })
     })
 })
+
+export const {
+    useListDoorsQuery,
+    useGetDoorQuery,
+    useCreateDoorMutation,
+    useUpdateDoorMutation,
+    useSoftDeleteDoorMutation,
+} = doorServerApi
