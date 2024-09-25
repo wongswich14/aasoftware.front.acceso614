@@ -19,7 +19,7 @@ const residentialRoutes: RouteObject[] = [
                 element: <ResidentialsList />,
             },
             {
-                path: "details/:id",
+                path: ":id",
                 element: <ResidentialDetails />,
             }
         ]
