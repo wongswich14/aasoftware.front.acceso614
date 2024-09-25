@@ -1,23 +1,32 @@
 import { RouteObject } from "react-router-dom";
 import DoorsList from "./DoorsList";
+import VisitsList from "../visits/VisitList.tsx";
+import LogDoorVisitList from "../logDoorVisit/LogDoorVisitList.tsx";
+import ResidentialDetails from "../residentials/ResidentialDetails.tsx";
+import DoorsDetails from "./DoorsDetails.tsx";
 
 const doorRoutes: RouteObject[] = [
     {
-        path: "/doors",
+        path: "residentials/details/:id/doors",
         children: [
             {
                 path: "",
-                element: <DoorsList />
+                element: <ResidentialDetails />
             },
             {
-                path: "update/:id",
-                element: <DoorsList />
+                path: "update/:doorsId",
+                element: <ResidentialDetails />
             },
             {
                 path: "create",
-                element: <DoorsList />
-            }
+                element: <ResidentialDetails />
+            },
+
         ]
+    },
+    {
+        path: "doors/:id",
+        element: <DoorsDetails/>
     }
 ]
 

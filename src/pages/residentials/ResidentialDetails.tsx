@@ -1,10 +1,11 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { Link, useParams } from "react-router-dom";
+import {Link, useLocation, useParams} from "react-router-dom";
 import { useGetResidentialQuery } from "src/core/features/residentialServerApi";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import LoaderBig from "src/shared/components/LoaderBig";
+import DoorsList from "../doors/DoorsList.tsx";
 
 
 interface ResidentialInformationProps {
@@ -17,7 +18,15 @@ const ResidentialDetails: React.FC = () => {
 
     const { id } = useParams<{ id: string }>();
     const { data: residentialData, isFetching: residentialIsFetching } = useGetResidentialQuery(id!, { skip: !id });
+    const location = useLocation();
 
+    useEffect(() => {
+        if (location.pathname.includes("doors")){
+            setActiveTab("entradasSalidas")
+        } else {
+            setActiveTab("informacion")
+        }
+    }, [id, location]);
 
     useEffect(() => {
         if (residentialData && !residentialIsFetching) {
@@ -41,28 +50,27 @@ const ResidentialDetails: React.FC = () => {
             <div className='text-gray-500 font-semibold px-5 py-2 w-[95%] ml-5 mt-5 overflow-auto'>
                 {/* Tabs */}
                 <div className="flex gap-5 mb-7 text-sm">
-                    <button 
-                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'informacion' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`} 
+                    <button
+                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'informacion' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('informacion')}>
                         Casas
                     </button>
 
-                    <button 
-                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'entradasSalidas' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`} 
+                    <button
+                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'entradasSalidas' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('entradasSalidas')}>
                         Entradas - Salidas
                     </button>
                 </div>
 
                 {/* Contenido según el tab */}
-                {activeTab === 'informacion' && 
+                {activeTab === 'informacion' &&
                     <ResidentialInformation residential={residential!} />
                 }
 
                 {activeTab === 'entradasSalidas' && (
                     <div>
-                        <h3>Listado de Entradas y Salidas</h3>
-                        {/* Aquí va el contenido relacionado con las entradas y salidas */}
+                        <DoorsList residential={residential!}/>
                     </div>
                 )}
             </div>

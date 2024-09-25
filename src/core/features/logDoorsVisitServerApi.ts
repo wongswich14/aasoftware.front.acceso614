@@ -21,7 +21,7 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newLog,
             }),
-            invalidatesTags: ["LogDoorVisit"]
+                invalidatesTags: ["LogDoorVisit"]
         }),
 
         updateLogDoorVisit: builder.mutation<LogDoorVisitResponse, LogDoorVisitUpdateDto>({

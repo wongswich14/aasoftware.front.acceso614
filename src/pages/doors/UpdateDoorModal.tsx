@@ -18,7 +18,7 @@
     const UpdateDoorModal: React.FC<UpdateDoorModalProps> = ({ toggleUpdateModal, lazyUpdateDoor }) => {
 
         const [residentials, setResidentials] = useState<ResidentialDto[]>();
-        const { id } = useParams<{ id: string }>();
+        const { id, doorsId } = useParams<{ id: string, doorsId:string }>();
 
         const { data: residentialsData, isLoading: residentialsIsLoading } = useListResidentialsQuery();
         const { data: doorData, isLoading: doorLoading } = useGetDoorQuery(id!, { skip: !id });
@@ -34,7 +34,7 @@
             toast.promise(updateDoorPromise, {
                 loading: "Actualizando...",
                 success: () => {
-                    lazyUpdateDoor(id!, data); // Call lazyUpdateDoor here
+                    lazyUpdateDoor(doorsId!, data); // Call lazyUpdateDoor here
                     navigate(`/doors`); // Adjust navigation if necessary
                     return "Puerta actualizada";
                 },

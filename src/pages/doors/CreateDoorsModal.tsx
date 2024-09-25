@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
-import { useNavigate } from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateDoorMutation } from "src/core/features/doorServerApi";
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi";
@@ -15,10 +15,10 @@ interface CreateDoorsModalProps {
 }
 
 const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal, lazyAddDoor }) => {
+    const { id } = useParams<{ id: string }>();
     const [residentials, setResidentials] = useState<DoorDto[]>();
     const [createDoor] = useCreateDoorMutation();
     const navigate = useNavigate();
-
     const { data: residentialsData, isLoading: residentialsIsLoading } = useListResidentialsQuery();
 
     const {
@@ -35,7 +35,7 @@ const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal, 
             loading: "Creando...",
             success: () => {
                 //lazyAddDoor(data);
-                navigate(`/doors`);
+                navigate(`/residentials/details/${id}`);
                 return "Puerta creada";
             },
             error: (err) => {

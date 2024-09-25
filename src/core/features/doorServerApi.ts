@@ -1,18 +1,23 @@
 import { DoorCreateDto } from "../models/dtos/doors/doorCreateDto";
-                import { DoorUpdateDto } from "../models/dtos/doors/doorUpdateDto";
-                import { DoorResponse } from "../models/responses/door.response";
-                import { serverApi } from "../serverApi";
+import { DoorUpdateDto } from "../models/dtos/doors/doorUpdateDto";
+import { DoorResponse } from "../models/responses/door.response";
+import { serverApi } from "../serverApi";
 
-                export const doorServerApi = serverApi.injectEndpoints({
-                    endpoints: builder => ({
-                        listDoors: builder.query<DoorResponse, void>({
-                            query: () => `doors`,
-                            providesTags: ["Door"]
-                        }),
-
-                        getDoor: builder.query<DoorResponse, string>({
-                            query: (id) => `doors/${id}`,
+export const doorServerApi = serverApi.injectEndpoints({
+    endpoints: builder => ({
+        listDoors: builder.query<DoorResponse, void>({
+            query: () => `doors`,
+            providesTags: ["Door"]
         }),
+
+        listResidentialsDoors: builder.query<DoorResponse, void>({
+            query: (id) => `doors?residentialId=${id}`,
+            providesTags: ["Door"]
+        }),
+
+        getDoor: builder.query<DoorResponse, string>({
+            query: (id) => `doors/${id}`,
+}),
 
         createDoor: builder.mutation<DoorResponse, DoorCreateDto>({
             query: newDoor => ({
@@ -44,6 +49,7 @@ import { DoorCreateDto } from "../models/dtos/doors/doorCreateDto";
 
 export const {
     useListDoorsQuery,
+useListResidentialsDoorsQuery,
     useGetDoorQuery,
     useCreateDoorMutation,
     useUpdateDoorMutation,
