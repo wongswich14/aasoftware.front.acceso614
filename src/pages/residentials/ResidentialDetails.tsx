@@ -1,14 +1,14 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
-import { Link, useLocation,useNavigate, useParams } from "react-router-dom";
+import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGetResidentialQuery } from "src/core/features/residentialServerApi";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import LoaderBig from "src/shared/components/LoaderBig";
-import {useHardDeleteHouseMutation} from "../../core/features/houseServerApi.ts";
-import {toast} from "sonner";
 import DeleteModal from "../../shared/components/DeleteModal.tsx";
 import DoorsList from "../doors/DoorsList.tsx";
+import {toast} from "sonner";
+import {useHardDeleteVisitMutation} from "../../core/features/visitServerApi.ts";
 
 
 interface ResidentialInformationProps {
@@ -18,7 +18,6 @@ interface ResidentialInformationProps {
 const ResidentialDetails: React.FC = () => {
     const [residential, setResidential] = useState<ResidentialDto>();
     const [activeTab, setActiveTab] = useState<'informacion' | 'entradasSalidas'>('informacion');
-
     const { id } = useParams<{ id: string }>();
     const { data: residentialData, isFetching: residentialIsFetching } = useGetResidentialQuery(id!, { skip: !id });
     const location = useLocation();
@@ -84,7 +83,35 @@ const ResidentialDetails: React.FC = () => {
 
 export default ResidentialDetails;
 
-const ResidentialInformation: React.FC<ResidentialInformationProps> = ({ residential }) => {
+const ResidentialInformation: React.FC<ResidentialInformationProps> = ({residential}) => {
+
+    const [deleteId, setDeleteId] = useState<string>("")
+    const [openUpdateModal, setOpenUpdateModal] = useState(false)
+    const [openDeleteModal, setOpenDeleteModal] = useState(false)
+
+    const navigate = useNavigate();
+
+    const [hardDelete] = useHardDeleteVisitMutation()
+
+    const toggleDeleteModal = (id?: string) => {
+        if (id) {
+            setDeleteId(id)
+        } else {
+            setDeleteId("")
+        }
+        setOpenDeleteModal(!openDeleteModal)
+    }
+
+    const handleDelete = async (id: string) => {
+        const hardDeletePromise = hardDelete(id).unwrap()
+
+        toast.promise(hardDeletePromise, {
+            loading: 'Eliminando vivienda...',
+            success: 'Vivienda eliminada',
+            error: 'Error al eliminar la vivienda'
+        })
+    }
+
     return (
         <>
             <table className="table-auto w-full text-sm rounded-md flex-1">
