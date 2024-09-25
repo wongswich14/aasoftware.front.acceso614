@@ -1,4 +1,3 @@
-import { list } from "postcss";
 import { serverApi } from "../serverApi";
 import { RfidResponse } from "../models/responses/rfid.response";
 import { RfidCreateDto } from "../models/dtos/rfids/rfidCreateDto";
@@ -13,6 +12,7 @@ export const rfidServerApi = serverApi.injectEndpoints({
 
         getRfid: builder.query<RfidResponse, string>({
             query: (id) => `cardsrfid/${id}`,
+            providesTags: ["Rfid"]
         }),
 
         createRfid: builder.mutation<RfidResponse, RfidCreateDto>({
@@ -21,7 +21,7 @@ export const rfidServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newRfid,
             }),
-            invalidatesTags: ["Rfid"]
+            invalidatesTags: ["Rfid", "House"],
         }),
 
         updateRfid: builder.mutation<RfidResponse, RfidUpdateDto>({

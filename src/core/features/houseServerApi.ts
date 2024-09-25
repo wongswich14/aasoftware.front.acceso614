@@ -2,7 +2,6 @@ import { HouseCreateDto } from "../models/dtos/houses/houseCreateDto";
 import { HouseUpdateDto } from "../models/dtos/houses/houseUpdateDto";
 import { HouseResponse } from "../models/responses/house.response";
 import { serverApi } from "../serverApi";
-import { useHardDeleteResidentialMutation } from "./residentialServerApi";
 
 export const houseServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
@@ -13,6 +12,7 @@ export const houseServerApi = serverApi.injectEndpoints({
 
         getHouse: builder.query<HouseResponse, string>({
             query: (id) => `home/${id}`,
+            providesTags: ["House"]
         }),
 
         listHousesByResidential: builder.query<HouseResponse, string>({

@@ -3,25 +3,51 @@ import {IoArrowBackCircleSharp} from "react-icons/io5";
 import {useGetHouseQuery} from "../../core/features/houseServerApi.ts";
 import {HouseDto} from "../../core/models/dtos/houses/houseDto.ts";
 import LoaderBig from "../../shared/components/LoaderBig.tsx";
-import {Link, useNavigate, useParams} from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {FaPlusCircle} from "react-icons/fa";
-import CreateHouseModal from "./CreateHouseModal.tsx";
+import AddUserToHouseModal from "../users/AddUserToHouseModal.tsx";
+import AddRfidToHouseModal from "../rfid/AddRfidToHouseModal.tsx";
 
 
 const HouseDetails: React.FC = () => {
     const [house, setHouse] = useState<HouseDto>()
-    const [openCreateModal, setOpenCreateModal] = useState<boolean>(false)
+    const [openAddUserModal, setOpenAddUserModal] = useState<boolean>(false)
+    const [openAddRfidModal, setOpenAddRfidModal] = useState<boolean>(false)
 
     const {id} = useParams<{ id: string }>()
     const navigate = useNavigate()
+    const location = useLocation()
 
     const {data: houseData, isFetching: houseIsFetching} = useGetHouseQuery(id!, {skip: id === ""})
 
-
-    const toggleCreateModal = (id?: string) => {
-        setOpenCreateModal(!openCreateModal)
-        id ? navigate(`/houses/update/${id}`) : navigate(`/houses`)
+    const toggleAddUserModal = () => {
+        setOpenAddUserModal((prevState) => {
+            const newState = !prevState;
+            if (newState) {
+                navigate(`/houses/${id}/add-user`);
+            } else {
+                navigate(`/houses/${id}`);
+            }
+            return newState;
+        });
     }
+
+    const toggleAddRfidModal = () => {
+        setOpenAddRfidModal((prevState) => {
+            const newState = !prevState;
+            if (newState) {
+                navigate(`/houses/${id}/add-rfid`);
+            } else {
+                navigate(`/houses/${id}`);
+            }
+            return newState;
+        });
+    }
+
+    useEffect(() => {
+        setOpenAddUserModal(location.pathname.includes("add-user"));
+        setOpenAddRfidModal(location.pathname.includes("add-rfid"));
+    }, [location]);
 
     useEffect(() => {
         if (houseData && !houseIsFetching) {
@@ -37,7 +63,7 @@ const HouseDetails: React.FC = () => {
                 className='flex gap-2 items-center text-sm text-gray-500 font-semibold border-b pl-5 pt-5 w-[95%] ml-5'>
                 <h2 className='p-2 text-lg'>{house?.name}</h2>
 
-                <Link to={`/residentials/details/${house?.residential?.id}`}
+                <Link to={`/residentials/${house?.residential?.id}`}
                       className='flex items-center text-gray-500 hover:text-gray-400 gap-1'>
                     <IoArrowBackCircleSharp size={20} className='text-lg'/>
                     <span className="text-base">Volver</span>
@@ -57,14 +83,13 @@ const HouseDetails: React.FC = () => {
                     {/* Usuario principal (Responsable) */}
                     {house?.principal && (
                         <div className="p-4 bg-slate-100 rounded-md shadow-md">
-                            <h4 className="text-lg font-semibold text-gray-700">Responsable de la Casa</h4>
+                            <h4 className="text-lg font-semibold text-gray-700">Responsable</h4>
                             {house?.principal && (
                                 <div className="mt-2">
                                     <p className="text-gray-700 font-medium">
                                         {house.principal.name} {house.principal.lastName}
                                     </p>
                                     <p className="text-gray-500">{house.principal.email}</p>
-                                    <span className="text-sm text-green-600">(Usuario Principal)</span>
                                 </div>
                             )}
                         </div>
@@ -74,7 +99,7 @@ const HouseDetails: React.FC = () => {
                     <div>
                         <div className="flex gap-3">
                             <h4 className="text-lg font-semibold text-gray-600">Habitantes</h4>
-                            <Link to={'create'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                            <Link to={'add-user'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
                                 <FaPlusCircle className='text-lg'/>
                             </Link>
                         </div>
@@ -88,7 +113,7 @@ const HouseDetails: React.FC = () => {
                                                 <p className="text-gray-500">{user.email}</p>
                                             </div>
                                             {user.isPrincipal &&
-                                                <span className="text-xs text-green-500">(Principal)</span>}
+                                                <span className="text-xs text-green-500">(Responsable)</span>}
                                         </div>
                                     </li>
                                 ))}
@@ -102,7 +127,7 @@ const HouseDetails: React.FC = () => {
                     <div>
                         <div className={"flex gap-3"}>
                             <h4 className="text-lg font-semibold text-gray-600">Tarjetas de Acceso (RFID)</h4>
-                            <Link to={'create'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                            <Link to={'add-rfid'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
                                 <FaPlusCircle className='text-lg'/>
                             </Link>
                         </div>
@@ -124,11 +149,9 @@ const HouseDetails: React.FC = () => {
                 </div>
             </div>
 
-            {openCreateModal &&
-                <CreateHouseModal
-                    toggleCreateModal={toggleCreateModal}
-                />
-            }
+            {openAddUserModal && <AddUserToHouseModal toggleModal={toggleAddUserModal} />}
+
+            {openAddRfidModal && <AddRfidToHouseModal toggleModal={toggleAddRfidModal} />}
         </div>
     );
 };

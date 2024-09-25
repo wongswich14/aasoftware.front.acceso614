@@ -15,7 +15,8 @@ export const userServerApi = serverApi.injectEndpoints({
         }),
 
         getUser: builder.query<UserResponse, string>({
-            query: (id) => `user/${id}`
+            query: (id) => `user/${id}`,
+            providesTags: ["User"]
         }),
 
         createUser: builder.mutation<UserResponse, UserCreateDto>({
@@ -24,7 +25,7 @@ export const userServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newUser,
             }),
-            invalidatesTags: ["User"]
+            invalidatesTags: ["User", "House"]
         }),
 
         updateUser: builder.mutation<UserResponse, UserUpdateDto>({
@@ -33,31 +34,13 @@ export const userServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedUser,
             }),
-            invalidatesTags: ["User"]
+            invalidatesTags: ["User", "House"]
         }),
 
         softDeleteUser: builder.mutation<UserResponse, string>({
             query: (id) => ({
                 url: `/user/softdelete/${id}`,
                 method: 'DELETE',
-            }),
-            invalidatesTags: ["User"]
-        }),
-
-        appendUserToHome: builder.mutation<void, AppendUserToHomeDto>({
-            query: (appendUserToHome) => ({
-                url: `/homeuser/appendusertohouse`,
-                method: 'POST',
-                body: appendUserToHome,
-            }),
-            invalidatesTags: ["User"]
-        }),
-
-        appendUserToResidential: builder.mutation<void, AppendUserToResidentialDto>({
-            query: (appendUserToResidential) => ({
-                url: `/homeuser/appendusertoresidential`,
-                method: 'POST',
-                body: appendUserToResidential,
             }),
             invalidatesTags: ["User"]
         }),
@@ -72,6 +55,4 @@ export const {
     useCreateUserMutation,
     useUpdateUserMutation,
     useSoftDeleteUserMutation,
-    useAppendUserToResidentialMutation,
-    useAppendUserToHomeMutation
 } = userServerApi

@@ -4,7 +4,6 @@ import { UserDto } from "../users/userDto";
 
 export interface HouseDto {
   id: string;
-  residentialId: string;
   residential?: ResidentialDto;
   users?: UserDto[]
   rfids?: RfidDto[]

@@ -2,11 +2,8 @@ import { useState, useEffect } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
-import { houseServerApi, useHardDeleteHouseMutation, useListHousesQuery } from "src/core/features/houseServerApi";
+import { useHardDeleteHouseMutation, useListHousesQuery } from "src/core/features/houseServerApi";
 import { HouseDto } from "src/core/models/dtos/houses/houseDto";
-import { HouseUpdateDto } from "src/core/models/dtos/houses/houseUpdateDto";
-import { useAppDispatch } from "src/core/store";
-import { updateCache, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid";
 import DeleteModal from "src/shared/components/DeleteModal";
 import SkeletonTable from "src/shared/components/SkeletonTable";
 import { useSoftDeleteHouseMutation } from "src/core/features/houseServerApi";
@@ -21,7 +18,8 @@ const HousesList: React.FC = () => {
     const [openCreateHouseModal, setOpenCreateHouseModal] = useState<boolean>(false)
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-    const { data: housesData, error: housesError, isLoading: housesIsLoading, refetch: refetchHouses } = useListHousesQuery()
+    const { data: housesData, isLoading: housesIsLoading } = useListHousesQuery()
+    // eslint-disable-next-line @typescript-eslint/no-unused-vars
     const [softDelete] = useSoftDeleteHouseMutation()
     const [hardDelete] = useHardDeleteHouseMutation()
 
@@ -29,7 +27,6 @@ const HousesList: React.FC = () => {
     const navigate = useNavigate()
     const location = useLocation()
     const { id } = useParams<{id: string}>()
-    const dispatch = useAppDispatch()
 
     const handleDelete =  async (id: string) => {
         const softDeletePromise = hardDelete(id).unwrap()
@@ -37,7 +34,6 @@ const HousesList: React.FC = () => {
         toast.promise(softDeletePromise, {
             loading: "Eliminando...",
             success: () => {
-                lazyDeleteHouse(id)
                 toggleDeleteModal()
                 return "Casa eliminada"
             },
@@ -73,38 +69,6 @@ const HousesList: React.FC = () => {
             setSoftDeleteHouseId("")
         }
         setOpenDeleteModal(!openDeleteModal)
-    }
-
-    const lazyUpdateHouse = (id: string, newItem: HouseDto) => {
-        // updateCache({
-        //     api: houseServerApi,
-        //     endpoint: 'listHouses',
-        //     mode: LazyUpdateModes.UPDATE,
-        //     dispatch,
-        //     newItem,
-        //     id
-        // })
-        refetchHouses()
-    }
-
-    const lazyDeleteHouse = (id: string) => {
-        updateCache({
-            api: houseServerApi,
-            endpoint: 'listHouses',
-            mode: LazyUpdateModes.DELETE,
-            dispatch,
-            id
-        })
-    }
-
-    const lazyAddHouse = (newItem: HouseDto) => {
-        updateCache({
-            api: houseServerApi,
-            endpoint: 'listHouses',
-            mode: LazyUpdateModes.ADD,
-            dispatch,
-            newItem
-        })
     }
 
     useEffect(() => {
@@ -176,17 +140,15 @@ const HousesList: React.FC = () => {
             </table>
         </div>
 
-        {openUpdateHouseModal && 
-            <UpdateHouseModal 
+        {openUpdateHouseModal &&
+            <UpdateHouseModal
                 toggleUpdateModal={toggleUpdateModal}
-                lazyUpdateHouse={lazyUpdateHouse}
             />
         }
 
         {openCreateHouseModal && 
             <CreateHouseModal 
                 toggleCreateModal={toggleCreateModal}
-                lazyAddHouse={lazyAddHouse}
             />
         }
 

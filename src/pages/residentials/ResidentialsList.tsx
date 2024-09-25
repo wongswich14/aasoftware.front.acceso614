@@ -154,7 +154,7 @@ const ResidentialsList: React.FC = () => {
                                 < tr key={residential.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer" >
                                     <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                                     <td className='whitespace-nowrap py-4 font-normal text-left'>
-                                        <Link to={`details/${residential.id}`} className="hover:underline">
+                                        <Link to={`${residential.id}`} className="hover:underline">
                                             {residential.name}
                                         </Link>
                                     </td>

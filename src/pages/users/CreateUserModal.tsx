@@ -3,12 +3,10 @@ import { useForm } from "react-hook-form"
 import { IoClose } from "react-icons/io5"
 import { useNavigate } from "react-router-dom"
 import { toast } from "sonner"
-import { useRegisterUserMutation } from "src/core/features/authServerApi"
 import { useCreateHouseMutation, useListHousesQuery } from "src/core/features/houseServerApi"
 import { useListProfilesQuery } from "src/core/features/profileServerApi"
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi"
-import { useAppendUserToHomeMutation, useAppendUserToResidentialMutation, useCreateUserMutation } from "src/core/features/userServerApi"
-import { RegisterDto } from "src/core/models/dtos/auth/registerDto"
+import { useCreateUserMutation } from "src/core/features/userServerApi"
 import { HouseDto } from "src/core/models/dtos/houses/houseDto"
 import { ProfileDto } from "src/core/models/dtos/profiles/profileDto"
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto"
@@ -18,18 +16,16 @@ import Switcher from "src/shared/components/Switcher"
 
 interface CreateUserModalProps {
     toggleCreateModal: () => void
-    lazyAddUser: (newItem: UserDto) => void
+    lazyAddUser?: (newItem: UserDto) => void
 }
 
-const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, lazyAddUser }) => {
+const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal }) => {
 
     const [profiles, setProfiles] = useState<ProfileDto[]>()
     const [residentials, setResidentials] = useState<ResidentialDto[]>()
     const [houses, setHouses] = useState<HouseDto[]>()
 
-    const [createUser, { isLoading }] = useCreateUserMutation()
-    const [appendUserToResidential, { isLoading: appendUserToResidentialIsLoading }] = useAppendUserToResidentialMutation()
-    const [appendUserToHome, { isLoading: appendUserToHomeIsLoading }] = useAppendUserToHomeMutation()
+    const [createUser] = useCreateUserMutation()
     const [createHouse, { isLoading: createHouseIsLoading }] = useCreateHouseMutation()
 
     const navigate = useNavigate()
@@ -49,12 +45,10 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
         register,
         handleSubmit,
         formState: { errors },
-        reset,
         setValue,
         watch
     } = useForm<UserCreateDto>();
 
-    const residentialId = watch("residentialId")
     const isPrincipal = watch("isPrincipal")
 
     const submitForm = async (data: UserCreateDto) => {
@@ -92,7 +86,8 @@ const CreateUserModal: React.FC<CreateUserModalProps> = ({ toggleCreateModal, la
                 streetDetail: "",
                 number: "",
                 zip: "",
-                enabled: true
+                enabled: true,
+                maxRfid: 4
             }).unwrap();
     
             // Refetch de las casas

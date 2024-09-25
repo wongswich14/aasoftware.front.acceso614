@@ -15,7 +15,7 @@ import Switcher from "src/shared/components/Switcher"
 
 interface UpdateHouseModalProps {
     toggleUpdateModal: () => void
-        lazyUpdateHouse: (id: string, newItem: HouseDto) => void
+        lazyUpdateHouse?: (id: string, newItem: HouseDto) => void
 }
 
 const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, lazyUpdateHouse }) => {
@@ -79,7 +79,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
             if (houseData.dataObject) {
                 const serverData = houseData.dataObject
                 setValue("id", serverData.id)
-                setValue("residentialId", serverData.residentialId)
+                setValue("residentialId", serverData?.residential!.id)
                 setValue("name", serverData.name)
                 // setValue("personContactId", serverData.personContactId)
                 setValue("phoneContact", serverData.phoneContact)
