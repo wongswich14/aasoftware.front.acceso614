@@ -1,5 +1,6 @@
 import { RouteObject } from "react-router-dom";
 import HousesList from "./HousesList";
+import HouseDetails from "./HouseDetails.tsx";
 
 const houseRoutes: RouteObject[] = [
     {
@@ -16,6 +17,10 @@ const houseRoutes: RouteObject[] = [
             {
                 path: "create",
                 element: <HousesList/>
+            },
+            {
+                path: "details/:id",
+                element: <HouseDetails />
             }
         ]
     }

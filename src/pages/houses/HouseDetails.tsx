@@ -1,18 +1,27 @@
-import { useEffect, useState } from "react";
-import { IoClose } from "react-icons/io5";
-import { useGetHouseQuery } from "src/core/features/houseServerApi";
-import { HouseDto } from "src/core/models/dtos/houses/houseDto";
-import LoaderBig from "src/shared/components/LoaderBig";
+import React, {useEffect, useState} from "react";
+import {IoArrowBackCircleSharp} from "react-icons/io5";
+import {useGetHouseQuery} from "../../core/features/houseServerApi.ts";
+import {HouseDto} from "../../core/models/dtos/houses/houseDto.ts";
+import LoaderBig from "../../shared/components/LoaderBig.tsx";
+import {Link, useNavigate, useParams} from "react-router-dom";
+import {FaPlusCircle} from "react-icons/fa";
+import CreateHouseModal from "./CreateHouseModal.tsx";
 
-interface HouseDetailsModalProps {
-    toggleModal: () => void
-    id: string
-}
 
-const HouseDetailsModal: React.FC<HouseDetailsModalProps> = ({ toggleModal, id }) => {
+const HouseDetails: React.FC = () => {
     const [house, setHouse] = useState<HouseDto>()
+    const [openCreateModal, setOpenCreateModal] = useState<boolean>(false)
 
-    const { data: houseData, isFetching: houseIsFetching } = useGetHouseQuery(id, { skip: id === "" })
+    const {id} = useParams<{ id: string }>()
+    const navigate = useNavigate()
+
+    const {data: houseData, isFetching: houseIsFetching} = useGetHouseQuery(id!, {skip: id === ""})
+
+
+    const toggleCreateModal = (id?: string) => {
+        setOpenCreateModal(!openCreateModal)
+        id ? navigate(`/houses/update/${id}`) : navigate(`/houses`)
+    }
 
     useEffect(() => {
         if (houseData && !houseIsFetching) {
@@ -20,23 +29,24 @@ const HouseDetailsModal: React.FC<HouseDetailsModalProps> = ({ toggleModal, id }
         }
     }, [houseData, houseIsFetching])
 
-    if (houseIsFetching) return <LoaderBig />
+    if (houseIsFetching) return <LoaderBig/>
 
     return (
-        <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">
-            <section className="bg-white rounded-lg p-6 relative w-[60%] max-h-[80vh] overflow-y-auto shadow-xl">
-                <IoClose
-                    size={25}
-                    className="absolute top-5 right-5 cursor-pointer text-gray-600"
-                    onClick={() => toggleModal()}
-                />
+        <div className='w-full bg-white min-h-full rounded-md'>
+            <div
+                className='flex gap-2 items-center text-sm text-gray-500 font-semibold border-b pl-5 pt-5 w-[95%] ml-5'>
+                <h2 className='p-2 text-lg'>{house?.name}</h2>
 
-                {/* Título */}
-                <h2 className="text-xl font-semibold text-gray-700 border-b pb-4">
-                    {house?.name}
-                </h2>
+                <Link to={`/residentials/details/${house?.residential?.id}`}
+                      className='flex items-center text-gray-500 hover:text-gray-400 gap-1'>
+                    <IoArrowBackCircleSharp size={20} className='text-lg'/>
+                    <span className="text-base">Volver</span>
+                </Link>
+            </div>
 
-                <div className="mt-6 space-y-6">
+            <div className='text-gray-500 font-semibold px-5 py-2 w-[95%] ml-5 mt-5 overflow-auto'>
+
+                <div className="space-y-6">
 
                     {/* Residencial */}
                     <div>
@@ -62,7 +72,12 @@ const HouseDetailsModal: React.FC<HouseDetailsModalProps> = ({ toggleModal, id }
 
                     {/* Usuarios que habitan la casa */}
                     <div>
-                        <h4 className="text-lg font-semibold text-gray-600">Habitantes</h4>
+                        <div className="flex gap-3">
+                            <h4 className="text-lg font-semibold text-gray-600">Habitantes</h4>
+                            <Link to={'create'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                                <FaPlusCircle className='text-lg'/>
+                            </Link>
+                        </div>
                         {house?.users?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.users.map(user => (
@@ -72,7 +87,8 @@ const HouseDetailsModal: React.FC<HouseDetailsModalProps> = ({ toggleModal, id }
                                                 <p className="text-gray-700 font-medium">{user.name} {user.lastName}</p>
                                                 <p className="text-gray-500">{user.email}</p>
                                             </div>
-                                            {user.isPrincipal && <span className="text-xs text-green-500">(Principal)</span>}
+                                            {user.isPrincipal &&
+                                                <span className="text-xs text-green-500">(Principal)</span>}
                                         </div>
                                     </li>
                                 ))}
@@ -84,7 +100,12 @@ const HouseDetailsModal: React.FC<HouseDetailsModalProps> = ({ toggleModal, id }
 
                     {/* Tarjetas RFID */}
                     <div>
-                        <h4 className="text-lg font-semibold text-gray-600">Tarjetas de Acceso (RFID)</h4>
+                        <div className={"flex gap-3"}>
+                            <h4 className="text-lg font-semibold text-gray-600">Tarjetas de Acceso (RFID)</h4>
+                            <Link to={'create'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                                <FaPlusCircle className='text-lg'/>
+                            </Link>
+                        </div>
                         {house?.rfids?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.rfids.map(rfid => (
@@ -101,10 +122,16 @@ const HouseDetailsModal: React.FC<HouseDetailsModalProps> = ({ toggleModal, id }
                         )}
                     </div>
                 </div>
-            </section>
-        </article>
+            </div>
+
+            {openCreateModal &&
+                <CreateHouseModal
+                    toggleCreateModal={toggleCreateModal}
+                />
+            }
+        </div>
     );
 };
 
 
-export default HouseDetailsModal;
+export default HouseDetails;

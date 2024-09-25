@@ -12,7 +12,7 @@ import LoaderBig from "src/shared/components/LoaderBig"
 
 interface CreateHouseModalProps {
     toggleCreateModal: () => void
-    lazyAddHouse: (newItem: HouseDto) => void
+    lazyAddHouse?: (newItem: HouseDto) => void
 }
 
 const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }) => {

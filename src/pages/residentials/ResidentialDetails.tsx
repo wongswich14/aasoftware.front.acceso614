@@ -1,35 +1,23 @@
 import React, { useEffect, useState } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { IoArrowBackCircleSharp, IoClose } from "react-icons/io5";
-import { TbArrowBackUp } from "react-icons/tb";
+import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { Link, useParams } from "react-router-dom";
-import { useListHousesByResidentialQuery } from "src/core/features/houseServerApi";
 import { useGetResidentialQuery } from "src/core/features/residentialServerApi";
-import { HouseDto } from "src/core/models/dtos/houses/houseDto";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import LoaderBig from "src/shared/components/LoaderBig";
-import HouseDetailsModal from "./HouseDetailsModal";
 
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
-    toggleHouseModal: (id?: string) => void
 }
 
 const ResidentialDetails: React.FC = () => {
     const [residential, setResidential] = useState<ResidentialDto>();
-    const [houses, setHouses] = useState<HouseDto[]>();
-    const [openHouseModal, setOpenHouseModal] = useState<boolean>(false);
-    const [selectedHouseId, setSelectedHouseId] = useState<string>("");
     const [activeTab, setActiveTab] = useState<'informacion' | 'entradasSalidas'>('informacion');
 
     const { id } = useParams<{ id: string }>();
     const { data: residentialData, isFetching: residentialIsFetching } = useGetResidentialQuery(id!, { skip: !id });
 
-    const toggleHouseModal = (id?: string) => {
-        setOpenHouseModal(!openHouseModal);
-        id && setSelectedHouseId(id);
-    };
 
     useEffect(() => {
         if (residentialData && !residentialIsFetching) {
@@ -56,7 +44,7 @@ const ResidentialDetails: React.FC = () => {
                     <button 
                         className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'informacion' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`} 
                         onClick={() => setActiveTab('informacion')}>
-                        Información
+                        Casas
                     </button>
 
                     <button 
@@ -68,7 +56,7 @@ const ResidentialDetails: React.FC = () => {
 
                 {/* Contenido según el tab */}
                 {activeTab === 'informacion' && 
-                    <ResidentialInformation residential={residential!} toggleHouseModal={toggleHouseModal} />
+                    <ResidentialInformation residential={residential!} />
                 }
 
                 {activeTab === 'entradasSalidas' && (
@@ -78,20 +66,13 @@ const ResidentialDetails: React.FC = () => {
                     </div>
                 )}
             </div>
-
-            {openHouseModal && (
-                <HouseDetailsModal
-                    toggleModal={toggleHouseModal}
-                    id={selectedHouseId}
-                />
-            )}
         </div>
     );
 }
 
 export default ResidentialDetails;
 
-const ResidentialInformation: React.FC<ResidentialInformationProps> = ({ residential, toggleHouseModal }) => {
+const ResidentialInformation: React.FC<ResidentialInformationProps> = ({ residential }) => {
     return (
         <table className="table-auto w-full text-sm rounded-md flex-1">
         <thead className='border-b font-medium dark:border-neutral-500'>
@@ -109,9 +90,9 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({ residen
                 <tr key={house.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                     <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                     <td className='whitespace-nowrap py-4 font-normal text-left'>
-                        <button type="button" onClick={() => toggleHouseModal(house.id)} className="hover:underline">
+                        <Link type="button" to={`/houses/details/${house.id}`} className="hover:underline">
                             {house.name}
-                        </button>
+                        </Link>
                     </td>
                     <td className='whitespace-nowrap py-4 font-normal text-left'>{house.street}</td>
                     <td className='whitespace-nowrap py-4 font-normal text-left'>{house.number}</td>
