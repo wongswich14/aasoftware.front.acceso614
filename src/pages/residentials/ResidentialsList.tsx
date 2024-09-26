@@ -142,7 +142,6 @@ const ResidentialsList: React.FC = () => {
                             <th>#</th>
                             <th className='text-left'>Nombre</th>
                             <th className='text-left'>Descripción</th>
-                            {/* <th className='text-left'>Correo</th> */}
 
                             <th>Acciones</th>
                         </tr>

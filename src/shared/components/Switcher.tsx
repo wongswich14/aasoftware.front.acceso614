@@ -6,7 +6,7 @@ interface SwitcherProps {
     onChange: () => void
 }
 
-const Switcher: React.FC<SwitcherProps> = ({ id, isChecked, onChange }) => {
+const Switcher: React.FC<SwitcherProps> = ({ id, isChecked = false, onChange }) => {
     return (
         <label className='flex cursor-pointer select-none items-center'>
         <div className='relative'>

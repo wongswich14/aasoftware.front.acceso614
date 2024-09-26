@@ -51,8 +51,7 @@ const UpdateUserFromHouseModal: React.FC<UpdateUserFromHouseModalProps> = ({ tog
         toast.promise(updateUserPromise, {
             loading: "Actualizando...",
             success: () => {
-                reset()
-                navigate(`/users`)
+                toggleModal()
                 return "Usuario actualizado"
             },
             error: (err) => {

@@ -4,11 +4,15 @@ import {useGetHouseQuery} from "../../core/features/houseServerApi.ts";
 import {HouseDto} from "../../core/models/dtos/houses/houseDto.ts";
 import LoaderBig from "../../shared/components/LoaderBig.tsx";
 import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
-import {FaPlusCircle} from "react-icons/fa";
+import {FaPlusCircle, FaTrash} from "react-icons/fa";
 import AddUserToHouseModal from "../users/AddUserToHouseModal.tsx";
 import AddRfidToHouseModal from "../rfid/AddRfidToHouseModal.tsx";
 import UpdateUserFromHouseModal from "../users/UpdateUserFromHouseModal.tsx";
 import UpdateRfidFromHouseModal from "../rfid/UpdateRfidFromHouseModal.tsx";
+import DeleteModal from "../../shared/components/DeleteModal.tsx";
+import {useSoftDeleteUserMutation} from "../../core/features/userServerApi.ts";
+import {useSoftDeleteRfidMutation} from "../../core/features/rfidServerApi.ts";
+import {toast} from "sonner";
 
 
 const HouseDetails: React.FC = () => {
@@ -19,12 +23,18 @@ const HouseDetails: React.FC = () => {
     const [openUpdateRfidModal, setOpenUpdateRfidModal] = useState(false)
     const [updatedUserId, setUpdatedUserId] = useState<string>("")
     const [updatedRfidId, setUpdatedRfidId] = useState<string>("")
+    const [deletedId, setDeletedId] = useState<string>("")
+    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
+    const [deleteMode, setDeleteMode] = useState<"user" | "rfid">("user");
 
     const {id} = useParams<{ id: string }>()
     const navigate = useNavigate()
     const location = useLocation()
 
     const {data: houseData, isFetching: houseIsFetching} = useGetHouseQuery(id!, {skip: id === ""})
+
+    const [softDeleteUser] = useSoftDeleteUserMutation()
+    const [softDeleteRfid] = useSoftDeleteRfidMutation()
 
     const toggleAddUserModal = () => {
         setOpenAddUserModal((prevState) => {
@@ -48,6 +58,12 @@ const HouseDetails: React.FC = () => {
         setUpdatedRfidId(id || "")
     }
 
+    const toggleDeleteModal = (id?: string, mode: "user" | "rfid" = "user") => {
+        setOpenDeleteModal(!openDeleteModal);
+        setDeletedId(id || "");
+        setDeleteMode(mode);
+    };
+
     const toggleAddRfidModal = () => {
         setOpenAddRfidModal((prevState) => {
             const newState = !prevState;
@@ -59,6 +75,42 @@ const HouseDetails: React.FC = () => {
             return newState;
         });
     }
+
+    const handleDelete = async (deleteMode: "user" | "rfid", deletedId: string) => {
+        let deletePromise;
+
+        switch (deleteMode) {
+            case "user":
+                deletePromise = softDeleteUser(deletedId).unwrap();
+                toast.promise(deletePromise, {
+                    loading: "Eliminando usuario...",
+                    success: () => {
+                        toggleDeleteModal();
+                        return "Usuario eliminado";
+                    },
+                    error: (err) => {
+                        console.error(err);
+                        return "Error al eliminar usuario";
+                    }
+                });
+                break;
+
+            case "rfid":
+                deletePromise = softDeleteRfid(deletedId).unwrap();
+                toast.promise(deletePromise, {
+                    loading: "Eliminando tarjeta RFID...",
+                    success: () => {
+                        toggleDeleteModal();
+                        return "Tarjeta RFID eliminada";
+                    },
+                    error: (err) => {
+                        console.error(err);
+                        return "Error al eliminar tarjeta RFID";
+                    }
+                });
+                break;
+        }
+    };
 
     useEffect(() => {
         setOpenAddUserModal(location.pathname.includes("add-user"));
@@ -122,14 +174,25 @@ const HouseDetails: React.FC = () => {
                         {house?.users?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.users.map(user => (
-                                    <li key={user.id} className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100" onClick={() => toggleUpdateUserModal(user.id)}>
+                                    <li key={user.id}
+                                        className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100"
+                                        onClick={() => toggleUpdateUserModal(user.id)}>
                                         <div className="flex justify-between items-center">
-                                            <div>
-                                                <p className="text-gray-700 font-medium">{user.name} {user.lastName}</p>
-                                                <p className="text-gray-500">{user.email}</p>
+                                            <div className="flex gap-7 items-center">
+                                                <div>
+                                                    <p className="text-gray-700 font-medium">{user.name} {user.lastName}</p>
+                                                    <p className="text-gray-500">{user.email}</p>
+                                                </div>
+                                                {user.isPrincipal &&
+                                                    <span className="text-xs text-green-500">(Responsable)</span>}
                                             </div>
-                                            {user.isPrincipal &&
-                                                <span className="text-xs text-green-500">(Responsable)</span>}
+
+                                            <FaTrash className='text-red-500 hover:text-red-400'
+                                                     size={18}
+                                                     onClick={(e) => {
+                                                         e.stopPropagation()
+                                                         toggleDeleteModal(user.id, "user")
+                                                     }}/>
                                         </div>
                                     </li>
                                 ))}
@@ -150,11 +213,19 @@ const HouseDetails: React.FC = () => {
                         {house?.rfids?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.rfids.map(rfid => (
-                                    <li key={rfid.id} className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100" onClick={() => toggleUpdateRfidModal(rfid.id)}>
+                                    <li key={rfid.id}
+                                        className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100 flex justify-between items-center"
+                                        onClick={() => toggleUpdateRfidModal(rfid.id)}>
                                         <div>
                                             <p className="text-gray-700 font-medium">Folio: {rfid.folio}</p>
                                             <p className="text-gray-500 text-sm">Comentarios: {rfid.comments}</p>
                                         </div>
+
+                                        <FaTrash size={18} className='text-red-500 hover:text-red-400'
+                                                 onClick={(e) => {
+                                                     e.stopPropagation()
+                                                     toggleDeleteModal(rfid.id, "rfid")
+                                                 }}/>
                                     </li>
                                 ))}
                             </ul>
@@ -165,10 +236,19 @@ const HouseDetails: React.FC = () => {
                 </div>
             </div>
 
-            {openAddUserModal && <AddUserToHouseModal toggleModal={toggleAddUserModal} />}
-            {openAddRfidModal && <AddRfidToHouseModal toggleModal={toggleAddRfidModal} />}
-            {openUpdateUserModal && <UpdateUserFromHouseModal toggleModal={toggleUpdateUserModal} userId={updatedUserId} />}
-            {openUpdateRfidModal && <UpdateRfidFromHouseModal toggleModal={toggleUpdateRfidModal} rfidId={updatedRfidId} />}
+            {openAddUserModal && <AddUserToHouseModal toggleModal={toggleAddUserModal}/>}
+            {openAddRfidModal && <AddRfidToHouseModal toggleModal={toggleAddRfidModal}/>}
+            {openUpdateUserModal &&
+                <UpdateUserFromHouseModal toggleModal={toggleUpdateUserModal} userId={updatedUserId}/>}
+            {openUpdateRfidModal &&
+                <UpdateRfidFromHouseModal toggleModal={toggleUpdateRfidModal} rfidId={updatedRfidId}/>}
+            {openDeleteModal && (
+                <DeleteModal
+                    toggleDeleteModal={toggleDeleteModal}
+                    softDeleteId={deletedId}
+                    deleteAction={(id: string) => handleDelete(deleteMode, id)}
+                />
+            )}
         </div>
     );
 };

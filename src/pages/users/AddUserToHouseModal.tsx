@@ -181,7 +181,7 @@ const AddUserToHouseModal: React.FC<AddUserToHouseModalProps> = ({toggleModal}) 
                             >
                                 <option value="" selected>-- Seleccione una --</option>
                                 {profiles && profiles.map(profile => (
-                                    <option value={profile.id}>{profile.title}</option>
+                                    <option key={profile.id} value={profile.id}>{profile.title}</option>
                                 ))}
                             </select>
                             {errors.profileId && <span className="form-error">{errors.profileId.message}</span>}

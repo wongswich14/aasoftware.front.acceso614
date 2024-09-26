@@ -1,7 +1,4 @@
-import { AppendUserToHomeDto } from "../models/dtos/users/appendUserToHomeDto";
-import { AppendUserToResidentialDto } from "../models/dtos/users/appendUserToResidentialDto";
 import { UserCreateDto } from "../models/dtos/users/userCreateDto";
-import { UserDto } from "../models/dtos/users/userDto";
 import { UserUpdateDto } from "../models/dtos/users/userUpdateDto";
 import { UserResponse } from "../models/responses/user.response";
 import { serverApi } from "../serverApi";
