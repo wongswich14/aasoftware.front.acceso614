@@ -182,6 +182,9 @@ const HouseDetails: React.FC = () => {
                                                 <div>
                                                     <p className="text-gray-700 font-medium">{user.name} {user.lastName}</p>
                                                     <p className="text-gray-500">{user.email}</p>
+                                                    {user.profileName &&
+                                                        <p className="bg-gray-400 rounded-lg px-2 py-1 text-white text-xs font-semibold w-fit mt-1">{user.profileName}</p>
+                                                    }
                                                 </div>
                                                 {user.isPrincipal &&
                                                     <span className="text-xs text-green-500">(Responsable)</span>}

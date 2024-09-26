@@ -6,16 +6,14 @@ import { toast } from "sonner";
 import { useGetDoorQuery, useUpdateDoorMutation } from "src/core/features/doorServerApi"; // Make sure to import your door API
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi";
 import LoaderBig from "src/shared/components/LoaderBig";
-import {DoorDto} from "../../core/models/dtos/doors/doorDto.ts";
 import {ResidentialDto} from "../../core/models/dtos/residentials/ResidentialDto.ts";
 import {DoorUpdateDto} from "../../core/models/dtos/doors/doorUpdateDto.ts";
 
 interface UpdateDoorLogModalProps {
     toggleUpdateModal: () => void;
-    lazyUpdateDoorLog: (id: string, newItem: DoorDto) => void; // Adjust the type as needed
 }
 
-const UpdateDoorLogModal: React.FC<UpdateDoorLOgModalProps> = ({ toggleUpdateModal, lazyUpdateDoorLog }) => {
+const UpdateDoorLogModal: React.FC<UpdateDoorLogModalProps> = ({ toggleUpdateModal }) => {
 
     const [residentials, setResidentials] = useState<ResidentialDto[]>();
     const { id } = useParams<{ id: string }>();
@@ -34,7 +32,6 @@ const UpdateDoorLogModal: React.FC<UpdateDoorLOgModalProps> = ({ toggleUpdateMod
         toast.promise(updateDoorPromise, {
             loading: "Actualizando...",
             success: () => {
-                lazyUpdateDoor(id!, data); // Call lazyUpdateDoor here
                 navigate(`/doors`); // Adjust navigation if necessary
                 return "Puerta actualizada";
             },
@@ -53,9 +50,9 @@ const UpdateDoorLogModal: React.FC<UpdateDoorLOgModalProps> = ({ toggleUpdateMod
         console.log(doorData);
 
         if (!doorLoading && doorData) {
-            setValue("id", doorData.dataObject.id);
-            setValue("name", doorData.dataObject.name);
-            setValue("residentialId", doorData.dataObject?.residential?.id); // If applicable
+            setValue("id", doorData?.dataObject?.id || "");
+            setValue("name", doorData?.dataObject?.name || "");
+            setValue("residentialId", doorData?.dataObject?.residential?.id || ""); // If applicable
             // Set other fields as necessary
         }
     }, [doorLoading, doorData]);

@@ -129,35 +129,35 @@ const LogDoorList: React.FC = () => {
                     </thead>
                     <tbody>
                     {
-                        doorLogs && doorLogs.map((log, i) => (
-                            <tr key={log.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
-                                <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{`${log.name}`}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{log.date || "N/A"}</td>
-                                <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                                    <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(log.id)} />
-                                    <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(log.id)} />
-                                </td>
-                            </tr>
-                        ))
+                        // doorLogs && doorLogs.map((log, i) => (
+                        //     <tr key={log.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
+                        //         <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
+                        //         <td className='whitespace-nowrap py-4 font-normal text-left'>{`${log.name}`}</td>
+                        //         <td className='whitespace-nowrap py-4 font-normal text-left'>{log.date || "N/A"}</td>
+                        //         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
+                        //             <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(log.id)} />
+                        //             <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(log.id)} />
+                        //         </td>
+                        //     </tr>
+                        // ))
                     }
                     </tbody>
                 </table>
             </div>
 
-            {openUpdateDoorLogModal &&
-                <UpdateDoorLogModal
-                    toggleUpdateModal={toggleUpdateModal}
-                    lazyUpdateDoorLog={lazyUpdateDoorLog} // Updated method
-                />
-            }
+            {/*{openUpdateDoorLogModal &&*/}
+            {/*    <UpdateDoorLogModal*/}
+            {/*        toggleUpdateModal={toggleUpdateModal}*/}
+            {/*        lazyUpdateDoorLog={lazyUpdateDoorLog} // Updated method*/}
+            {/*    />*/}
+            {/*}*/}
 
-            {openCreateDoorLogsModal &&
-                <CreateDoorLogsModal
-                    toggleCreateModal={toggleCreateModal}
-                    lazyAddDoorLog={lazyAddDoorLog} // Updated method
-                />
-            }
+            {/*{openCreateDoorLogsModal &&*/}
+            {/*    <CreateDoorLogsModal*/}
+            {/*        toggleCreateModal={toggleCreateModal}*/}
+            {/*        lazyAddDoorLog={lazyAddDoorLog} // Updated method*/}
+            {/*    />*/}
+            {/*}*/}
 
             {openDeleteModal &&
                 <DeleteModal

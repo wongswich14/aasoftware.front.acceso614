@@ -14,7 +14,7 @@ interface CreateDoorsModalProps {
     lazyAddDoor: (newItem: DoorDto) => void;
 }
 
-const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal, lazyAddDoor }) => {
+const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal }) => {
     const { id } = useParams<{ id: string }>();
     const [residentials, setResidentials] = useState<DoorDto[]>();
     const [createDoor] = useCreateDoorMutation();
@@ -50,10 +50,6 @@ const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal, 
             setResidentials(residentialsData.listDataObject);
         }
     }, [residentialsData, residentialsIsLoading]);
-
-    useEffect(() => {
-        setValue("enabled", true);
-    }, []);
 
     if (residentialsIsLoading) return <LoaderBig message="Cargando" />;
 

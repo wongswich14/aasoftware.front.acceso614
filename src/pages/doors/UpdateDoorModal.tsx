@@ -53,9 +53,9 @@
             console.log(doorData);
 
             if (!doorLoading && doorData) {
-                setValue("id", doorData.dataObject.id);
-                setValue("name", doorData.dataObject.name);
-                setValue("residentialId", doorData.dataObject?.residential?.id); // If applicable
+                setValue("id", doorData?.dataObject?.id || "");
+                setValue("name", doorData?.dataObject?.name || "");
+                setValue("residentialId", doorData?.dataObject?.residential?.id || ""); // If applicable
                 // Set other fields as necessary
             }
         }, [doorLoading, doorData]);

@@ -80,7 +80,7 @@ const ResidentialDetails: React.FC = () => {
 
                 {activeTab === 'entradasSalidas' && (
                     <div>
-                        <DoorsList residential={residential!}/>
+                        <DoorsList/>
                     </div>
                 )}
             </div>
