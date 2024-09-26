@@ -96,7 +96,8 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
                 streetDetail: "",
                 number: "",
                 zip: "",
-                enabled: true
+                enabled: true,
+                maxRfid: 3
             }).unwrap();
 
             // Refetch de las casas

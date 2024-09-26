@@ -1,6 +1,5 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { IoArrowBackCircleSharp } from "react-icons/io5";
+import {FaEdit, FaPlusCircle, FaTrash} from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGetResidentialQuery } from "src/core/features/residentialServerApi";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
@@ -8,7 +7,9 @@ import LoaderBig from "src/shared/components/LoaderBig";
 import DeleteModal from "../../shared/components/DeleteModal.tsx";
 import DoorsList from "../doors/DoorsList.tsx";
 import {toast} from "sonner";
-import {useHardDeleteVisitMutation} from "../../core/features/visitServerApi.ts";
+import AddHouseToResidentialModal from "../houses/AddHouseToResidentialModal.tsx";
+import {useHardDeleteHouseMutation} from "../../core/features/houseServerApi.ts";
+import UpdateHouseFromResidentialModal from "../houses/UpdateHouseFromResidentialModal.tsx";
 
 
 interface ResidentialInformationProps {
@@ -18,9 +19,15 @@ interface ResidentialInformationProps {
 const ResidentialDetails: React.FC = () => {
     const [residential, setResidential] = useState<ResidentialDto>();
     const [activeTab, setActiveTab] = useState<'informacion' | 'entradasSalidas'>('informacion');
+    const [openCreateModal, setOpenCreateModal] = useState(false);
+
     const { id } = useParams<{ id: string }>();
     const { data: residentialData, isFetching: residentialIsFetching } = useGetResidentialQuery(id!, { skip: !id });
     const location = useLocation();
+
+    const toggleCreateModal = () => {
+        setOpenCreateModal(!openCreateModal)
+    }
 
     useEffect(() => {
         if (location.pathname.includes("doors")){
@@ -44,10 +51,10 @@ const ResidentialDetails: React.FC = () => {
                 className='flex gap-2 items-center text-sm text-gray-500 font-semibold border-b pl-5 pt-5 w-[95%] ml-5'>
                 <h2 className='p-2 text-lg'>{residential?.name}</h2>
 
-                <Link to={'/residentials'} className='flex items-center text-gray-500 hover:text-gray-400 gap-1'>
-                    <IoArrowBackCircleSharp size={20} className='text-lg'/>
-                    <span className="text-base">Volver</span>
-                </Link>
+                <button onClick={toggleCreateModal} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                    <FaPlusCircle size={20} className='text-lg'/>
+                    <span className="text-base">Agregar Vivienda</span>
+                </button>
             </div>
 
             <div className='text-gray-500 font-semibold px-5 py-2 w-[95%] ml-5 mt-5 overflow-auto'>
@@ -56,7 +63,7 @@ const ResidentialDetails: React.FC = () => {
                     <button
                         className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'informacion' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}
                         onClick={() => setActiveTab('informacion')}>
-                        Casas
+                        Viviendas
                     </button>
 
                     <button
@@ -77,6 +84,8 @@ const ResidentialDetails: React.FC = () => {
                     </div>
                 )}
             </div>
+
+            {openCreateModal && <AddHouseToResidentialModal toggleModal={toggleCreateModal} />}
         </div>
     );
 }
@@ -86,12 +95,13 @@ export default ResidentialDetails;
 const ResidentialInformation: React.FC<ResidentialInformationProps> = ({residential}) => {
 
     const [deleteId, setDeleteId] = useState<string>("")
+    const [updatedId, setUpdatedId] = useState<string>("")
     const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
 
     const navigate = useNavigate();
 
-    const [hardDelete] = useHardDeleteVisitMutation()
+    const [hardDelete] = useHardDeleteHouseMutation()
 
     const toggleDeleteModal = (id?: string) => {
         if (id) {
@@ -102,13 +112,27 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
         setOpenDeleteModal(!openDeleteModal)
     }
 
+    const toggleUpdateModal = (id?: string) => {
+        if (id) {
+            setUpdatedId(id)
+        } else {
+            setUpdatedId("")
+        }
+        setOpenUpdateModal(!openUpdateModal)
+    }
+
     const handleDelete = async (id: string) => {
         const hardDeletePromise = hardDelete(id).unwrap()
-
         toast.promise(hardDeletePromise, {
             loading: 'Eliminando vivienda...',
-            success: 'Vivienda eliminada',
-            error: 'Error al eliminar la vivienda'
+            success: () => {
+                toggleDeleteModal()
+                return 'Vivienda eliminada'
+            },
+            error: (err) => {
+                console.error(err)
+                return 'Error al eliminar vivienda'
+            }
         })
     }
 
@@ -139,7 +163,7 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{house.number}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{house.phoneContact}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => navigate(`/houses/update/${house.id}`)} />
+                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(house.id)} />
                             <FaTrash className='text-red-500 hover:text-red-400'
                                      onClick={() => toggleDeleteModal(house.id)}/>
                         </td>
@@ -153,6 +177,8 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
                     softDeleteId={deleteId}
                     deleteAction={handleDelete}/>
             }
+
+            {openUpdateModal && <UpdateHouseFromResidentialModal toggleModal={toggleUpdateModal} houseId={updatedId} />}
         </>
     );
 }

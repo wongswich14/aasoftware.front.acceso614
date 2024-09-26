@@ -26,7 +26,7 @@ export const houseServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newHouse,
             }),
-            invalidatesTags: ["House"]
+            invalidatesTags: ["House", "Residential"]
         }),
 
         updateHouse: builder.mutation<HouseResponse, HouseUpdateDto>({
@@ -35,7 +35,7 @@ export const houseServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedHouse,
             }),
-            invalidatesTags: ["House"]
+            invalidatesTags: ["House", "Residential"]
         }),
 
         softDeleteHouse: builder.mutation<HouseResponse, string>({
@@ -51,7 +51,7 @@ export const houseServerApi = serverApi.injectEndpoints({
                 url: `/home/harddelete/${id}`,
                 method: "DELETE"
             }),
-
+            invalidatesTags: ["House", "Residential"]
         })
     }),
     overrideExisting: false

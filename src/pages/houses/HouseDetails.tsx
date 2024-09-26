@@ -7,12 +7,15 @@ import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import {FaPlusCircle} from "react-icons/fa";
 import AddUserToHouseModal from "../users/AddUserToHouseModal.tsx";
 import AddRfidToHouseModal from "../rfid/AddRfidToHouseModal.tsx";
+import UpdateUserFromHouseModal from "../users/UpdateUserFromHouseModal.tsx";
 
 
 const HouseDetails: React.FC = () => {
     const [house, setHouse] = useState<HouseDto>()
     const [openAddUserModal, setOpenAddUserModal] = useState<boolean>(false)
     const [openAddRfidModal, setOpenAddRfidModal] = useState<boolean>(false)
+    const [openUpdateUserModal, setOpenUpdateUserModal] = useState<boolean>(false)
+    const [openUpdateRfidModal, setOpenUpdateRfidModal] = useState(false)
 
     const {id} = useParams<{ id: string }>()
     const navigate = useNavigate()
@@ -30,6 +33,10 @@ const HouseDetails: React.FC = () => {
             }
             return newState;
         });
+    }
+
+    const toggleUpdateUserModal = () => {
+        setOpenUpdateUserModal(!openUpdateUserModal)
     }
 
     const toggleAddRfidModal = () => {
@@ -150,8 +157,8 @@ const HouseDetails: React.FC = () => {
             </div>
 
             {openAddUserModal && <AddUserToHouseModal toggleModal={toggleAddUserModal} />}
-
             {openAddRfidModal && <AddRfidToHouseModal toggleModal={toggleAddRfidModal} />}
+            {openUpdateUserModal && <UpdateUserFromHouseModal toggleModal={toggleUpdateUserModal} />}
         </div>
     );
 };

@@ -1,4 +1,3 @@
-import { list } from "postcss";
 import { serverApi } from "../serverApi";
 import { ResidentialResponse } from "../models/responses/residential.response";
 import { ResidentialCreateDto } from "../models/dtos/residentials/ResidentialCreateDto";
@@ -8,19 +7,22 @@ export const residentialServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
 
         listResidentials: builder.query<ResidentialResponse, void>({
-            query: () => `residential`
+            query: () => `residential`,
+            providesTags: ["Residential"]
         }),
 
         getResidential: builder.query<ResidentialResponse, string>({
-            query: (id) => `residential/${id}`
+            query: (id) => `residential/${id}`,
+            providesTags: ["Residential"]
         }),
 
         createResidential: builder.mutation<ResidentialResponse, ResidentialCreateDto>({
             query: (newResidential) => ({
                 url: '/residential',
                 method: 'POST',
-                body: newResidential,
+                body: newResidential
             }),
+            invalidatesTags: ["Residential"]
         }),
 
         updateResidential: builder.mutation<ResidentialResponse, ResidentialUpdateDto>({
@@ -29,6 +31,7 @@ export const residentialServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedResidential,
             }),
+            invalidatesTags: ["Residential"]
         }),
 
         softDeleteResidential: builder.mutation<ResidentialResponse, string>({
@@ -36,6 +39,7 @@ export const residentialServerApi = serverApi.injectEndpoints({
                 url: `/residential/softdelete/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ["Residential"]
         }),
 
         hardDeleteResidential: builder.mutation<ResidentialResponse, string>({
@@ -43,6 +47,7 @@ export const residentialServerApi = serverApi.injectEndpoints({
                 url: `/residential/harddelete/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ["Residential"]
         }),
 
     }),

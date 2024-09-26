@@ -41,7 +41,7 @@ const DoorsDetails: React.FC = () => {
             <div className='flex gap-2 items-center text-sm text-gray-500 font-semibold border-b pl-5 pt-5 w-[95%] ml-5'>
                 <h2 className='p-2 text-lg'>{door?.name}</h2>
 
-                <Link to={`/residentials/details/${door?.residential?.id}`} className='flex items-center text-gray-500 hover:text-gray-400 gap-1'>
+                <Link to={`/residentials/${door?.residential?.id}`} className='flex items-center text-gray-500 hover:text-gray-400 gap-1'>
                     <IoArrowBackCircleSharp size={20} className='text-lg' />
                     <span className="text-base">Volver</span>
                 </Link>

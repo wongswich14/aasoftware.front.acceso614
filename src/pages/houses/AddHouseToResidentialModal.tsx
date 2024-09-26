@@ -1,38 +1,28 @@
-import { useEffect, useState } from "react"
-import { useForm } from "react-hook-form"
-import { IoClose } from "react-icons/io5"
-import { useNavigate } from "react-router-dom"
-import { toast } from "sonner"
-import { useCreateHouseMutation } from "src/core/features/houseServerApi"
-import { useListResidentialsQuery } from "src/core/features/residentialServerApi"
-import { HouseCreateDto } from "src/core/models/dtos/houses/houseCreateDto"
-import { HouseDto } from "src/core/models/dtos/houses/houseDto"
-import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto"
-import LoaderBig from "src/shared/components/LoaderBig"
+import {IoClose} from "react-icons/io5";
+import {useEffect} from "react";
+import {useCreateHouseMutation} from "../../core/features/houseServerApi.ts";
+import {useParams} from "react-router-dom";
+import {useForm} from "react-hook-form";
+import {HouseCreateDto} from "../../core/models/dtos/houses/houseCreateDto.ts";
+import {toast} from "sonner";
 
-interface CreateHouseModalProps {
-    toggleCreateModal: () => void
-    lazyAddHouse?: (newItem: HouseDto) => void
+interface AddHouseToResidentialModalProps {
+    toggleModal: () => void
 }
 
-const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }) => {
+const AddHouseToResidentialModal: React.FC<AddHouseToResidentialModalProps> = ({toggleModal}) => {
 
-    const [residentials, setResidentials] = useState<ResidentialDto[]>()
-    const [createHouse] = useCreateHouseMutation()
-    const navigate = useNavigate()
-
-    const {
-        data: residentialsData,
-        isLoading: residentialsIsLoading
-    } = useListResidentialsQuery()
-
+    // El id de la residencial
+    const { id } = useParams<{ id: string }>()
 
     const {
         register,
         handleSubmit,
         formState: { errors },
+        setValue
     } = useForm<HouseCreateDto>();
 
+    const [createHouse] = useCreateHouseMutation()
 
     const submitForm = async (data: HouseCreateDto) => {
         const createHousePromise = createHouse(data).unwrap()
@@ -40,8 +30,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
         toast.promise(createHousePromise, {
             loading: "Creando...",
             success: () => {
-                // lazyAddHouse(res.dataObject!)
-                navigate(`/houses`)
+                toggleModal()
                 return "Vivienda creada"
             },
             error: (err) => {
@@ -52,12 +41,8 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
     }
 
     useEffect(() => {
-        if (residentialsData && !residentialsIsLoading) {
-            setResidentials(residentialsData.listDataObject)
-        }
-    }, [residentialsData, residentialsIsLoading])
-
-    if (residentialsIsLoading ) return <LoaderBig message="Cargando" />
+        setValue("residentialId", id!)
+    }, []);
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">
@@ -65,9 +50,9 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
-                    onClick={() => toggleCreateModal()}
+                    onClick={() => toggleModal()}
                 />
-                <h3 className="p-2 text-lg text-gray-500 font-semibold">Crear Vivienda</h3>
+                <h3 className="p-2 text-lg text-gray-500 font-semibold">Agregar Vivienda</h3>
 
                 <form className="flex flex-col mt-5 text-gray-700 text-base" onSubmit={handleSubmit(submitForm)}>
 
@@ -78,7 +63,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
                                 type="text"
                                 id="name"
                                 className="input-form"
-                                {...register('name', { required: 'Este campo es obligatorio' })}
+                                {...register('name', {required: 'Este campo es obligatorio'})}
                             />
                             {errors.name && <span className="form-error">{errors.name.message}</span>}
                         </div>
@@ -89,26 +74,11 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
                                 type="text"
                                 id="phoneContact"
                                 className="input-form"
-                                {...register('phoneContact', { required: 'Este campo es obligatorio' })}
+                                {...register('phoneContact', {required: 'Este campo es obligatorio'})}
                             />
                             {errors.phoneContact && <span className="form-error">{errors.phoneContact.message}</span>}
                         </div>
                     </section>
-
-                    {/* <div className="input-container">
-                        <label htmlFor="personContactId" className="label-form">Contacto</label>
-                        <select
-                            id="personContactId"
-                            className="input-form"
-                            {...register('personContactId', { required: 'Este campo es obligatorio' })}
-                        >
-                            <option value="">-- Seleccione una opción --</option>
-                            {users && users.map(user => (
-                                <option key={user.id} value={user.id}>{user.name}</option>
-                            ))}
-                        </select>
-                        {errors.personContactId && <span className="form-error">{errors.personContactId.message}</span>}
-                    </div> */}
 
                     <section className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
                         <div className="input-container">
@@ -117,7 +87,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
                                 type="text"
                                 id="street"
                                 className="input-form"
-                                {...register('street', { required: 'Este campo es obligatorio' })}
+                                {...register('street', {required: 'Este campo es obligatorio'})}
                             />
                             {errors.street && <span className="form-error">{errors.street.message}</span>}
                         </div>
@@ -141,7 +111,7 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
                                 type="text"
                                 id="number"
                                 className="input-form"
-                                {...register('number', { required: 'Este campo es obligatorio' })}
+                                {...register('number', {required: 'Este campo es obligatorio'})}
                             />
                             {errors.number && <span className="form-error">{errors.number.message}</span>}
                         </div>
@@ -152,36 +122,23 @@ const CreateHouseModal: React.FC<CreateHouseModalProps> = ({ toggleCreateModal }
                                 type="text"
                                 id="zip"
                                 className="input-form"
-                                {...register('zip', { required: 'Este campo es obligatorio' })}
+                                {...register('zip', {required: 'Este campo es obligatorio'})}
                             />
                             {errors.zip && <span className="form-error">{errors.zip.message}</span>}
                         </div>
                     </section>
 
-                    <div className="input-container">
-                        <label htmlFor="residentialId" className="label-form">Residencial</label>
-                        <select
-                            id="residentialId"
-                            className="input-form"
-                            {...register('residentialId', { required: 'Este campo es obligatorio' })}
-                        >
-                            <option value="">-- Seleccione una opción --</option>
-                            {residentials && residentials.map(residential => (
-                                <option key={residential.id} value={residential.id}>{residential.name}</option>
-                            ))}
-                        </select>
-                        {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
-                    </div>
-
                     <div className="flex justify-end gap-5">
                         <button type="submit" className="submit-button">Guardar</button>
 
-                        <button type="button" onClick={() => toggleCreateModal()} className="cancel-button">Cancelar</button>
+                        <button type="button" onClick={() => toggleModal()} className="cancel-button">Cancelar
+                        </button>
                     </div>
                 </form>
             </section>
         </article>
+
     )
 }
 
-export default CreateHouseModal
+export default AddHouseToResidentialModal

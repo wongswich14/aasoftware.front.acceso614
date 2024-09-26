@@ -21,7 +21,7 @@ const residentialRoutes: RouteObject[] = [
             {
                 path: ":id",
                 element: <ResidentialDetails />,
-            }
+            },
         ]
     }
 ]
