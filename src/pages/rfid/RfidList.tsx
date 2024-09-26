@@ -1,14 +1,12 @@
 import { useEffect, useState } from "react";
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
-import { Link, useNavigate, useParams } from "react-router-dom";
+import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
 import { useListRfidsQuery } from "src/core/features/rfidServerApi";
 import { RfidDto } from "src/core/models/dtos/rfids/rfidDto";
 import DeleteModal from "src/shared/components/DeleteModal";
 import SkeletonTable from "src/shared/components/SkeletonTable";
 import UpdateRfidModal from "./UpdateRfidModal";
 import CreateRfidModal from "./CreateRfidModal";
-import { useHardDeleteResidentialMutation } from "src/core/features/residentialServerApi";
-import { useHardDeleteHouseMutation } from "src/core/features/houseServerApi";
 
 const RfidList = () => {
 
@@ -20,6 +18,7 @@ const RfidList = () => {
 
     const navigate = useNavigate()
     const { id } = useParams<{ id: string }>()
+    const location = useLocation();
 
     const { data: rfidData, isFetching: rfidIsFetching } = useListRfidsQuery()
     
@@ -61,11 +60,7 @@ const RfidList = () => {
             setOpenUpdateRfidModal(false)
         }
             
-        if (location.pathname.includes("create")) {
-            setOpenCreateRfidModal(true)   
-        } else {
-            setOpenCreateRfidModal(false)
-        }
+       setOpenCreateRfidModal(location.pathname.includes("create"))
     }, [id, location])
 
     useEffect(() => {

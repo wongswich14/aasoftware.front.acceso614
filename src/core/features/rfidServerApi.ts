@@ -30,7 +30,7 @@ export const rfidServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedRfid,
             }),
-            invalidatesTags: ["Rfid"]
+            invalidatesTags: ["Rfid", 'House']
         }),
 
         softDeleteRfid: builder.mutation<RfidResponse, string>({
@@ -38,7 +38,7 @@ export const rfidServerApi = serverApi.injectEndpoints({
                 url: `/cardsrfid/softdelete/${id}`,
                 method: "DELETE"
             }),
-            invalidatesTags: ["Rfid"]
+            invalidatesTags: ["Rfid", "House"]
         })
     })
 })

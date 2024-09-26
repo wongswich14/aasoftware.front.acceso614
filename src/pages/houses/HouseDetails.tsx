@@ -8,6 +8,7 @@ import {FaPlusCircle} from "react-icons/fa";
 import AddUserToHouseModal from "../users/AddUserToHouseModal.tsx";
 import AddRfidToHouseModal from "../rfid/AddRfidToHouseModal.tsx";
 import UpdateUserFromHouseModal from "../users/UpdateUserFromHouseModal.tsx";
+import UpdateRfidFromHouseModal from "../rfid/UpdateRfidFromHouseModal.tsx";
 
 
 const HouseDetails: React.FC = () => {
@@ -16,6 +17,8 @@ const HouseDetails: React.FC = () => {
     const [openAddRfidModal, setOpenAddRfidModal] = useState<boolean>(false)
     const [openUpdateUserModal, setOpenUpdateUserModal] = useState<boolean>(false)
     const [openUpdateRfidModal, setOpenUpdateRfidModal] = useState(false)
+    const [updatedUserId, setUpdatedUserId] = useState<string>("")
+    const [updatedRfidId, setUpdatedRfidId] = useState<string>("")
 
     const {id} = useParams<{ id: string }>()
     const navigate = useNavigate()
@@ -35,8 +38,14 @@ const HouseDetails: React.FC = () => {
         });
     }
 
-    const toggleUpdateUserModal = () => {
+    const toggleUpdateUserModal = (id?: string) => {
         setOpenUpdateUserModal(!openUpdateUserModal)
+        setUpdatedUserId(id || "")
+    }
+
+    const toggleUpdateRfidModal = (id?: string) => {
+        setOpenUpdateRfidModal(!openUpdateRfidModal)
+        setUpdatedRfidId(id || "")
     }
 
     const toggleAddRfidModal = () => {
@@ -113,7 +122,7 @@ const HouseDetails: React.FC = () => {
                         {house?.users?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.users.map(user => (
-                                    <li key={user.id} className="p-4 border rounded-lg bg-gray-50 shadow-sm">
+                                    <li key={user.id} className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100" onClick={() => toggleUpdateUserModal(user.id)}>
                                         <div className="flex justify-between items-center">
                                             <div>
                                                 <p className="text-gray-700 font-medium">{user.name} {user.lastName}</p>
@@ -141,7 +150,7 @@ const HouseDetails: React.FC = () => {
                         {house?.rfids?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.rfids.map(rfid => (
-                                    <li key={rfid.id} className="p-4 border rounded-lg bg-gray-50 shadow-sm">
+                                    <li key={rfid.id} className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100" onClick={() => toggleUpdateRfidModal(rfid.id)}>
                                         <div>
                                             <p className="text-gray-700 font-medium">Folio: {rfid.folio}</p>
                                             <p className="text-gray-500 text-sm">Comentarios: {rfid.comments}</p>
@@ -158,7 +167,8 @@ const HouseDetails: React.FC = () => {
 
             {openAddUserModal && <AddUserToHouseModal toggleModal={toggleAddUserModal} />}
             {openAddRfidModal && <AddRfidToHouseModal toggleModal={toggleAddRfidModal} />}
-            {openUpdateUserModal && <UpdateUserFromHouseModal toggleModal={toggleUpdateUserModal} />}
+            {openUpdateUserModal && <UpdateUserFromHouseModal toggleModal={toggleUpdateUserModal} userId={updatedUserId} />}
+            {openUpdateRfidModal && <UpdateRfidFromHouseModal toggleModal={toggleUpdateRfidModal} rfidId={updatedRfidId} />}
         </div>
     );
 };

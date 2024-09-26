@@ -10,7 +10,6 @@ import { useGetUserQuery, useUpdateUserMutation } from "src/core/features/userSe
 import { HouseDto } from "src/core/models/dtos/houses/houseDto";
 import { ProfileDto } from "src/core/models/dtos/profiles/profileDto";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
-import { UserDto } from "src/core/models/dtos/users/userDto";
 import { UserUpdateDto } from "src/core/models/dtos/users/userUpdateDto";
 import LoaderBig from "src/shared/components/LoaderBig";
 import Switcher from "src/shared/components/Switcher";
@@ -21,7 +20,7 @@ interface UpdateUserModalProps {
 }
 
 
-const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggleUpdateModal }) => {
+const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ toggleUpdateModal }) => {
 
     const { id } = useParams<{ id: string }>()
     const [profiles, setProfiles] = useState<ProfileDto[]>()
@@ -40,7 +39,7 @@ const UpdateUserModal: React.FC<UpdateUserModalProps> = ({ lazyUpdateUser, toggl
         refetch: refetchHouses,
         isFetching: housesIsFetching } = useListHousesQuery()
 
-    const [updateUser, { isLoading }] = useUpdateUserMutation()
+    const [updateUser] = useUpdateUserMutation()
     const [createHouse, { isLoading: createHouseIsLoaing }] = useCreateHouseMutation()
 
     const navigate = useNavigate()
