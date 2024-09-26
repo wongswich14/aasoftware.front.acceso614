@@ -9,8 +9,6 @@ import userRoutes from "./pages/users/userRoutes";
 import profileRoutes from "./pages/profiles/profileRoutes";
 import NotFoundError from "./shared/errors/NotFoundError";
 import rfidRoutes from "./pages/rfid/rfidRoutes";
-import doorRoutes from "./pages/doors/doorRoutes";
-
 
 const appRoutes: RouteObject[] = [
     {
@@ -25,8 +23,7 @@ const appRoutes: RouteObject[] = [
                     ...houseRoutes,
                     ...userRoutes,
                     ...profileRoutes,
-                    ...rfidRoutes,
-                    ...doorRoutes
+                    ...rfidRoutes
                 ]
             }
         ],
