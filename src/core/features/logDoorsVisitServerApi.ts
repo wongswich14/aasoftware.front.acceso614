@@ -7,17 +7,22 @@ import {LogDoorVisitUpdateDto} from "../models/dtos/logDoorVisit/LogDoorVisitUpd
 export const logDoorVisitServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
         listLogDoorVisits: builder.query<LogDoorVisitResponse, void>({
-            query: () => `logDoorVisit`,
+            query: () => `LogDoorsVisits`,
+            providesTags: ["LogDoorVisit"]
+        }),
+
+        listLogDoorVisitsByResidential: builder.query<LogDoorVisitResponse, void>({
+            query: (id) => `LogDoorsVisits/ResidentialId?residentialId=${id}`,
             providesTags: ["LogDoorVisit"]
         }),
 
         getLogDoorVisit: builder.query<LogDoorVisitResponse, string>({
-            query: (id) => `logDoorVisit/${id}`,
+            query: (id) => `LogDoorsVisits/${id}`,
         }),
 
         createLogDoorVisit: builder.mutation<LogDoorVisitResponse, LogDoorVisitCreateDto>({
             query: newLog => ({
-                url: '/logDoorVisit',
+                url: '/LogDoorsVisits',
                 method: 'POST',
                 body: newLog,
             }),
@@ -26,7 +31,7 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
 
         updateLogDoorVisit: builder.mutation<LogDoorVisitResponse, LogDoorVisitUpdateDto>({
             query: updatedLog => ({
-                url: `/logDoorVisit`,
+                url: `/LogDoorsVisits`,
                 method: 'PUT',
                 body: updatedLog,
             }),
@@ -35,7 +40,7 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
 
         softDeleteLogDoorVisit: builder.mutation<LogDoorVisitResponse, string>({
             query: (id) => ({
-                url: `/logDoorVisit/softdelete/${id}`,
+                url: `/LogDoorsVisits/softdelete/${id}`,
                 method: "DELETE"
             }),
             invalidatesTags: ["LogDoorVisit"]
@@ -43,7 +48,7 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
 
         hardDeleteLogDoorVisit: builder.mutation<LogDoorVisitResponse, string>({
             query: id => ({
-                url: `/logDoorVisit/harddelete/${id}`,
+                url: `/LogDoorsVisits/harddelete/${id}`,
                 method: "DELETE"
             }),
         })
@@ -53,6 +58,7 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
 
 export const {
     useListLogDoorVisitsQuery,
+    useListLogDoorVisitsByResidentialQuery,
     useGetLogDoorVisitQuery,
     useCreateLogDoorVisitMutation,
     useUpdateLogDoorVisitMutation,

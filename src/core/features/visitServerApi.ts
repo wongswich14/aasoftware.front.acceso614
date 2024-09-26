@@ -1,6 +1,10 @@
 import { serverApi } from "../serverApi";
 import {LogDoorVisitResponse} from "../models/responses/logDoorVisit.response.ts";
 import {VisitResponse} from "../models/responses/visit.response.ts";
+import {ProfileResponse} from "../models/responses/profile.response.ts";
+import {ProfileUpdateDto} from "../models/dtos/profiles/profileUpdateDto.ts";
+import {VisitsDto} from "../models/dtos/visits/visitsDto.ts";
+import {VisitsUpdateDto} from "../models/dtos/visits/visitsUpdateDto.ts";
 
 export const visitServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
@@ -17,6 +21,14 @@ export const visitServerApi = serverApi.injectEndpoints({
 
         getVisit: builder.query<VisitResponse, string>({
             query: (id) => `visits/${id}`,
+        }),
+
+        updateVisit: builder.mutation<VisitsDto, VisitsUpdateDto>({
+            query: (updatedProfile) => ({
+                url: `/visits`,
+                method: 'PUT',
+                body: updatedProfile,
+            }),
         }),
 
         softDeleteVisit: builder.mutation<VisitResponse, string>({
@@ -41,6 +53,7 @@ export const {
     useListVisitsQuery,
     useListVisitsByResidentialQuery,
     useGetVisitQuery,
+    useUpdateVisitMutation,
     useSoftDeleteVisitMutation,
     useHardDeleteVisitMutation
 } = visitServerApi;
