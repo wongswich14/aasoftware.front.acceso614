@@ -4,15 +4,14 @@ import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { useGetResidentialQuery } from "src/core/features/residentialServerApi";
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto";
 import LoaderBig from "src/shared/components/LoaderBig";
-import DeleteModal from "../../shared/components/DeleteModal.tsx";
-import DoorsList from "../doors/DoorsList.tsx";
-import {toast} from "sonner";
 import AddHouseToResidentialModal from "../houses/AddHouseToResidentialModal.tsx";
 import {useHardDeleteHouseMutation} from "../../core/features/houseServerApi.ts";
 import UpdateHouseFromResidentialModal from "../houses/UpdateHouseFromResidentialModal.tsx";
 import ResidentialDoors from "./ResidentialDetailsComponents/Doors/ResidentialDoors.tsx";
-import VisitsList from "../visits/VisitList.tsx";
 import ResidentialVisitsList from "./ResidentialDetailsComponents/Visits/ResidentialVisitList.tsx";
+import ResidentialHistoryList from "./ResidentialDetailsComponents/History/ResidentialHistory.tsx";
+import {toast} from "sonner";
+import DeleteModal from "../../shared/components/DeleteModal.tsx";
 
 
 interface ResidentialInformationProps {
@@ -127,7 +126,7 @@ const ResidentialDetails: React.FC = () => {
 
                 {/* Contenido según el tab */}
                 {activeTab === 'historial' &&
-                    <ResidentialVisitsList residential={residential!}/>
+                    <ResidentialHistoryList residential={residential!}/>
                 }
 
             </div>
@@ -145,8 +144,6 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
     const [updatedId, setUpdatedId] = useState<string>("")
     const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
-
-    const navigate = useNavigate();
 
     const [hardDelete] = useHardDeleteHouseMutation()
 

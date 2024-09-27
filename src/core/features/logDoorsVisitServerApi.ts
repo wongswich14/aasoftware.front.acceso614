@@ -11,7 +11,7 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
             providesTags: ["LogDoorVisit"]
         }),
 
-        listLogDoorVisitsByResidential: builder.query<LogDoorVisitResponse, void>({
+        listLogDoorVisitsByResidential: builder.query<LogDoorVisitResponse, string>({
             query: (id) => `LogDoorsVisits/ResidentialId?residentialId=${id}`,
             providesTags: ["LogDoorVisit"]
         }),

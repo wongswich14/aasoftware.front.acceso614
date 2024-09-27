@@ -13,7 +13,7 @@ export const visitServerApi = serverApi.injectEndpoints({
             providesTags: ["Visit"]
         }),
 
-        listVisitsByResidential: builder.query<VisitResponse, void>({
+        listVisitsByResidential: builder.query<VisitResponse, string>({
             query: (id) => `visits/ByResidentialId?residentialId=${id}`,
             providesTags: ["Visit"]
         }),

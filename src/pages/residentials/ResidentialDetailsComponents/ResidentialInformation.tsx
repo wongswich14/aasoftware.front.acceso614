@@ -11,14 +11,13 @@ import {ResidentialDto} from "../../../core/models/dtos/residentials/Residential
 interface ResidentialInformationProps {
     residential: ResidentialDto
 }
+
 const ResidentialInformation: React.FC<ResidentialInformationProps> = ({residential}) => {
 
     const [deleteId, setDeleteId] = useState<string>("")
     const [updatedId, setUpdatedId] = useState<string>("")
     const [openUpdateModal, setOpenUpdateModal] = useState(false)
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
-
-    const navigate = useNavigate();
 
     const [hardDelete] = useHardDeleteHouseMutation()
 
@@ -101,5 +100,4 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
         </>
     );
 }
-
 export default ResidentialInformation;

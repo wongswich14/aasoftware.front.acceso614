@@ -1,33 +1,29 @@
 import { useState, useEffect } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
-import { toast } from "sonner";
+import { FaEdit } from "react-icons/fa";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
+
 import {
-    visitServerApi,
-    useHardDeleteVisitMutation,
-    useListVisitsQuery,
     useListVisitsByResidentialQuery
 } from "../../../../core/features/visitServerApi.ts";
 import { updateCache, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid";
-import DeleteModal from "src/shared/components/DeleteModal";
 import SkeletonTable from "src/shared/components/SkeletonTable";
 import {useAppDispatch} from "../../../../core/store.ts";
 import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
 import {ResidentialDto} from "../../../../core/models/dtos/residentials/ResidentialDto.ts";
-import ResidentialUpdateDoorModal from "../Doors/ResidentialUpdateDoors.tsx";
 import ResidentialCreateDoorsModal from "../Doors/ResidentialCreateDoorsModal.tsx";
 import ResidentialUpdateVisitModal from "./ResidentialUpdateVisit.tsx";
 import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
 import {doorServerApi} from "../../../../core/features/doorServerApi.ts";
+import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
 }
 
-const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ residential }) => {
+const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
 
     const { id } = useParams<{id: string}>();
-    const [visita, setVisita] = useState<VisitsDto>({
+    const [visita, setVisita] = useState<VisitsUpdateDto>({
         id: "",
         homeId: "",
         userWhoCreatedId: "",
@@ -40,43 +36,27 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
         limitDate: new Date(),
     });
     const [visits, setVisits] = useState<VisitsDto[] | null>(null);
-    const [softDeleteDoorsId, setSoftDeleteDoorsId] = useState<string>("")
     const [openUpdateDoorsModal, setOpenUpdateDoorsModal] = useState<boolean>(false)
     const [openCreateDoorsModal, setOpenCreateDoorsModal] = useState<boolean>(false)
-    const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-    const { data: visitsData, error: visitsError, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsByResidentialQuery(residential?.id);
-    const [hardDelete] = useHardDeleteVisitMutation();
+    const { data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsByResidentialQuery( id! , { skip: !id });
 
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useAppDispatch();
 
-    const handleDelete =  async (id: string) => {
-        const softDeletePromise = softDelete(id).unwrap()
 
-        toast.promise(softDeletePromise, {
-            loading: "Eliminando...",
-            success: () => {
-                lazyDeleteDoor(id)
-                toggleDeleteModal()
-                return "Visita eliminada"
-            },
-            error: (err) => {
-                console.error(err)
-                return "Error al eliminar casa"
-            }
-        })
-    }
-
-    const toggleUpdateModal = (data : VisitsDto) => {
-        setVisita(data);
+    const toggleUpdateModal = (data : VisitsUpdateDto | void) => {
+        if(data){
+            setVisita(data);
+        }
         setOpenUpdateDoorsModal(!openUpdateDoorsModal);
         if(!openUpdateDoorsModal) {
-            navigate(`visits/update/${data.id}`)
+            navigate(`visits/update/${data?.id}`)
         } else {
             navigate(`/residentials/${id}/visits`)
         }
+        refetchVisits()
     }
 
     const toggleCreateModal = () => {
@@ -87,15 +67,6 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
         } else {
             navigate(`/residentials/${id}`)
         }
-    }
-
-    const toggleDeleteModal = (id?: string) => {
-        if (id) {
-            setSoftDeleteDoorsId(id)
-        } else {
-            setSoftDeleteDoorsId("")
-        }
-        setOpenDeleteModal(!openDeleteModal)
     }
 
 
@@ -109,16 +80,6 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
         //     id
         // })
         refetchVisits()
-    }
-
-    const lazyDeleteDoor = (id: string) => {
-        updateCache({
-            api: doorServerApi,
-            endpoint: 'listHouses',
-            mode: LazyUpdateModes.DELETE,
-            dispatch,
-            id
-        })
     }
 
     const lazyAddDoor = (newItem: DoorDto) => {
@@ -152,7 +113,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
     }, [location])
 
     if (visitsIsLoading) return <SkeletonTable />
-    // @ts-ignore
+
     return (
         <>
             <table className="table-auto w-full text-sm rounded-md flex-1">
@@ -180,8 +141,18 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(visit)} />
-                            <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(visit.id)} />
+                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal({
+                                id: visit.id,
+                                homeId: visit.home?.id,
+                                userWhoCreatedId: visit.userWhoCreated?.id,
+                                typeOfVisitId: visit.typeOfVisitId,
+                                name: visit.name,
+                                lastName: visit.lastName,
+                                entries: visit.entries,
+                                qrString: visit.qrString,
+                                createdDate: new Date(visit.createdDate),
+                                limitDate: new Date(visit.limitDate),
+                            })} />
                         </td>
                     </tr>
                 </>
@@ -196,7 +167,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
                 <ResidentialUpdateVisitModal
                     toggleUpdateModal={toggleUpdateModal}
                     lazyUpdateDoor={lazyUpdateDoor}
-                    visits={visita}/>
+                    visita={visita}/>
             }
 
             {openCreateDoorsModal &&
@@ -205,13 +176,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = ({ resident
                     lazyAddDoor={lazyAddDoor}
                 />
             }
-            {openDeleteModal &&
-                <DeleteModal
-                    toggleDeleteModal={toggleDeleteModal}
-                    softDeleteId={softDeleteVisitId}
-                    deleteAction={handleDelete}
-                />
-            }
+
         </>
     );
 }

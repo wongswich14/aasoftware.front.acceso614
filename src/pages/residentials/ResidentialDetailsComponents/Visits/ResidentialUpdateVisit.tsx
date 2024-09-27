@@ -4,42 +4,26 @@ import { IoClose } from "react-icons/io5";
 import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import {
-    useGetDoorQuery,
-    useListDoorsQuery,
     useListResidentialsDoorsQuery,
-    useUpdateDoorMutation
 } from "src/core/features/doorServerApi";
 import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
-import {DoorUpdateDto} from "../../../../core/models/dtos/doors/doorUpdateDto.ts";
 import {useGetVisitQuery, useUpdateVisitMutation} from "../../../../core/features/visitServerApi.ts";
 import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
-import {createLogger} from "vite";
+
 import {useCreateLogDoorVisitMutation} from "../../../../core/features/logDoorsVisitServerApi.ts";
-import createDoorsModal from "../../../doors/CreateDoorsModal.tsx";
 import {LogDoorVisitCreateDto} from "../../../../core/models/dtos/logDoorVisit/LogDoorVisitCreateDto.ts";
 import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
-import {useListResidentialsQuery} from "../../../../core/features/residentialServerApi.ts"; // Make sure to import your door API
+import {useSelector} from "react-redux";
+import {selectUserData} from "../../../../core/slices/auth/authSlice.ts";
 
 interface UpdateDoorModalProps {
     toggleUpdateModal: () => void;
     lazyUpdateDoor: (id: string, newItem: VisitsDto) => void; // Adjust the type as needed
-    visits: VisitsDto
+    visita: VisitsUpdateDto
 }
 
-const ResidentialUpdateVisitModal: React.FC<UpdateDoorModalProps> = ({ toggleUpdateModal, visits }) => {
+const ResidentialUpdateVisitModal: React.FC<UpdateDoorModalProps> = ({ toggleUpdateModal, visita }) => {
 
-    const [visita, setVisita] = useState<VisitsUpdateDto>({
-        id: visits?.id,
-        homeId: visits?.home?.id,
-        userWhoCreatedId: visits?.userWhoCreated?.id,
-        typeOfVisitId: visits?.typeOfVisitId,
-        name: visits?.name,
-        lastName: visits?.lastName,
-        entries: visits?.entries - 1,
-        qrString: visits?.qrString,
-        createdDate: new Date(visits.createdDate),
-        limitDate: new Date(visits.limitDate),
-    });
     const {id, visitId} = useParams<{ id: string, visitId: string }>();
     const [doors, setDoors] = useState<DoorDto[]>();
     const {data: visitData, isLoading: visitLoading} = useGetVisitQuery(visitId!, {skip: !visitId});
@@ -47,27 +31,29 @@ const ResidentialUpdateVisitModal: React.FC<UpdateDoorModalProps> = ({ toggleUpd
     const [updateVisit] = useUpdateVisitMutation();
     const [createLogDoorVisit] = useCreateLogDoorVisitMutation();
     const navigate = useNavigate();
-    const {register, handleSubmit, formState: {errors}, reset, setValue} = useForm<LogDoorVisitCreateDto>();
-
-    const submitForm = async (data) => {
+    const {register, handleSubmit, formState: {errors}, setValue} = useForm<LogDoorVisitCreateDto>();
+    const userData = useSelector(selectUserData);
+    const submitForm = async (data : LogDoorVisitCreateDto) => {
         const updateVisitPromise = updateVisit(visita).unwrap();
         const createDoorPromise = createLogDoorVisit(data).unwrap();
 
-        toast.promise(createDoorPromise, {
-            loading: "Actualizando...",
-            success: () => { // Adjust navigation if necessary
-
-                return "Log creado";
-            },
-            error: (err) => {
-                console.error(err);
-                return "Error al actualizar";
-            }
-        });
         toast.promise(updateVisitPromise, {
             loading: "Actualizando...",
             success: () => { // Adjust navigation if necessary
-                return "Visita actualizada";
+
+                toast.promise(createDoorPromise, {
+                    loading: "Actualizando...",
+                    success: () => { // Adjust navigation if necessary
+                        navigate(`visits`);
+                        return "Log creado";
+                    },
+                    error: (err) => {
+                        console.error(err);
+                        return "Error al actualizar";
+                    }
+                });
+
+                return "Visita actualizada"
             },
             error: (err) => {
                 console.error(err);
@@ -80,23 +66,6 @@ const ResidentialUpdateVisitModal: React.FC<UpdateDoorModalProps> = ({ toggleUpd
         setValue("id", visitId?.toString() || "");
         setValue("residentialId", id?.toString() || "");
 
-        console.log(visits)
-
-        if(visits){
-            setVisita({
-                id: visitId || "",
-                homeId: visits.home?.id,
-                userWhoCreatedId: visits.userWhoCreated?.id,
-                typeOfVisitId: visits.typeOfVisitId,
-                name: visits.name,
-                lastName: visits.lastName,
-                entries: visits.entries - 1,
-                qrString: visits.qrString,
-                createdDate: new Date(visits.createdDate),
-                limitDate: new Date(visits.limitDate),
-            });
-        }
-
     }, []);
 
     useEffect(() => {
@@ -107,12 +76,11 @@ const ResidentialUpdateVisitModal: React.FC<UpdateDoorModalProps> = ({ toggleUpd
 
     useEffect(() => {
         console.log(visitData);
-        const date = new Date();
 
         if (!visitLoading && visitData) {
-                                                    setValue("id", visitData.dataObject.id);
-            setValue("visitId", visitId || "");
-            setValue("securityGrantedAccessId",  );
+            setValue("id", visitData.dataObject!.id!);
+            setValue("visitId", visitId!);
+            setValue("securityGrantedAccessId", userData!.id!);
             // Set other fields as necessary
         }
     }, [visitLoading, visitData]);
