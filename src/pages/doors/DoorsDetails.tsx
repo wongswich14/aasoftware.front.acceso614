@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { Link, useLocation, useParams } from "react-router-dom";
 import LoaderBig from "src/shared/components/LoaderBig";
@@ -8,9 +7,9 @@ import {DoorDto} from "../../core/models/dtos/doors/doorDto.ts";
 import VisitsList from "../visits/VisitList.tsx";
 
 const DoorsDetails: React.FC = () => {
-    const [door, setDoor] = useState<DoorDto | null>({
+    const [door, setDoor] = useState<DoorDto | undefined>({
        id :"",
-       residential:null,
+       residential: undefined,
        name:""
     });
     const [activeTab, setActiveTab] = useState<'visitas' | 'historial'>('visitas');

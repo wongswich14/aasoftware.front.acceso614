@@ -51,10 +51,6 @@ const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal, 
         }
     }, [residentialsData, residentialsIsLoading]);
 
-    useEffect(() => {
-        setValue("enabled", true);
-    }, []);
-
     if (residentialsIsLoading) return <LoaderBig message="Cargando" />;
 
     return (

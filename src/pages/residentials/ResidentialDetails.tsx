@@ -14,6 +14,7 @@ import ResidentialInformation from "./ResidentialDetailsComponents/ResidentialIn
 import ResidentialDoors from "./ResidentialDetailsComponents/Doors/ResidentialDoors.tsx";
 import VisitsList from "../visits/VisitList.tsx";
 import ResidentialVisitsList from "./ResidentialDetailsComponents/Visits/ResidentialVisitList.tsx";
+import ResidentialHistoryList from "./ResidentialDetailsComponents/History/ResidentialHistory.tsx";
 
 
 interface ResidentialInformationProps {
@@ -128,7 +129,7 @@ const ResidentialDetails: React.FC = () => {
 
                 {/* Contenido según el tab */}
                 {activeTab === 'historial' &&
-                    <ResidentialVisitsList residential={residential!}/>
+                    <ResidentialHistoryList residential={residential!}/>
                 }
 
             </div>
