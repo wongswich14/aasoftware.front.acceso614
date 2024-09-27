@@ -10,7 +10,6 @@ import {toast} from "sonner";
 import AddHouseToResidentialModal from "../houses/AddHouseToResidentialModal.tsx";
 import {useHardDeleteHouseMutation} from "../../core/features/houseServerApi.ts";
 import UpdateHouseFromResidentialModal from "../houses/UpdateHouseFromResidentialModal.tsx";
-import ResidentialInformation from "./ResidentialDetailsComponents/ResidentialInformation.tsx";
 import ResidentialDoors from "./ResidentialDetailsComponents/Doors/ResidentialDoors.tsx";
 import VisitsList from "../visits/VisitList.tsx";
 import ResidentialVisitsList from "./ResidentialDetailsComponents/Visits/ResidentialVisitList.tsx";

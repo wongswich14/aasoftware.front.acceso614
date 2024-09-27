@@ -8,11 +8,13 @@ export const profileServerApi = serverApi.injectEndpoints({
     endpoints: (builder) => ({
 
         listProfiles: builder.query<ProfileResponse, void>({
-            query: () => `profile`
+            query: () => `profile`,
+            providesTags: ["Profile"]
         }),
 
         getProfile: builder.query<ProfileResponse, string>({
-            query: (id) => `profile/${id}`
+            query: (id) => `profile/${id}`,
+            providesTags: ["Profile"]
         }),
         
         createProfile: builder.mutation<ProfileResponse, ProfileCreateDto>({
@@ -21,6 +23,7 @@ export const profileServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newProfile,
             }),
+            invalidatesTags: ["Profile"]
         }),
 
         updateProfile: builder.mutation<ProfileResponse, ProfileUpdateDto>({
@@ -29,6 +32,7 @@ export const profileServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedProfile,
             }),
+            invalidatesTags: ["Profile"]
         }),
 
         softDeleteProfile: builder.mutation<ProfileResponse, string>({
@@ -36,6 +40,7 @@ export const profileServerApi = serverApi.injectEndpoints({
                 url: `/profile/softdelete/${id}`,
                 method: 'DELETE',
             }),
+            invalidatesTags: ["Profile"]
         }),
 
         listPermissions: builder.query<PermissionResponse, void>({

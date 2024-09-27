@@ -2,5 +2,10 @@ export interface ProfileUpdateDto {
     id: string
     title: string
     description: string,
-    permissionsId: string[]
+    permissions: PermissionAddToProfileDto[]
+}
+
+interface PermissionAddToProfileDto {
+    permissionId: string
+    scopeId: string
 }
