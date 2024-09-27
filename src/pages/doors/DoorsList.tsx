@@ -17,20 +17,20 @@ import CreateDoorsModal from "./CreateDoorsModal.tsx";
 import DeleteModal from "../../shared/components/DeleteModal.tsx";
 import {ResidentialDto} from "../../core/models/dtos/residentials/ResidentialDto.ts";
 
-interface ResidentialInformationProps {
-    residential: ResidentialDto
-}
+// interface ResidentialInformationProps {
+//     residential: ResidentialDto
+// }
 
-const DoorsList: React.FC<ResidentialInformationProps> = ( {residential} ) => {
+const DoorsList: React.FC = ( ) => {
 
     const { id } = useParams<{id: string}>()
-    const [doors, setDoors] = useState<HouseDto[] | null>(null)
+    const [doors, setDoors] = useState<DoorDto[]>()
     const [softDeleteDoorsId, setSoftDeleteDoorsId] = useState<string>("")
     const [openUpdateDoorsModal, setOpenUpdateDoorsModal] = useState<boolean>(false)
     const [openCreateDoorsModal, setOpenCreateDoorsModal] = useState<boolean>(false)
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-    const { data: doorsData, error: doorsError, isLoading: doorsIsLoading, refetch: refetchDoors } = useListResidentialsDoorsQuery(id);
+    const { data: doorsData, error: doorsError, isLoading: doorsIsLoading, refetch: refetchDoors } = useListResidentialsDoorsQuery();
     const [softDelete] = useSoftDeleteDoorMutation()
 
 
@@ -117,7 +117,7 @@ const DoorsList: React.FC<ResidentialInformationProps> = ( {residential} ) => {
 
     useEffect(() => {
         if (doorsData && !doorsIsLoading) {
-            setDoors(doorsData.listDataObject || [])
+            setDoors(doorsData.listDataObject)
         }
     }, [doorsData, doorsIsLoading])
 

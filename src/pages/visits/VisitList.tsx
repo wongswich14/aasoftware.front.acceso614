@@ -5,25 +5,25 @@ import { toast } from "sonner";
 import {
     visitServerApi,
     useHardDeleteVisitMutation,
-    useListVisitsQuery,
     useListVisitsByResidentialQuery
 } from "src/core/features/visitServerApi";
-import { VisitDto } from "src/core/models/dtos/visits/visitDto";
+import { VisitsDto } from "src/core/models/dtos/visits/visitsDto";
 import { useAppDispatch } from "src/core/store";
 import { updateCache, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid";
 import DeleteModal from "src/shared/components/DeleteModal";
 import SkeletonTable from "src/shared/components/SkeletonTable";
 import { ResidentialDto } from "../../core/models/dtos/residentials/ResidentialDto.ts";
 
-interface ResidentialInformationProps {
-    residential: ResidentialDto
-}
+// interface ResidentialInformationProps {
+//     residential: ResidentialDto
+// }
 
-const VisitsList: React.FC<ResidentialInformationProps> = ({ residential }) => {
-    const [visits, setVisits] = useState<VisitDto[] | null>(null);
+// const VisitsList: React.FC<ResidentialInformationProps> = ({ residential }) => {
+const VisitsList: React.FC = () => {
+    const [visits, setVisits] = useState<VisitsDto[] | null>(null);
     const [softDeleteVisitId, setSoftDeleteVisitId] = useState<string>("");
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-    const { data: visitsData, error: visitsError, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsByResidentialQuery(residential?.id);
+    const { data: visitsData, error: visitsError, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsByResidentialQuery();
     const [hardDelete] = useHardDeleteVisitMutation();
     const navigate = useNavigate();
     const location = useLocation();
@@ -51,6 +51,10 @@ const VisitsList: React.FC<ResidentialInformationProps> = ({ residential }) => {
         }
         setOpenDeleteModal(!openDeleteModal);
     };
+
+    const toggleUpdateModal = (id?: string) => {
+
+    }
 
     const lazyDeleteVisit = (id: string) => {
         updateCache({
