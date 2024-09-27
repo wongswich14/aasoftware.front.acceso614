@@ -20,6 +20,7 @@ import ResidentialUpdateVisitModal from "./ResidentialUpdateVisit.tsx";
 import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
 import {doorServerApi} from "../../../../core/features/doorServerApi.ts";
 import {useListLogDoorVisitsByResidentialQuery} from "../../../../core/features/logDoorsVisitServerApi.ts";
+import {LogDoorVisitDto} from "../../../../core/models/dtos/logDoorVisit/logDoorVisitDto.ts";
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
@@ -28,22 +29,24 @@ interface ResidentialInformationProps {
 const ResidentialHistoryList: React.FC<ResidentialInformationProps> = ({ residential }) => {
 
     const { id } = useParams<{id: string}>();
-    const [visits, setVisits] = useState<VisitsDto[] | null>(null);
+    const [visits, setVisits] = useState<LogDoorVisitDto[] | null>(null);
 
     const { data: logDoorsVisitData, error: LogError, isLoading: logDoorsVisitIsLoading, refetch: refetchLog } = useListLogDoorVisitsByResidentialQuery(residential?.id);
     const [hardDelete] = useHardDeleteVisitMutation();
 
     const navigate = useNavigate();
     const location = useLocation();
-    const dispa         tch = useAppDispatch();
+    const dispatch = useAppDispatch();
 
     useEffect(() => {
+
+        console.log(logDoorsVisitData);
         if (logDoorsVisitData && !logDoorsVisitIsLoading) {
             setVisits(logDoorsVisitData.listDataObject || []);
         }
     }, [logDoorsVisitData, logDoorsVisitIsLoading]);
 
-    if (visitsIsLoading) return <SkeletonTable />
+    if (logDoorsVisitIsLoading) return <SkeletonTable />
 
     return (
         <>
@@ -53,10 +56,10 @@ const ResidentialHistoryList: React.FC<ResidentialInformationProps> = ({ residen
                     <th>#</th>
                     <th className='text-left'>Nombre</th>
                     <th className='text-left'>Apellido</th>
-                    <th className='text-left'>Entradas</th>
+                    <th className='text-left'>Acceso</th>
                     <th className='text-left'>Visita</th>
-
-                    <th className='text-left'>S</th>
+                    <th className='text-left'>Día</th>
+                    <th className='text-left'>Hora</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -64,16 +67,12 @@ const ResidentialHistoryList: React.FC<ResidentialInformationProps> = ({ residen
                     <>
                         <tr key={visit.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                             <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.name}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.lastName}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.entries}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.home?.name}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
-                            <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                                <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(visit)} />
-                                <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(visit.id)} />
-                            </td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.visit?.name}</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.visit?.lastName}</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.door?.name || "N/A"}</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.visit?.home.name}</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.accessDate}</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.accessHour}</td>
                         </tr>
                     </>
                 ))}
