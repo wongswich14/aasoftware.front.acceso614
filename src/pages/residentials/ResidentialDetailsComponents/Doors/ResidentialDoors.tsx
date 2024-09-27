@@ -1,5 +1,5 @@
-import {FaEdit, FaPlusCircle, FaTrash} from "react-icons/fa";
-import {Link, useLocation, useNavigate, useParams} from "react-router-dom";
+import {FaEdit, FaTrash} from "react-icons/fa";
+import { useLocation, useNavigate, useParams} from "react-router-dom";
 import {useEffect, useState} from "react";
 import {toast} from "sonner";
 import {ResidentialDto} from "../../../../core/models/dtos/residentials/ResidentialDto.ts";
@@ -11,7 +11,6 @@ import {
 import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
 import DeleteModal from "../../../../shared/components/DeleteModal.tsx";
 import {useAppDispatch} from "../../../../core/store.ts";
-import {HouseDto} from "../../../../core/models/dtos/houses/houseDto.ts";
 import {LazyUpdateModes, updateCache} from "../../../../core/utils/lazyUpdateListByGuid.ts";
 import SkeletonTable from "../../../../shared/components/SkeletonTable.tsx";
 import ResidentialCreateDoorsModal from "./ResidentialCreateDoorsModal.tsx";
@@ -31,7 +30,7 @@ const ResidentialDoors: React.FC<ResidentialInformationProps> = () => {
     const [openCreateDoorsModal, setOpenCreateDoorsModal] = useState<boolean>(false)
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-    const { data: doorsData, error: doorsError, isLoading: doorsIsLoading, refetch: refetchDoors } = useListResidentialsDoorsQuery(id, { skip: !id });
+    const { data: doorsData, isLoading: doorsIsLoading, refetch: refetchDoors } = useListResidentialsDoorsQuery( id!, { skip: !id });
     const [softDelete] = useSoftDeleteDoorMutation()
 
 
@@ -84,15 +83,7 @@ const ResidentialDoors: React.FC<ResidentialInformationProps> = () => {
         setOpenDeleteModal(!openDeleteModal)
     }
 
-    const lazyUpdateDoor = (id: string, newItem: DoorDto) => {
-        // updateCache({
-        //     api: houseServerApi,
-        //     endpoint: 'listHouses',
-        //     mode: LazyUpdateModes.UPDATE,
-        //     dispatch,
-        //     newItem,
-        //     id
-        // })
+    const lazyUpdateDoor = () => {
         refetchDoors()
     }
 

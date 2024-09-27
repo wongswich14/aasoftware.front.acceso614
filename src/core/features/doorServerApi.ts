@@ -10,7 +10,7 @@ export const doorServerApi = serverApi.injectEndpoints({
             providesTags: ["Door"]
         }),
 
-        listResidentialsDoors: builder.query<DoorResponse, void>({
+        listResidentialsDoors: builder.query<DoorResponse, string>({
             query: (id) => `doors?residentialId=${id}`,
             providesTags: ["Door"]
         }),

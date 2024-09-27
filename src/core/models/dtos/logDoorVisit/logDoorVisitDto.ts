@@ -11,6 +11,6 @@ export interface LogDoorVisitDto {
     securityGrantedAccess: UserDto | null;
     visitId: string;
     visit: VisitsDto;
-    accessDate: Date;
+    accessDate: string;
     accessHour: string;
 }
