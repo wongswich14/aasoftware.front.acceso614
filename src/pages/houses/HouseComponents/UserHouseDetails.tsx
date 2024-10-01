@@ -82,14 +82,14 @@ const UserHouseDetails = () => {
                         Visitas
                     </button>
 
-                    <button
-                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'historial' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}
-                        onClick={() => {
-                            setActiveTab('historial')
-                            navigate("history");
-                        }}>
-                        Historial
-                    </button>
+                    {/*<button*/}
+                    {/*    className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'historial' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}*/}
+                    {/*    onClick={() => {*/}
+                    {/*        setActiveTab('historial')*/}
+                    {/*        navigate("history");*/}
+                    {/*    }}>*/}
+                    {/*    Historial*/}
+                    {/*</button>*/}
 
                 </div>
 
@@ -103,7 +103,7 @@ const UserHouseDetails = () => {
                     <HouseVisitsList/>
                 }
 
-                {activeTab === 'histori         al' &&
+                {activeTab === 'historial' &&
                     <HouseHistoryList house={house!}/>
                 }
 
