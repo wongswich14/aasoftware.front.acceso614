@@ -111,19 +111,8 @@ const ResidentialVisitsList = () => {
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                            <FaEye className='text-red-500 hover:text-red-400' onClick={() => toggleGetQr(visit.qrString)} />
-                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal({
-                                id: visit.id,
-                                homeId: visit.home?.id,
-                                userWhoCreatedId: visit.userWhoCreated?.id,
-                                typeOfVisitId: visit.typeOfVisitId,
-                                name: visit.name,
-                                lastName: visit.lastName,
-                                entries: visit.entries,
-                                qrString: visit.qrString,
-                                createdDate: new Date(visit.createdDate),
-                                limitDate: new Date(visit.limitDate),
-                            })} />
+                            <FaEye className='text-black hover:text-gray-800' onClick={() => toggleGetQr(visit.qrString)} />
+
                                 <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(visit.id)} />
                         </td>
                     </tr>
