@@ -12,6 +12,7 @@ import ResidentialVisitsList from "./ResidentialDetailsComponents/Visits/Residen
 import ResidentialHistoryList from "./ResidentialDetailsComponents/History/ResidentialHistory.tsx";
 import {toast} from "sonner";
 import DeleteModal from "../../shared/components/DeleteModal.tsx";
+import ResidentialCreateDoorsModal from "./ResidentialDetailsComponents/Doors/ResidentialCreateDoorsModal.tsx";
 
 
 interface ResidentialInformationProps {
@@ -63,6 +64,16 @@ const ResidentialDetails: React.FC = () => {
                                 className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
                             <FaPlusCircle size={20} className='text-lg'/>
                             <span className="text-base">Agregar Vivienda</span>
+                        </button>
+                    )
+                }
+
+                {
+                    activeTab == 'entradasSalidas' && (
+                        <button onClick={toggleCreateModal}
+                                className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                            <FaPlusCircle size={20} className='text-lg'/>
+                            <span className="text-base">Agregar Entrada o Salida</span>
                         </button>
                     )
                 }
@@ -131,7 +142,11 @@ const ResidentialDetails: React.FC = () => {
 
             </div>
 
-            {openCreateModal && <AddHouseToResidentialModal toggleModal={toggleCreateModal} />}
+            {openCreateModal && activeTab=="informacion" && <AddHouseToResidentialModal toggleModal={toggleCreateModal} />}
+
+
+            {openCreateModal && activeTab=="entradasSalidas" && <ResidentialCreateDoorsModal toggleCreateModal={toggleCreateModal} />}
+
         </div>
     );
 }

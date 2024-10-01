@@ -5,11 +5,13 @@ import {ProfileResponse} from "../models/responses/profile.response.ts";
 import {ProfileUpdateDto} from "../models/dtos/profiles/profileUpdateDto.ts";
 import {VisitsDto} from "../models/dtos/visits/visitsDto.ts";
 import {VisitsUpdateDto} from "../models/dtos/visits/visitsUpdateDto.ts";
+import {LogDoorVisitCreateDto} from "../models/dtos/logDoorVisit/LogDoorVisitCreateDto.ts";
+import {CreateVisitDto} from "../models/dtos/visits/CreateVisitDto.ts";
 
 export const visitServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
-        listVisits: builder.query<VisitResponse, void>({
-            query: () => `visits`,
+        listVisits: builder.query<VisitResponse, string|null>({
+            query: (id) => id != null ?`visits?homeId=${id}` : `visits`,
             providesTags: ["Visit"]
         }),
 
@@ -21,6 +23,15 @@ export const visitServerApi = serverApi.injectEndpoints({
 
         getVisit: builder.query<VisitResponse, string>({
             query: (id) => `visits/${id}`,
+        }),
+
+        createVisit: builder.mutation<VisitsDto, CreateVisitDto>({
+            query: newLog => ({
+                url: '/visits',
+                method: 'POST',
+                body: newLog,
+            }),
+            invalidatesTags: ["LogDoorVisit"]
         }),
 
         updateVisit: builder.mutation<VisitsDto, VisitsUpdateDto>({
@@ -53,6 +64,7 @@ export const {
     useListVisitsQuery,
     useListVisitsByResidentialQuery,
     useGetVisitQuery,
+    useCreateVisitMutation,
     useUpdateVisitMutation,
     useSoftDeleteVisitMutation,
     useHardDeleteVisitMutation

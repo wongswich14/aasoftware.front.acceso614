@@ -1,6 +1,8 @@
 import { RouteObject } from "react-router-dom";
 import HousesList from "./HousesList";
 import HouseDetails from "./HouseDetails.tsx";
+import UserHouseDetails from "./HouseComponents/UserHouseDetails.tsx";
+import ResidentialDetails from "../residentials/ResidentialDetails.tsx";
 
 const houseRoutes: RouteObject[] = [
     {
@@ -19,7 +21,7 @@ const houseRoutes: RouteObject[] = [
                 element: <HousesList/>
             },
             {
-                path: ":id",
+                path: ":id/no",
                 element: <HouseDetails />
             },
             {
@@ -29,6 +31,54 @@ const houseRoutes: RouteObject[] = [
             {
                 path: ":id/add-rfid",
                 element: <HouseDetails />
+            },
+            {
+                path:":id",
+                element:<UserHouseDetails/>,
+                children: [
+                    {
+                        path:"doors",
+                        element: <ResidentialDetails />,
+                        children: [
+                            {
+                                path:"create",
+                                element: <ResidentialDetails />,
+                            },
+                            {
+                                path:"update/:doorId",
+                                element: <ResidentialDetails />,
+                            }
+                        ],
+                    },
+                    {
+                        path:"visits",
+                        element: <ResidentialDetails />,
+                        children: [
+                            {
+                                path:"create",
+                                element: <ResidentialDetails />,
+                            },
+                            {
+                                path:"update/:visitId",
+                                element: <ResidentialDetails />,
+                            }
+                        ]
+                    },
+                    {
+                        path:"history",
+                        element: <ResidentialDetails />,
+                        children: [
+                            {
+                                path:"create",
+                                element: <ResidentialDetails />,
+                            },
+                            {
+                                path:"update/historyId",
+                                element: <ResidentialDetails />,
+                            }
+                        ]
+                    }
+            ]
             }
         ]
     }

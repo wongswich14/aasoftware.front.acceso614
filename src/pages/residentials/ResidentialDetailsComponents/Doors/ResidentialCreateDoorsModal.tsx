@@ -1,26 +1,19 @@
-import { useEffect, useState } from "react";
+import { useEffect  } from "react";
 import { useForm } from "react-hook-form";
 import { IoClose } from "react-icons/io5";
 import {useNavigate, useParams} from "react-router-dom";
 import { toast } from "sonner";
 import { useCreateDoorMutation } from "src/core/features/doorServerApi";
-import { useListResidentialsQuery } from "src/core/features/residentialServerApi";
 import { DoorCreateDto } from "src/core/models/dtos/doors/doorCreateDto";
-import { DoorDto } from "src/core/models/dtos/doors/doorDto";
-import LoaderBig from "src/shared/components/LoaderBig";
-import {ResidentialDto} from "../../../../core/models/dtos/residentials/ResidentialDto.ts";
 
 interface CreateDoorsModalProps {
     toggleCreateModal: () => void;
-    lazyAddDoor: (newItem: DoorDto) => void;
 }
 
 const ResidentialCreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal }) => {
     const { id } = useParams<{ id: string }>();
-    const [residentials, setResidentials] = useState<ResidentialDto[]>();
     const [createDoor] = useCreateDoorMutation();
     const navigate = useNavigate();
-    const { data: residentialsData, isLoading: residentialsIsLoading } = useListResidentialsQuery();
 
     const {
         register,
@@ -36,7 +29,7 @@ const ResidentialCreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCr
             loading: "Creando...",
             success: () => {
                 //lazyAddDoor(data);
-                navigate(`/residentials/${id}`);
+                navigate(`/residentials/${id}/doors`);
                 return "Puerta creada";
             },
             error: (err) => {
@@ -47,12 +40,8 @@ const ResidentialCreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCr
     };
 
     useEffect(() => {
-        if (residentialsData && !residentialsIsLoading) {
-            setResidentials(residentialsData.listDataObject);
-        }
-    }, [residentialsData, residentialsIsLoading]);
-
-    if (residentialsIsLoading) return <LoaderBig message="Cargando" />;
+        setValue("residentialId", id!);
+    }, []);
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">
@@ -81,20 +70,6 @@ const ResidentialCreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCr
 
                     </section>
 
-                    <section className="input-container">
-                        <label htmlFor="residentialId" className="label-form">Residencial</label>
-                        <select
-                            id="residentialId"
-                            className="input-form"
-                            {...register('residentialId', {required: 'Este campo es obligatorio'})}
-                        >
-                            <option value="">-- Seleccione una opción --</option>
-                            {residentials && residentials.map(residential => (
-                                <option key={residential.id} value={residential.id}>{residential.name}</option>
-                            ))}
-                        </select>
-                        {errors.residentialId && <span className="form-error">{errors.residentialId.message}</span>}
-                    </section>
 
                     <div className="flex justify-end gap-5">
                         <button type="submit" className="submit-button">Guardar</button>

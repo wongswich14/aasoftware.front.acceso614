@@ -3,17 +3,18 @@ import SkeletonTable from "src/shared/components/SkeletonTable";
 import {ResidentialDto} from "../../../../core/models/dtos/residentials/ResidentialDto.ts";
 import {useListLogDoorVisitsByResidentialQuery} from "../../../../core/features/logDoorsVisitServerApi.ts";
 import {LogDoorVisitDto} from "../../../../core/models/dtos/logDoorVisit/logDoorVisitDto.ts";
+import {HouseDto} from "../../../../core/models/dtos/houses/houseDto.ts";
 
 
 interface ResidentialInformationProps {
-    residential: ResidentialDto
+    house: HouseDto
 }
 
-        const ResidentialHistoryList: React.FC<ResidentialInformationProps> = ({ residential }) => {
+const HouseHistoryList: React.FC<ResidentialInformationProps> = ({ house }) => {
 
     const [visits, setVisits] = useState<LogDoorVisitDto[] | null>(null);
 
-    const { data: logDoorsVisitData, isLoading: logDoorsVisitIsLoading } = useListLogDoorVisitsByResidentialQuery( residential.id!, {skip: !residential.id});
+    const { data: logDoorsVisitData, isLoading: logDoorsVisitIsLoading } = useListLogDoorVisitsByResidentialQuery( house.id!, {skip: !house.id});
 
     useEffect(() => {
 
@@ -61,6 +62,6 @@ interface ResidentialInformationProps {
 
         </>
     );
-        }
+}
 
-export default ResidentialHistoryList;
+export default HouseHistoryList;

@@ -6,8 +6,8 @@ import {LogDoorVisitUpdateDto} from "../models/dtos/logDoorVisit/LogDoorVisitUpd
 
 export const logDoorVisitServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
-        listLogDoorVisits: builder.query<LogDoorVisitResponse, void>({
-            query: () => `LogDoorsVisits`,
+        listLogDoorVisits: builder.query<LogDoorVisitResponse, string|null>({
+            query: (id) =>id != null ?`LogDoorsVisits?homeId=${id}` : `LogDoorsVisits`,
             providesTags: ["LogDoorVisit"]
         }),
 

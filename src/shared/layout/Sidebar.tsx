@@ -42,7 +42,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
             name: 'Administración', icon: FaCog, hasChild: true,
             childrens: [
                 { name: 'Residenciales', link: '/residentials', icon: MdLocationCity },
-                // { name: 'Viviendas', link: '/houses', icon: MdHome },
+                { name: 'Viviendas', link: '/houses', icon: MdHome },
                 // { name: "Puertas", link: "/doors", icon: BsDoorOpenFill },
                 // { name: "RFID", link: '/rfid', icon: FaIdCard },
                 { name: 'Usuarios', link: '/users', icon: FaUsers },

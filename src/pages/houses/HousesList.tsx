@@ -1,5 +1,5 @@
 import { useState, useEffect } from "react";
-import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa";
+import {FaEdit, FaEye, FaPlusCircle, FaTrash} from "react-icons/fa";
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useHardDeleteHouseMutation, useListHousesQuery } from "src/core/features/houseServerApi";
@@ -97,10 +97,7 @@ const HousesList: React.FC = () => {
         <div className='w-full bg-white min-h-full rounded-md'>
         <div className='flex gap-2 items-center text-sm text-gray-500 font-semibold border-b pl-5 pt-5 w-[95%] ml-5'>
             <h2 className='p-2 text-lg'>Listado de Viviendas</h2>
-            <Link to={'create'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
-                <FaPlusCircle className='text-lg' />
-                <span className="text-base">Nuevo</span>
-            </Link>
+
         </div>
         <div className='text-gray-500 font-semibold borde p-5 w-[95%] ml-5 mt-5 oerflow-auto'>
             <table className="table-auto w-full text-sm rounded-md flex-1">
@@ -123,7 +120,11 @@ const HousesList: React.FC = () => {
 
                             < tr key={house.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer" >
                                 <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{house.name}</td>
+                                <td className='whitespace-nowrap py-4 font-normal text-left'>
+                                    <Link to={`${house.id}`} className="hover:underline">
+                                        {house.name}
+                                    </Link>
+                                </td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.residential?.name}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.street}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.number}</td>
