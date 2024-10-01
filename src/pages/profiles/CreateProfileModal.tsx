@@ -8,35 +8,31 @@ import {PermissionDto} from "src/core/models/dtos/permissions/permissionDto";
 import {ProfileCreateDto} from "src/core/models/dtos/profiles/profileCreateDto";
 import LoaderBig from "src/shared/components/LoaderBig";
 import Switcher from "src/shared/components/Switcher";
-import {useListScopesQuery} from "../../core/features/scopeServerApi.ts";
-import {ScopeDto} from "../../core/models/dtos/scopes/scopeDto.ts";
 
 interface CreateProfileModalProps {
     toggleCreateModal: () => void
 }
 
-const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModal}) => {
+const CreateProfileModal: React.FC<CreateProfileModalProps> = ({ toggleCreateModal }) => {
 
     const [permissions, setPermissions] = useState<PermissionDto[]>();
-    const [scopes, setScopes] = useState<ScopeDto[]>();
 
     const navigate = useNavigate();
     const {
         register,
         handleSubmit,
-        formState: {errors},
+        formState: { errors },
         setValue,
         watch,
     } = useForm<ProfileCreateDto>();
 
     const selectedPermissions = watch('permissions', []);
 
-    const {data: permissionData, isLoading: permissionIsLoading} = useListPermissionsQuery();
-    const {data: scopesData, isLoading: scopesIsLoading} = useListScopesQuery();
+    const { data: permissionData, isLoading: permissionIsLoading } = useListPermissionsQuery();
     const [createProfile] = useCreateProfileMutation();
 
     const groupedPermissions = permissions?.reduce<Record<string, PermissionDto[]>>((acc, permission) => {
-        const {resource} = permission;
+        const { resource } = permission;
         if (!acc[resource]) {
             acc[resource] = [];
         }
@@ -52,20 +48,50 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModa
     *
     * por defecto se maneja que el scope predeterminado es GLOBAL
     */
-    const handlePermissionChange = (permissionId: string, scopeId: string) => {
-        const permissionExists = selectedPermissions.some((p) => p.permissionId === permissionId);
-
-        if (permissionExists) {
-            const updatedPermissions = selectedPermissions.map((p) =>
-                p.permissionId === permissionId ? { ...p, scopeId } : p
-            );
+    const handlePermissionChange = (permissionId: string, deactive: boolean, scopeId: string | null) => {
+        if (deactive) {
+            const updatedPermissions = selectedPermissions.filter((p) => p.permissionId !== permissionId);
             setValue('permissions', updatedPermissions);
-        } else {
-            // Si no existe el permiso, lo agregamos con el scope por defecto
-            const defaultScopeId = scopeId || scopes?.[0]?.id || ''; // Tomar el primer scope disponible como default " GLOBAL "
-            const newPermission = { permissionId, scopeId: defaultScopeId };
-            setValue('permissions', [...selectedPermissions, newPermission]);
         }
+        else {
+            // Si se envia un Scope se actualiza el permiso con el scope
+            const permissionExists = selectedPermissions.find((p) => p.permissionId === permissionId);
+            if (permissionExists) {
+                if (scopeId) {
+                    const updatedPermissions = selectedPermissions.map((p) =>
+                        p.permissionId === permissionId ? { ...p, scopeId } : p
+                    );
+                    setValue('permissions', updatedPermissions);
+                }
+
+                // Si no es necesario el scope, simplemente actualiza el permissionId
+                else {
+                    const updatedPermissions = selectedPermissions.map((p) =>
+                        p.permissionId === permissionId ? { ...p } : p
+                    );
+                    setValue('permissions', updatedPermissions);
+                }
+            }
+            else {
+                // si no existe actualmente el permiso, se agrega con su scope
+                if (scopeId) {
+                    const updatedPermissions = [...selectedPermissions, { permissionId, scopeId }];
+                    setValue('permissions', updatedPermissions);
+                }
+                // si no existe y no tiene scope, se agrega sin scope
+                else {
+                    const updatedPermissions = [...selectedPermissions, { permissionId }];
+                    setValue('permissions', updatedPermissions);
+                }
+            }
+        }
+    };
+
+    // Devuelve el primer scope disponible para dicho permiso o null si no hay scopes disponibles
+    const getFirstAvailableScope = (permissionId: string): string | null => {
+        const permission = permissions?.find((p) => p.id === permissionId);
+        const permissionScopes = permission?.allowedScopes || [];
+        return permissionScopes.length > 0 ? permissionScopes[0].id : null;
     };
 
     const submitForm = async (data: ProfileCreateDto) => {
@@ -90,16 +116,13 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModa
         }
     }, [permissionData, permissionIsLoading]);
 
-    useEffect(() => {
-        if (scopesData && !scopesIsLoading) setScopes(scopesData.listDataObject);
-    }, [scopesData, scopesIsLoading]);
-
-    if (permissionIsLoading || scopesIsLoading) return <LoaderBig message="Cargando datos..."/>;
+    if (permissionIsLoading) return <LoaderBig message="Cargando datos..." />;
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70 ">
             <section className="bg-white rounded-lg p-10 relative min-w-[55%] max-h-[80vh] overflow-y-auto">
-                <IoClose size={25} className="absolute top-5 right-5 cursor-pointer" onClick={() => toggleCreateModal()}/>
+                <IoClose size={25} className="absolute top-5 right-5 cursor-pointer"
+                         onClick={() => toggleCreateModal()} />
                 <h3 className="p-2 text-lg text-gray-500 font-semibold">Crear Perfil</h3>
 
                 <form className="flex flex-col mt-5 text-gray-700 text-base" onSubmit={handleSubmit(submitForm)}>
@@ -111,7 +134,7 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModa
                             type="text"
                             id="title"
                             className="input-form"
-                            {...register('title', {required: 'Este campo es obligatorio'})}
+                            {...register('title', { required: 'Este campo es obligatorio' })}
                         />
                         {errors.title && <span className="form-error">{errors.title.message}</span>}
                     </div>
@@ -124,7 +147,7 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModa
                             id="description"
                             className="input-form resize-none"
                             rows={2}
-                            {...register('description', {required: 'Este campo es obligatorio'})}
+                            {...register('description', { required: 'Este campo es obligatorio' })}
                         />
                         {errors.description && <span className="form-error">{errors.description.message}</span>}
                     </div>
@@ -140,6 +163,7 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModa
                                     <div key={resource}>
                                         <h3 className="text-sm font-semibold mb-2 text-gray-600">{resource}</h3>
                                         {permissions.map((permission) => {
+
                                             const selectedPermission = selectedPermissions.find(
                                                 (p) => p.permissionId === permission.id
                                             );
@@ -152,30 +176,35 @@ const CreateProfileModal: React.FC<CreateProfileModalProps> = ({toggleCreateModa
                                                             <Switcher
                                                                 id={permission.id}
                                                                 isChecked={!!selectedPermission}
-                                                                onChange={() =>
-                                                                    handlePermissionChange(permission.id, scopeId)
-                                                                }
+                                                                onChange={() => {
+                                                                    if (selectedPermission) {
+                                                                        handlePermissionChange(permission.id, true, null); // Desactivar si ya está activado
+                                                                    } else {
+                                                                        const initialScope = permission.requireScope ? getFirstAvailableScope(permission.id) : null;
+                                                                        handlePermissionChange(permission.id, false, initialScope); // Activar con scope si es necesario
+                                                                    }
+                                                                }}
                                                             />
+
                                                             <label className="text-gray-600" htmlFor={permission.id}>
                                                                 {permission.translation}
                                                             </label>
-                                                            <select
-                                                                value={scopeId}
-                                                                onChange={(e) =>
-                                                                    handlePermissionChange(
-                                                                        permission.id,
-                                                                        e.target.value
-                                                                    )
-                                                                }
-                                                                className="rounded"
-                                                                disabled={!selectedPermission}
-                                                            >
-                                                                {scopes?.map((scope) => (
-                                                                    <option value={scope.id} key={scope.id}>
-                                                                        {scope.name}
-                                                                    </option>
-                                                                ))}
-                                                            </select>
+                                                            {permission.requireScope &&
+                                                                <select
+                                                                    value={scopeId}
+                                                                    onChange={(e) =>
+                                                                        handlePermissionChange(permission.id, false, e.target.value)
+                                                                    }
+                                                                    className="rounded"
+                                                                    disabled={!selectedPermission}
+                                                                >
+                                                                    {permission.allowedScopes.map((scope) => (
+                                                                        <option value={scope.id} key={scope.id}>
+                                                                            {scope.name}
+                                                                        </option>
+                                                                    ))}
+                                                                </select>
+                                                            }
                                                         </div>
                                                     </div>
                                                 </div>

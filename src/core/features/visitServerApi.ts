@@ -31,7 +31,7 @@ export const visitServerApi = serverApi.injectEndpoints({
                 method: 'POST',
                 body: newLog,
             }),
-            invalidatesTags: ["LogDoorVisit"]
+            invalidatesTags: ["LogDoorVisit", "Visit"]
         }),
 
         updateVisit: builder.mutation<VisitsDto, VisitsUpdateDto>({
@@ -40,6 +40,7 @@ export const visitServerApi = serverApi.injectEndpoints({
                 method: 'PUT',
                 body: updatedProfile,
             }),
+            invalidatesTags: ["Visit", "LogDoorVisit"]
         }),
 
         softDeleteVisit: builder.mutation<VisitResponse, string>({

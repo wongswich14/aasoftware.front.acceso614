@@ -14,7 +14,6 @@ interface CreateResidentialModalProps {
 
 const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreateModal }) => {
     const [createResidential, { isLoading }] = useCreateVisitMutation();
-    const navigate = useNavigate();
 
     const {id} = useParams<{ id: string }>();
     const userData = useSelector(selectUserData);
@@ -37,8 +36,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
         toast.promise(createResidentialPromise, {
             loading: "Creando...",
             success: () => {
-
-                navigate(`/residentials`);
+                toggleCreateModal();
                 return "Residencial creada";
             },
             error: (err) => {

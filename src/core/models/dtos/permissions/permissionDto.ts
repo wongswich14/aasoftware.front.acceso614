@@ -6,4 +6,6 @@ export interface PermissionDto {
     resource: string
     translation: string
     scope: ScopeDto
+    requireScope: boolean
+    allowedScopes: ScopeDto[]
 }

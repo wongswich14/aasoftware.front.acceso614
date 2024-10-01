@@ -1,11 +1,11 @@
-import { useState, useEffect } from "react";
-import { FaEdit } from "react-icons/fa";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {FaEdit} from "react-icons/fa";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {
     useListVisitsByResidentialQuery
 } from "../../../../core/features/visitServerApi.ts";
-import { updateCache, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid";
+import {updateCache, LazyUpdateModes} from "src/core/utils/lazyUpdateListByGuid";
 import SkeletonTable from "src/shared/components/SkeletonTable";
 import {useAppDispatch} from "../../../../core/store.ts";
 import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
@@ -22,7 +22,7 @@ interface ResidentialInformationProps {
 
 const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
 
-    const { id } = useParams<{id: string}>();
+    const {id} = useParams<{ id: string }>();
     const [visita, setVisita] = useState<VisitsUpdateDto>({
         id: "",
         homeId: "",
@@ -39,19 +39,23 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
     const [openUpdateDoorsModal, setOpenUpdateDoorsModal] = useState<boolean>(false)
     const [openCreateDoorsModal, setOpenCreateDoorsModal] = useState<boolean>(false)
 
-    const { data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsByResidentialQuery( id! , { skip: !id });
+    const {
+        data: visitsData,
+        isLoading: visitsIsLoading,
+        refetch: refetchVisits
+    } = useListVisitsByResidentialQuery(id!, {skip: !id});
 
     const navigate = useNavigate();
     const location = useLocation();
     const dispatch = useAppDispatch();
 
 
-    const toggleUpdateModal = (data : VisitsUpdateDto | void) => {
-        if(data){
+    const toggleUpdateModal = (data: VisitsUpdateDto | void) => {
+        if (data) {
             setVisita(data);
         }
         setOpenUpdateDoorsModal(!openUpdateDoorsModal);
-        if(!openUpdateDoorsModal) {
+        if (!openUpdateDoorsModal) {
             navigate(`visits/update/${data?.id}`)
         } else {
             navigate(`/residentials/${id}/visits`)
@@ -62,7 +66,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
     const toggleCreateModal = () => {
         setOpenCreateDoorsModal(!openCreateDoorsModal);
         console.log(openCreateDoorsModal);
-        if(!openCreateDoorsModal) {
+        if (!openCreateDoorsModal) {
             navigate(`/residentials/${id}`)
         } else {
             navigate(`/residentials/${id}`)
@@ -99,7 +103,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
     }, [visitsData, visitsIsLoading]);
 
     useEffect(() => {
-        if (location.pathname.includes("update")){
+        if (location.pathname.includes("update")) {
             setOpenUpdateDoorsModal(true)
         } else {
             setOpenUpdateDoorsModal(false)
@@ -112,7 +116,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
         }
     }, [location])
 
-    if (visitsIsLoading) return <SkeletonTable />
+    if (visitsIsLoading) return <SkeletonTable/>
 
     return (
         <>
@@ -131,8 +135,8 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                 </thead>
                 <tbody>
                 {visits && visits.map((visit, i) => (
-                <>
-                    <tr key={visit.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
+                    <tr key={visit.id}
+                        className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                         <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.name}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.lastName}</td>
@@ -152,10 +156,9 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                                 qrString: visit.qrString,
                                 createdDate: new Date(visit.createdDate),
                                 limitDate: new Date(visit.limitDate),
-                            })} />
+                            })}/>
                         </td>
                     </tr>
-                </>
                 ))}
                 </tbody>
             </table>
