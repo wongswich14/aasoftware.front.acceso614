@@ -39,45 +39,86 @@ type SubmenuProps = {
 
 const filterMenusByPermissions = (
     menus: MenuItem[],
-    permissionsWithScopes: Record<string, string | null>
+    permissionsWithScopes: { [key: string]: string | null }
 ): MenuItem[] => {
 
-    // Función para verificar si un permiso tiene acceso
-    const hasPermission = (perm: string): boolean => {
-        // Si el permiso no existe en el objeto de permisos, se deniega el acceso.
-        return permissionsWithScopes[perm] !== undefined;
+    // Verifica si el permiso esta en el objeto de permisos
+    const hasPermission = (p?: string): boolean => {
+        if (!p) return true;
+        return p in permissionsWithScopes;
     };
 
-    // Verificar si el scope del permiso es válido para el menú
-    const isScopeValid = (perm: string, expectedScope?: string): boolean => {
-        const scope = permissionsWithScopes[perm];
-        if (!scope) return false;
-
-        // Si se espera un scope específico, comparamos; de lo contrario, aceptamos cualquier scope
-        return expectedScope ? scope === expectedScope : true;
+    // Verifica si el scope es valido, a veces es opcional
+    const isScopeValid = (p: string, expectedScope?: string): boolean => {
+        const scope = permissionsWithScopes[p];
+        if (!scope || !expectedScope) return true;
+        return scope === expectedScope;
     };
 
-    // Filtramos los menús basados en los permisos
-    return menus.reduce((filteredMenus: MenuItem[], menu: MenuItem) => {
-        // Verificar permisos y scopes a nivel de menú
-        if (!menu.permissions || menu.permissions.some(perm => hasPermission(perm))) {
-            const filteredMenu = {...menu};
+    // const filteredMenus = menus.filter(menu => {
+    //
+    //     /* Extraer los permisos y su scope, que se declaran en la sidebar en
+    //         formato permission:scope
+    //      */
+    //     const menuAccessRequirements = menu.permissions?.map(p => {
+    //         const perm = p.split(':')[0] || p;
+    //         const scope = p.split(':')[1] || undefined;
+    //
+    //         return {
+    //             permission: perm,
+    //             scope: scope
+    //         }
+    //     })
+    //
+    //     // Verifica si alguno de los permission:scope de la sidebar esta en los permisos del usuario usando hasPermission y isScopeValid
+    //     const hasAccess = menuAccessRequirements?.some(req => {
+    //         return hasPermission(req.permission) && isScopeValid(req.permission, req.scope)
+    //     });
+    //
+    //     if (!hasAccess) return false;
+    // })
 
-            // Si tiene hijos, también filtrarlos recursivamente
-            if (menu.hasChild && menu.childrens) {
-                filteredMenu.childrens = menu.childrens.filter(child =>
-                    !child.permissions || child.permissions.some(perm => hasPermission(perm))
-                );
+    const filteredMenus = menus
+        .filter(menu => {
+            // Extraer los permisos y scope para el menú principal
+            const menuAccessRequirements = menu.permissions?.map(p => {
+                const perm = p.split(':')[0];
+                const scope = p.split(':')[1] || undefined;
+                return { permission: perm, scope: scope };
+            });
+
+            // Verificar si tiene acceso al menú principal
+            const hasAccess = menuAccessRequirements?.some(req => {
+                return hasPermission(req.permission) && isScopeValid(req.permission, req.scope);
+            }) ?? true;
+
+            if (!hasAccess) return false;
+
+            // Si tiene submenús (childrens), filtrarlos también
+            const filteredChildren = menu.childrens?.filter(child => {
+                const childAccessRequirements = child.permissions?.map(p => {
+                    const perm = p.split(':')[0];
+                    const scope = p.split(':')[1] || undefined;
+                    return { permission: perm, scope: scope };
+                });
+
+                // Verificar si tiene acceso al submenú
+                const hasChildAccess = childAccessRequirements?.some(req => {
+                    return hasPermission(req.permission) && isScopeValid(req.permission, req.scope);
+                }) ?? true; // Si no hay permisos, se asume que tiene acceso
+
+                return hasChildAccess;
+            });
+
+            // Asignar los submenús filtrados al menú
+            if (menu.hasChild) {
+                menu.childrens = filteredChildren;
             }
 
-            // Si pasa el filtro, agregar al menú filtrado
-            if (!menu.hasChild || (filteredMenu.childrens && filteredMenu.childrens.length > 0)) {
-                filteredMenus.push(filteredMenu);
-            }
-        }
+            return true;
+        });
 
-        return filteredMenus;
-    }, []);
+    return filteredMenus;
 };
 
 const Sidebar: React.FC<SidebarProps> = () => {
@@ -85,7 +126,6 @@ const Sidebar: React.FC<SidebarProps> = () => {
     const [open] = useState(true)
     const userData = useSelector(selectUserData);
     const permissions = extractPermissions(userData!.token)
-    console.log(permissions)
 
     const menus = [
         {name: 'Dashboard', link: '/', icon: AiFillDashboard, hasChild: false},

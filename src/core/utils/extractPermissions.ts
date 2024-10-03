@@ -1,8 +1,8 @@
 import {jwtDecode} from "jwt-decode";
 
-export function extractPermissions(token: string): Record<string, string | null> {
+export function extractPermissions(token: string): { [key: string]: string | null } {
     const jwt = jwtDecode<Acceso614JwtPayload>(token)
-    const permissionsDict: Record<string, string | null> = {};
+    const permissionsDict: { [key: string]: string | null } = {};
 
     jwt.permissions.split(',').forEach(permissionStr => {
         const [permission, scope] = permissionStr.split(':');

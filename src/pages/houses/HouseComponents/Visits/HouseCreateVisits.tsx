@@ -54,7 +54,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                     className="absolute top-5 right-5 cursor-pointer"
                     onClick={toggleCreateModal}
                 />
-                <h3 className="p-2 text-lg text-gray-500 font-semibold">Crear Residencial</h3>
+                <h3 className="p-2 text-lg text-gray-500 font-semibold">Generar Visita</h3>
 
                 <form
                     className="flex flex-col mt-5 text-gray-700 text-base"
@@ -87,7 +87,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                     </div>
 
                     <div className="input-container">
-                        <label htmlFor="entries" className="label-form">Entradas</label>
+                        <label htmlFor="entries" className="label-form">Cantidad de accesos</label>
                         <input
                             type="number"
                             id="entries"
@@ -99,7 +99,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                     </div>
 
                     <div className="input-container">
-                        <label htmlFor="limitDate" className="label-form">Fecha Límite</label>
+                        <label htmlFor="limitDate" className="label-form">Fecha de vencimiento</label>
                         <input
                             type="date"
                             id="limitDate"

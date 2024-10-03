@@ -1,19 +1,14 @@
 import {useState, useEffect} from "react";
-import {FaEdit} from "react-icons/fa";
 import {useLocation, useNavigate, useParams} from "react-router-dom";
 
 import {
     useListVisitsByResidentialQuery
 } from "../../../../core/features/visitServerApi.ts";
-import {updateCache, LazyUpdateModes} from "src/core/utils/lazyUpdateListByGuid";
 import SkeletonTable from "src/shared/components/SkeletonTable";
-import {useAppDispatch} from "../../../../core/store.ts";
 import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
 import {ResidentialDto} from "../../../../core/models/dtos/residentials/ResidentialDto.ts";
 import ResidentialCreateDoorsModal from "../Doors/ResidentialCreateDoorsModal.tsx";
 import ResidentialUpdateVisitModal from "./ResidentialUpdateVisit.tsx";
-import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
-import {doorServerApi} from "../../../../core/features/doorServerApi.ts";
 import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
 
 interface ResidentialInformationProps {
@@ -47,8 +42,6 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
 
     const navigate = useNavigate();
     const location = useLocation();
-    const dispatch = useAppDispatch();
-
 
     const toggleUpdateModal = (data: VisitsUpdateDto | void) => {
         if (data) {
@@ -71,29 +64,6 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
         } else {
             navigate(`/residentials/${id}`)
         }
-    }
-
-
-    const lazyUpdateDoor = () => {
-        // updateCache({
-        //     api: houseServerApi,
-        //     endpoint: 'listHouses',
-        //     mode: LazyUpdateModes.UPDATE,
-        //     dispatch,
-        //     newItem,
-        //     id
-        // })
-        refetchVisits()
-    }
-
-    const lazyAddDoor = (newItem: DoorDto) => {
-        updateCache({
-            api: doorServerApi,
-            endpoint: 'listHouses',
-            mode: LazyUpdateModes.ADD,
-            dispatch,
-            newItem
-        })
     }
 
     useEffect(() => {
@@ -130,7 +100,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                     <th className='text-left'>Visita</th>
                     <th className='text-left'>Fecha de Creación</th>
                     <th className='text-left'>Fecha Límite</th>
-                    <th>Acciones</th>
+                    {/*<th>Acciones</th>*/}
                 </tr>
                 </thead>
                 <tbody>
@@ -144,20 +114,20 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.home?.name}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
-                        <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal({
-                                id: visit.id,
-                                homeId: visit.home?.id,
-                                userWhoCreatedId: visit.userWhoCreated?.id,
-                                typeOfVisitId: visit.typeOfVisitId,
-                                name: visit.name,
-                                lastName: visit.lastName,
-                                entries: visit.entries,
-                                qrString: visit.qrString,
-                                createdDate: new Date(visit.createdDate),
-                                limitDate: new Date(visit.limitDate),
-                            })}/>
-                        </td>
+                        {/*<td className='flex gap-6 items-center justify-center ml-5 py-4'>*/}
+                        {/*    <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal({*/}
+                        {/*        id: visit.id,*/}
+                        {/*        homeId: visit.home?.id,*/}
+                        {/*        userWhoCreatedId: visit.userWhoCreated?.id,*/}
+                        {/*        typeOfVisitId: visit.typeOfVisitId,*/}
+                        {/*        name: visit.name,*/}
+                        {/*        lastName: visit.lastName,*/}
+                        {/*        entries: visit.entries,*/}
+                        {/*        qrString: visit.qrString,*/}
+                        {/*        createdDate: new Date(visit.createdDate),*/}
+                        {/*        limitDate: new Date(visit.limitDate),*/}
+                        {/*    })}/>*/}
+                        {/*</td>*/}
                     </tr>
                 ))}
                 </tbody>
@@ -169,7 +139,6 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                 &&
                 <ResidentialUpdateVisitModal
                     toggleUpdateModal={toggleUpdateModal}
-                    lazyUpdateDoor={lazyUpdateDoor}
                     visita={visita}/>
             }
 

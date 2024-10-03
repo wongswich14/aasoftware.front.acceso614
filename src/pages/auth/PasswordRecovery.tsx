@@ -45,6 +45,8 @@ const PasswordRecovery: React.FC = () => {
                     email: userData.email,
                     token: res.token!,
                     profileName: userData.profileName,
+                    residentialId: userData.residentialId,
+                    homeId: userData.homeId,
                 }))
 
                 dispatch(authenticate(true))

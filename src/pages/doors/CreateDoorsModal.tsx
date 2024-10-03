@@ -11,7 +11,6 @@ import LoaderBig from "src/shared/components/LoaderBig";
 
 interface CreateDoorsModalProps {
     toggleCreateModal: () => void;
-    lazyAddDoor: (newItem: DoorDto) => void;
 }
 
 const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal }) => {
@@ -25,7 +24,6 @@ const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal }
         register,
         handleSubmit,
         formState: { errors },
-        setValue,
     } = useForm<DoorCreateDto>();
 
     const submitForm = async (data: DoorCreateDto) => {
@@ -34,7 +32,6 @@ const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal }
         toast.promise(createDoorPromise, {
             loading: "Creando...",
             success: () => {
-                //lazyAddDoor(data);
                 navigate(`/residentials/details/${id}`);
                 return "Puerta creada";
             },
@@ -65,14 +62,14 @@ const CreateDoorsModal: React.FC<CreateDoorsModalProps> = ({ toggleCreateModal }
 
                 <form className="flex flex-col mt-5 text-gray-700 text-base" onSubmit={handleSubmit(submitForm)}>
 
-                    <section className="grid grid-cols-1 md:grid-cols-1 md:gap-5">
+                    <section className="grid grid-cols-1 md:grid-cols-1 md:gap-5 text-base">
 
                         <div className="input-container">
                             <label htmlFor="name" className="label-form">Nombre</label>
                             <input
                                 type="text"
                                 id="name"
-                                className="input-form"
+                                className="input-form text-base"
                                 {...register('name', {required: 'Este campo es obligatorio'})}
                             />
                             {errors.name && <span className="form-error">{errors.name.message}</span>}

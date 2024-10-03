@@ -5,7 +5,8 @@ import { useNavigate, useParams } from "react-router-dom";
 import { toast } from "sonner";
 import { useGetDoorQuery, useUpdateDoorMutation } from "src/core/features/doorServerApi";
 import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
-import {DoorUpdateDto} from "../../../../core/models/dtos/doors/doorUpdateDto.ts"; // Make sure to import your door API
+import {DoorUpdateDto} from "../../../../core/models/dtos/doors/doorUpdateDto.ts";
+import LoaderBig from "../../../../shared/components/LoaderBig.tsx"; // Make sure to import your door API
 
 interface UpdateDoorModalProps {
     toggleUpdateModal: () => void;
@@ -52,6 +53,8 @@ const ResidentialUpdateDoorModal: React.FC<UpdateDoorModalProps> = ({ toggleUpda
             // Set other fields as necessary
         }
     }, [doorLoading, doorData]);
+
+    if (doorLoading) return <LoaderBig />
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">

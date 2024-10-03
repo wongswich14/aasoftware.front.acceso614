@@ -6,16 +6,14 @@
     import { useGetDoorQuery, useUpdateDoorMutation } from "src/core/features/doorServerApi"; // Make sure to import your door API
     import { useListResidentialsQuery } from "src/core/features/residentialServerApi";
     import LoaderBig from "src/shared/components/LoaderBig";
-    import {DoorDto} from "../../core/models/dtos/doors/doorDto.ts";
     import {ResidentialDto} from "../../core/models/dtos/residentials/ResidentialDto.ts";
     import {DoorUpdateDto} from "../../core/models/dtos/doors/doorUpdateDto.ts";
 
     interface UpdateDoorModalProps {
         toggleUpdateModal: () => void;
-        lazyUpdateDoor: (id: string, newItem: DoorDto) => void; // Adjust the type as needed
     }
 
-    const UpdateDoorModal: React.FC<UpdateDoorModalProps> = ({ toggleUpdateModal, lazyUpdateDoor }) => {
+    const UpdateDoorModal: React.FC<UpdateDoorModalProps> = ({ toggleUpdateModal }) => {
 
         const [residentials, setResidentials] = useState<ResidentialDto[]>();
         const { id, doorsId } = useParams<{ id: string, doorsId:string }>();
@@ -26,7 +24,7 @@
 
         const navigate = useNavigate();
 
-        const { register, handleSubmit, formState: { errors }, reset, setValue } = useForm<DoorUpdateDto>();
+        const { register, handleSubmit, formState: { errors }, setValue } = useForm<DoorUpdateDto>();
 
         const submitForm = async (data: DoorUpdateDto) => {
             const updateDoorPromise = updateDoor(data).unwrap();
@@ -34,7 +32,6 @@
             toast.promise(updateDoorPromise, {
                 loading: "Actualizando...",
                 success: () => {
-                    lazyUpdateDoor(doorsId!, data); // Call lazyUpdateDoor here
                     navigate(`/doors`); // Adjust navigation if necessary
                     return "Puerta actualizada";
                 },

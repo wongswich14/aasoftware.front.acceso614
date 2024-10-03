@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
-import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {FaEye, FaTrash} from "react-icons/fa";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useListVisitsQuery, useSoftDeleteVisitMutation} from "../../../../core/features/visitServerApi.ts";
 import SkeletonTable from "src/shared/components/SkeletonTable";
-import { useAppDispatch } from "../../../../core/store.ts";
-import { VisitsDto } from "../../../../core/models/dtos/visits/visitsDto.ts";
-import { VisitsUpdateDto } from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
+import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
+import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
 import QrCodeModal from './QrModal.tsx';
 import {toast} from "sonner";
 import DeleteModal from "../../../../shared/components/DeleteModal.tsx"; // Import your new modal component
 
 const ResidentialVisitsList = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const [visita, setVisita] = useState<VisitsUpdateDto>({
         id: "",
         homeId: "",
@@ -30,9 +29,8 @@ const ResidentialVisitsList = () => {
     const [qrCode, setQrCode] = useState<string>("");
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
     const [softDeleteId, setSoftDeleteId] = useState<string>("")
-    const { data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsQuery(id!, { skip: !id });
+    const {data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits} = useListVisitsQuery(id!, {skip: !id});
     const navigate = useNavigate();
-    const location = useLocation();
     const [softDelete] = useSoftDeleteVisitMutation();
 
     const toggleUpdateModal = (data: VisitsUpdateDto | void) => {
@@ -46,16 +44,16 @@ const ResidentialVisitsList = () => {
             navigate(`/residentials/${id}/visits`);
         }
         refetchVisits();
-};
+    };
 
 
     const toggleDeleteModal = (id?: string) => {
         setOpenDeleteModal(!openDeleteModal)
-
+        if (!id) return
         setSoftDeleteId(id)
     }
 
-    const handleDelete =  async (id: string) => {
+    const handleDelete = async (id: string) => {
         const softDeletePromise = softDelete(id).unwrap()
 
         toast.promise(softDeletePromise, {
@@ -85,7 +83,7 @@ const ResidentialVisitsList = () => {
         }
     }, [visitsData, visitsIsLoading]);
 
-    if (visitsIsLoading) return <SkeletonTable />;
+    if (visitsIsLoading) return <SkeletonTable/>;
 
     return (
         <>
@@ -103,7 +101,8 @@ const ResidentialVisitsList = () => {
                 </thead>
                 <tbody>
                 {visits && visits.map((visit, i) => (
-                    <tr key={visit.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
+                    <tr key={visit.id}
+                        className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                         <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.name}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.lastName}</td>
@@ -111,9 +110,11 @@ const ResidentialVisitsList = () => {
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                            <FaEye className='text-black hover:text-gray-800' onClick={() => toggleGetQr(visit.qrString)} />
+                            <FaEye className='text-black hover:text-gray-800'
+                                   onClick={() => toggleGetQr(visit.qrString)}/>
 
-                                <FaTrash className='text-red-500 hover:text-red-400' onClick={() => toggleDeleteModal(visit.id)} />
+                            <FaTrash className='text-red-500 hover:text-red-400'
+                                     onClick={() => toggleDeleteModal(visit.id)}/>
                         </td>
                     </tr>
                 ))}

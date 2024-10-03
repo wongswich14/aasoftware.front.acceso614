@@ -32,7 +32,7 @@ const ResidentialsList: React.FC = () => {
 
     const handleDelete = async (id: string) => {
         // const softDeletePromise = softDelete(id).unwrap()
-        const hardDeletePromise = hardDelete(id).unwrap()
+        const hardDeletePromise = softDelete(id).unwrap()
 
         toast.promise(hardDeletePromise, {
             loading: "Eliminando...",

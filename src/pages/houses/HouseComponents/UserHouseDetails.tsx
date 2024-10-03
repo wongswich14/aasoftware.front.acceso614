@@ -54,7 +54,7 @@ const UserHouseDetails = () => {
                         <button onClick={toggleCreateModal}
                                 className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
                             <FaPlusCircle size={20} className='text-lg'/>
-                            <span className="text-base">Agregar Visitas</span>
+                            <span className="text-base">Agregar Visita</span>
                         </button>
                     )
                 }
