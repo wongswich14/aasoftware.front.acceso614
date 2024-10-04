@@ -1,11 +1,12 @@
 export interface CreateVisitDto {
-    homeId: string; // Nullable
-    userWhoCreatedId: string;
+    homeId: string;
     typeOfVisitId: string;
     name: string;
     lastName: string;
     entries: number;
-    qrString: string;
-    createdDate: Date;
     limitDate: Date;
+    vehicleColor?: string
+    vehiclePlate?: string
+    aditionalInfo?: string
+    isFavorite: boolean
 }

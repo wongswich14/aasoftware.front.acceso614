@@ -5,7 +5,7 @@ export enum Environment {
 }
 
 export const CONFIG = {
-    environment: Environment.DEV,
+    environment: Environment.LOCAL,
     prod: {
         baseUrl: 'http://api-v2-acceso614.gruporosanegra.com/api',
     },
