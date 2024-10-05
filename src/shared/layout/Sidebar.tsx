@@ -126,11 +126,11 @@ const Sidebar: React.FC<SidebarProps> = () => {
     const [open] = useState(true)
     const userData = useSelector(selectUserData);
     const permissions = extractPermissions(userData!.token)
-
+    
     const menus = [
         {name: 'Dashboard', link: '/', icon: AiFillDashboard, hasChild: false},
         {
-            name: 'Administración', icon: FaCog, hasChild: true, permissions: ["superAccess", "getHouses:global", "getUsers:global", "getProfiles"],
+            name: 'Administración', icon: FaCog, hasChild: true,
             childrens: [
                 {
                     name: 'Residenciales',
@@ -138,6 +138,7 @@ const Sidebar: React.FC<SidebarProps> = () => {
                     icon: MdLocationCity,
                     permissions: ["getResidentials:global", "superAccess"]
                 },
+                { name: "Residencial", link: `/residentials/${userData?.residentialId}`, icon: MdLocationCity, permissions: ["getResidentials:residencial"]},
                 {name: 'Viviendas', link: '/houses', icon: MdHome, permissions: ["getHouses:global", "superAccess"]},
                 {name: 'Usuarios', link: '/users', icon: FaUsers, permissions: ["getUsers:global", "superAccess"]},
                 {name: "Perfiles", link: '/profiles', icon: FaUserShield, permissions: ["getProfiles", "superAccess"]},

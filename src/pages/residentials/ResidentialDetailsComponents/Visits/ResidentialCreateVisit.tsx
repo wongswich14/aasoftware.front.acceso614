@@ -1,40 +1,44 @@
-import {useParams} from "react-router-dom";
-import { useForm } from "react-hook-form";
-import { toast } from "sonner";
-import { IoClose } from "react-icons/io5";
+import {IoClose} from "react-icons/io5";
+import Switcher from "../../../../shared/components/Switcher.tsx";
 import React, {useEffect, useState} from "react";
+import {TypeOfVisitDto} from "../../../../core/models/dtos/typeOfVisit/typeOfVisitDto.ts";
+import {useParams} from "react-router-dom";
+import {useListTypeOfVisitsQuery} from "../../../../core/features/typeOfVisitServerApi.ts";
+import {useForm} from "react-hook-form";
 import {CreateVisitDto} from "../../../../core/models/dtos/visits/CreateVisitDto.ts";
 import {useCreateVisitMutation} from "../../../../core/features/visitServerApi.ts";
-import {useListTypeOfVisitsQuery} from "../../../../core/features/typeOfVisitServerApi.ts";
+import {toast} from "sonner";
 import LoaderBig from "../../../../shared/components/LoaderBig.tsx";
-import {TypeOfVisitDto} from "../../../../core/models/dtos/typeOfVisit/typeOfVisitDto.ts";
-import Switcher from "../../../../shared/components/Switcher.tsx";
+import {useListHousesByResidentialQuery} from "../../../../core/features/houseServerApi.ts";
+import {HouseDto} from "../../../../core/models/dtos/houses/houseDto.ts";
 
-interface CreateResidentialModalProps {
-    toggleCreateModal: () => void;
+interface ResidentialCreateVisitProps {
+    toggleModal: () => void
 }
 
-const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreateModal }) => {
+const ResidentialCreateVisit: React.FC<ResidentialCreateVisitProps> = ({toggleModal}) => {
 
     const [typeVisits, setTypeOfVisits] = useState<TypeOfVisitDto[]>()
     const [selectedType, setSelectedType] = useState<TypeOfVisitDto>()
+    const [homes, setHomes] = useState<HouseDto[]>()
 
-    const {id} = useParams<{ id: string }>();
+    const { id } = useParams<string>()
 
-    const { data: typeOfVisitsData, isLoading: typeOfVisitsIsLoading } = useListTypeOfVisitsQuery();
+    const {data: typeOfVisitsData, isLoading: typeOfVisitsIsLoading} = useListTypeOfVisitsQuery();
+    const { data: residentialHousesData, isLoading: residentialHousesIsLoading } = useListHousesByResidentialQuery(id!, { skip: !id })
 
     const {
         register,
         setValue,
         handleSubmit,
-        formState: { errors },
+        formState: {errors},
         watch
     } = useForm<CreateVisitDto>();
 
     const typeOfVisit = watch("typeOfVisitId")
     const isFavorite = watch("isFavorite")
 
-    const [createResidential, { isLoading }] = useCreateVisitMutation();
+    const [createResidential, {isLoading}] = useCreateVisitMutation();
 
     const submitForm = async (data: CreateVisitDto) => {
         const createResidentialPromise = createResidential(data).unwrap();
@@ -42,7 +46,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
         toast.promise(createResidentialPromise, {
             loading: "Creando...",
             success: () => {
-                toggleCreateModal();
+                toggleModal();
                 return "Residencial creada";
             },
             error: (err) => {
@@ -53,10 +57,6 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
     };
 
     useEffect(() => {
-        setValue("homeId", id!);
-    }, []);
-
-    useEffect(() => {
         if (typeOfVisitsData && !typeOfVisitsIsLoading)
             setTypeOfVisits(typeOfVisitsData.listDataObject)
     }, [typeOfVisitsData, typeOfVisitsIsLoading]);
@@ -65,7 +65,12 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
         setSelectedType(typeVisits?.find(tv => tv.id === typeOfVisit))
     }, [typeOfVisit]);
 
-    if (typeOfVisitsIsLoading) return <LoaderBig />
+    useEffect(() => {
+        if (residentialHousesData && !residentialHousesIsLoading)
+            setHomes(residentialHousesData.listDataObject)
+    }, [residentialHousesData, residentialHousesIsLoading]);
+
+    if (typeOfVisitsIsLoading) return <LoaderBig/>
 
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">
@@ -73,7 +78,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                 <IoClose
                     size={25}
                     className="absolute top-5 right-5 cursor-pointer"
-                    onClick={toggleCreateModal}
+                    onClick={toggleModal}
                 />
                 <h3 className="p-2 text-lg text-gray-500 font-semibold">Generar Visita</h3>
 
@@ -81,19 +86,36 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                     className="flex flex-col mt-5 text-gray-700 text-base"
                     onSubmit={handleSubmit(submitForm)}
                 >
-                    <div className="input-container">
-                        <label htmlFor="name" className="label-form">Tipo de visita</label>
-                        <select id="typeVisit"
-                                className="input-form" {...register("typeOfVisitId", {required: "Este campo es obligatorio"})}>
-                            <option value="">-- Elige una opción --</option>
-                            {typeVisits && typeVisits.map(tv => (
-                                <option key={tv.id} value={tv.id}>
-                                    {tv.name}
-                                </option>
-                            ))}
-                        </select>
-                        {errors.typeOfVisitId && <span className="form-error">{errors.typeOfVisitId.message}</span>}
+                    <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
+                        <div className="input-container">
+                            <label htmlFor="homeId" className="label-form">Casa</label>
+                            <select id="homeId"
+                                    className="input-form" {...register("homeId", {required: "Este campo es obligatorio"})}>
+                                <option value="">-- Elige una opción --</option>
+                                {homes && homes.map(home => (
+                                    <option key={home.id} value={home.id}>
+                                        {home.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.homeId && <span className="form-error">{errors.homeId.message}</span>}
+                        </div>
+
+                        <div className="input-container">
+                            <label htmlFor="name" className="label-form">Tipo de visita</label>
+                            <select id="typeVisit"
+                                    className="input-form" {...register("typeOfVisitId", {required: "Este campo es obligatorio"})}>
+                                <option value="">-- Elige una opción --</option>
+                                {typeVisits && typeVisits.map(tv => (
+                                    <option key={tv.id} value={tv.id}>
+                                        {tv.name}
+                                    </option>
+                                ))}
+                            </select>
+                            {errors.typeOfVisitId && <span className="form-error">{errors.typeOfVisitId.message}</span>}
+                        </div>
                     </div>
+
 
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-5">
                         <div className="input-container">
@@ -216,7 +238,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
 
                         <button
                             type="button"
-                            onClick={toggleCreateModal}
+                            onClick={toggleModal}
                             className="cancel-button"
                         >
                             Cancelar
@@ -225,7 +247,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                 </form>
             </section>
         </article>
-    );
-};
+    )
+}
 
-export default HouseCreateVisits;
+export default ResidentialCreateVisit;

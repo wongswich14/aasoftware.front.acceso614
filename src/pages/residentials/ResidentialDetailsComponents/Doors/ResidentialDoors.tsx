@@ -66,7 +66,6 @@ const ResidentialDoors: React.FC<ResidentialInformationProps> = () => {
 
     const toggleCreateModal = () => {
         setOpenCreateDoorsModal(!openCreateDoorsModal);
-        console.log(openCreateDoorsModal);
         if(!openCreateDoorsModal) {
             navigate(`/residentials/${id}`)
         } else {
@@ -94,16 +93,6 @@ const ResidentialDoors: React.FC<ResidentialInformationProps> = () => {
             mode: LazyUpdateModes.DELETE,
             dispatch,
             id
-        })
-    }
-
-    const lazyAddDoor = (newItem: DoorDto) => {
-        updateCache({
-            api: doorServerApi,
-            endpoint: 'listHouses',
-            mode: LazyUpdateModes.ADD,
-            dispatch,
-            newItem
         })
     }
 

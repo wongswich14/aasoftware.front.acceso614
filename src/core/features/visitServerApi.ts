@@ -25,6 +25,11 @@ export const visitServerApi = serverApi.injectEndpoints({
             query: (id) => `visits/${id}`,
         }),
 
+        getFavoriteVisits: builder.query<VisitResponse, string>({
+            query: (homeId) => `visits/favorite/${homeId}`,
+            providesTags: ["Visit"]
+        }),
+
         createVisit: builder.mutation<VisitsDto, CreateVisitDto>({
             query: newLog => ({
                 url: '/visits',

@@ -1,12 +1,11 @@
 import React, {useState} from "react";
-import {Link, useNavigate} from "react-router-dom";
 import {useHardDeleteHouseMutation} from "../../../core/features/houseServerApi.ts";
 import {toast} from "sonner";
+import {Link} from "react-router-dom";
 import {FaEdit, FaTrash} from "react-icons/fa";
 import DeleteModal from "../../../shared/components/DeleteModal.tsx";
 import UpdateHouseFromResidentialModal from "../../houses/UpdateHouseFromResidentialModal.tsx";
 import {ResidentialDto} from "../../../core/models/dtos/residentials/ResidentialDto.ts";
-
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
@@ -100,4 +99,5 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
         </>
     );
 }
+
 export default ResidentialInformation;
