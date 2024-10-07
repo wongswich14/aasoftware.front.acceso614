@@ -8,7 +8,7 @@ import {useSelector} from "react-redux";
 import {selectUserData} from "../../../../core/slices/auth/authSlice.ts";
 import {useCreateVisitMutation} from "../../../../core/features/visitServerApi.ts";
 import {useListDataForVisitQuery} from "../../../../core/features/dataVisitServerApi.ts";
-import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
+import {VisitsDataDto} from "../../../../core/models/dtos/dataVisit/datavisit.ts";
 
 interface CreateResidentialModalProps {
     toggleCreateModal: () => void;
@@ -18,7 +18,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
     const [createResidential, { isLoading }] = useCreateVisitMutation();
 
     const {id} = useParams<{ id: string }>();
-    const [data, setData] = useState<DoorDto[]>();
+    const [data, setData] = useState<VisitsDataDto[]>();
     const {data: visitData, isLoading: visitLoading} = useListDataForVisitQuery();
     const userData = useSelector(selectUserData);
     const {

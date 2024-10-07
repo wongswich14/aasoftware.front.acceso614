@@ -109,7 +109,7 @@ const ResidentialVisitsList = () => {
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.lastName}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.entries}</td>
 
-                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.typeOfVisits.name ? visit.typeOfVisits.name : "N/A"}</td>
+                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.typeOfVisits             ? visit.typeOfVisits.name : "N/A"}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>

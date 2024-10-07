@@ -1,7 +1,7 @@
 
 export interface VisitsDataDto {
-    typeOfVisits: TypeOfVisitsDto[];
-    transport: TransportDto[];
+    id: string;
+    name: string;
 }
 
 export interface TypeOfVisitsDto {

@@ -11,7 +11,7 @@ export interface VisitsDto {
     home: HouseDto;
     userWhoCreated: UserDto;
     typeOfVisitId : string
-    typeOfVisits: typeOfVisit
+    typeOfVisits: typeOfVisit | null;
     name: string;
     lastName: string;
     entries: number;

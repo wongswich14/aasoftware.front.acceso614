@@ -10,6 +10,7 @@ import {ResidentialDto} from "../../../../core/models/dtos/residentials/Resident
 import ResidentialCreateDoorsModal from "../Doors/ResidentialCreateDoorsModal.tsx";
 import ResidentialUpdateVisitModal from "./ResidentialUpdateVisit.tsx";
 import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
+import {FaEdit} from "react-icons/fa";
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
@@ -108,28 +109,51 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                 <>
                     <tr key={visit.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                         <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
-                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.name}</td>
-                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.lastName}</td>
+                        <td onClick={() => toggleUpdateModal({
+                            id: visit.id,
+                            homeId: visit.home?.id,
+                            userWhoCreatedId: visit.userWhoCreated?.id,
+                            typeOfVisitId: visit.typeOfVisitId,
+                            name: visit.name,
+                            lastName: visit.lastName,
+                            entries: visit.entries,
+                            qrString: visit.qrString,
+                            createdDate: new Date(visit.createdDate),
+                            limitDate: new Date(visit.limitDate),
+                        })} className='whitespace-nowrap py-4 font-normal text-left hover:underline'>{visit.name}</td>
+                        <td onClick={() => toggleUpdateModal({
+                            id: visit.id,
+                            homeId: visit.home?.id,
+                            userWhoCreatedId: visit.userWhoCreated?.id,
+                            typeOfVisitId: visit.typeOfVisitId,
+                            name: visit.name,
+                            lastName: visit.lastName,
+                            entries: visit.entries,
+                            qrString: visit.qrString,
+                            createdDate: new Date(visit.createdDate),
+                            limitDate: new Date(visit.limitDate),
+                        })} className='whitespace-nowrap py-4 font-normal text-left hover:underline'>{visit.lastName}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.entries}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.home?.name}</td>
-                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.typeOfVisits.name ? visit.typeOfVisits.name : "N/A"}</td>
+                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.typeOfVisits ? visit.typeOfVisits.name : "N/A"}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
-                        {/*<td className='flex gap-6 items-center justify-center ml-5 py-4'>*/}
-                        {/*    <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal({*/}
-                        {/*        id: visit.id,*/}
-                        {/*        homeId: visit.home?.id,*/}
-                        {/*        userWhoCreatedId: visit.userWhoCreated?.id,*/}
-                        {/*        typeOfVisitId: visit.typeOfVisitId,*/}
-                        {/*        name: visit.name,*/}
-                        {/*        lastName: visit.lastName,*/}
-                        {/*        entries: visit.entries,*/}
-                        {/*        qrString: visit.qrString,*/}
-                        {/*        createdDate: new Date(visit.createdDate),*/}
-                        {/*        limitDate: new Date(visit.limitDate),*/}
-                        {/*    })}/>*/}
-                        {/*</td>*/}
+                        <td className='flex gap-6 items-center justify-center ml-5 py-4'>
+                            {/*<FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal({*/}
+                            {/*    id: visit.id,*/}
+                            {/*    homeId: visit.home?.id,*/}
+                            {/*    userWhoCreatedId: visit.userWhoCreated?.id,*/}
+                            {/*    typeOfVisitId: visit.typeOfVisitId,*/}
+                            {/*    name: visit.name,*/}
+                            {/*    lastName: visit.lastName,*/}
+                            {/*    entries: visit.entries,*/}
+                            {/*    qrString: visit.qrString,*/}
+                            {/*    createdDate: new Date(visit.createdDate),*/}
+                            {/*    limitDate: new Date(visit.limitDate),*/}
+                            {/*})} />*/}
+                        </td>
                     </tr>
+                    </>
                 ))}
                 </tbody>
             </table>
