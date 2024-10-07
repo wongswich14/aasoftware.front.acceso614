@@ -1,17 +1,13 @@
 import { useEffect, useState } from "react"
 import { FaEdit, FaPlusCircle, FaTrash } from "react-icons/fa"
 import { Link, useLocation, useNavigate, useParams } from "react-router-dom"
-import { profileServerApi, useListProfilesQuery, useSoftDeleteProfileMutation } from "src/core/features/profileServerApi"
+import { useListProfilesQuery, useSoftDeleteProfileMutation } from "src/core/features/profileServerApi"
 import { ProfileDto } from "src/core/models/dtos/profiles/profileDto"
 import UpdateProfileModal from "./UpdateProfileModal"
-import { ProfileUpdateDto } from "src/core/models/dtos/profiles/profileUpdateDto"
 import CreateProfileModal from "./CreateProfileModal"
 import DeleteModal from "src/shared/components/DeleteModal"
 import SkeletonTable from "src/shared/components/SkeletonTable"
 import { toast } from "sonner"
-import { serverApi } from "src/core/serverApi"
-import { useAppDispatch } from "src/core/store"
-import { LazyUpdateModes, updateCache } from "src/core/utils/lazyUpdateListByGuid"
 
 const ProfilesList: React.FC = () => {
 
@@ -21,13 +17,12 @@ const ProfilesList: React.FC = () => {
     const [openCreateProfileModal, setOpenCreateProfileModal] = useState<boolean>(false)
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
 
-    const { data: profilesData, error: profilesError, isLoading: profilesIsLoading, refetch: refetchProfiles } = useListProfilesQuery()
-    const [softDelete, { data: softDeleteData, status: softDeleteStatus, isLoading: softDeleteIsLoading }] = useSoftDeleteProfileMutation()
+    const { data: profilesData, isLoading: profilesIsLoading } = useListProfilesQuery()
+    const [softDelete] = useSoftDeleteProfileMutation()
 
     const navigate = useNavigate()
     const location = useLocation()
     const { id } = useParams<{id: string}>()
-    const dispatch = useAppDispatch()
 
     const handleDelete =  async (id: string) => {
         const softDeletePromise = softDelete(id).unwrap()
@@ -35,7 +30,6 @@ const ProfilesList: React.FC = () => {
         toast.promise(softDeletePromise, {
             loading: "Eliminando...",
             success: () => {
-                lazyDeleteProfile(id)
                 toggleDeleteModal()
                 return "Perfil eliminado"
             },
@@ -71,37 +65,6 @@ const ProfilesList: React.FC = () => {
             setSoftDeleteProfileId("")
         }
         setOpenDeleteModal(!openDeleteModal)
-    }
-
-    const lazyUpdateProfile = (id: string, newItem: ProfileUpdateDto) => {
-        updateCache({
-            api: profileServerApi,
-            endpoint: "listProfiles",
-            mode: LazyUpdateModes.UPDATE,
-            dispatch,
-            newItem,
-            id    
-        })
-    }
-
-    const lazyDeleteProfile = (id: string) => {
-        updateCache({
-            api: profileServerApi,
-            endpoint: "listProfiles",
-            mode: LazyUpdateModes.DELETE,
-            dispatch,
-            id
-        });
-    }
-
-    const lazyAddProfile = (newItem: ProfileDto) => {
-        updateCache({
-            api: profileServerApi,
-            endpoint: "listProfiles",
-            mode: LazyUpdateModes.ADD,
-            dispatch,
-            newItem
-        });
     }
 
     useEffect(() => {
@@ -169,16 +132,12 @@ const ProfilesList: React.FC = () => {
             {openUpdateProfileModal && 
                 <UpdateProfileModal 
                     toggleUpdateModal={toggleUpdateModal}
-                    lazyUpdateProfile={lazyUpdateProfile}
-                    refetchProfiles={refetchProfiles}
                 />
             }
 
             {openCreateProfileModal && 
                 <CreateProfileModal 
                     toggleCreateModal={toggleCreateModal}
-                    lazyAddProfile={lazyAddProfile}
-                    refetchProfiles={refetchProfiles}
                 />
             }
 

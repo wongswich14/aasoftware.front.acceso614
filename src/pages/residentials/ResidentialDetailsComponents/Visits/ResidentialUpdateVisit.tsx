@@ -18,7 +18,6 @@ import {selectUserData} from "../../../../core/slices/auth/authSlice.ts";
 
 interface UpdateDoorModalProps {
     toggleUpdateModal: () => void;
-    lazyUpdateDoor: (id: string, newItem: VisitsDto) => void; // Adjust the type as needed
     visita: VisitsUpdateDto
 }
 

@@ -39,6 +39,10 @@
     @apply bg-gray-400 text-white font-semibold py-1 text-sm px-4 rounded
   }
 
+  .danger-button {
+    @apply bg-red-400 text-white font-semibold py-1 text-sm px-4 rounded hover:cursor-pointer
+  }
+
 }
 
 /* Scrollbar para navegadores WebKit (Chrome, Safari) */

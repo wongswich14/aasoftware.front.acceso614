@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from "react";
-import { FaEdit, FaTrash } from "react-icons/fa";
 import { IoArrowBackCircleSharp } from "react-icons/io5";
 import { Link, useLocation, useParams } from "react-router-dom";
 import LoaderBig from "src/shared/components/LoaderBig";
@@ -13,7 +12,6 @@ const DoorsDetails: React.FC = () => {
 
     const { id } = useParams<{ id: string }>();
     const { data: doorData, isFetching: doorIsFetching } = useGetDoorQuery(id!, { skip: !id });
-    console.log(doorData);
     const location = useLocation();
 
     useEffect(() => {
@@ -61,7 +59,7 @@ const DoorsDetails: React.FC = () => {
 
                 {/* Contenido según el tab */}
                 {activeTab === 'visitas' &&
-                    <VisitsList residential={door!.residential! }/>
+                    <VisitsList />
                 }
 
                 {activeTab === 'historial' && (

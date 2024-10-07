@@ -21,8 +21,8 @@ const QrCodeModal : React.FC<QrCodeModalProps> = ({ isOpen, qrCode, onClose }) =
                     Para compatir tomar captura de pantalla
                 </p>
                 <div className="w-full flex flex-col-reverse">
-                    <button onClick={onClose} className="bg-red-500 text-white px-4 py-2 rounded">
-                        Close
+                    <button onClick={onClose} className="cancel-button">
+                        Cerrar
                     </button>
                 </div>
             </div>

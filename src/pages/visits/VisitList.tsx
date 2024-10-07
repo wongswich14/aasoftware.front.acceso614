@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 import { FaEdit, FaTrash } from "react-icons/fa";
-import { Link, useLocation, useNavigate, useParams } from "react-router-dom";
+import {useParams} from "react-router-dom";
 import { toast } from "sonner";
 import {
     visitServerApi,
@@ -12,21 +12,15 @@ import { useAppDispatch } from "src/core/store";
 import { updateCache, LazyUpdateModes } from "src/core/utils/lazyUpdateListByGuid";
 import DeleteModal from "src/shared/components/DeleteModal";
 import SkeletonTable from "src/shared/components/SkeletonTable";
-import { ResidentialDto } from "../../core/models/dtos/residentials/ResidentialDto.ts";
 
-// interface ResidentialInformationProps {
-//     residential: ResidentialDto
-// }
-
-// const VisitsList: React.FC<ResidentialInformationProps> = ({ residential }) => {
 const VisitsList: React.FC = () => {
+    const { id } = useParams<{ id: string }>()
     const [visits, setVisits] = useState<VisitsDto[] | null>(null);
     const [softDeleteVisitId, setSoftDeleteVisitId] = useState<string>("");
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false);
-    const { data: visitsData, error: visitsError, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsByResidentialQuery();
+    const { data: visitsData, isLoading: visitsIsLoading } = useListVisitsByResidentialQuery(id!, { skip: !id });
     const [hardDelete] = useHardDeleteVisitMutation();
-    const navigate = useNavigate();
-    const location = useLocation();
+
     const dispatch = useAppDispatch();
     console.log(visitsData);
     const handleDelete = async (id: string) => {

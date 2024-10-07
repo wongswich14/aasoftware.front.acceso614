@@ -1,17 +1,16 @@
-import { useState, useEffect } from "react";
-import { FaEdit, FaEye, FaTrash } from "react-icons/fa";
-import { useLocation, useNavigate, useParams } from "react-router-dom";
+import {useState, useEffect} from "react";
+import {FaEye, FaTrash} from "react-icons/fa";
+import {useLocation, useNavigate, useParams} from "react-router-dom";
 import {useListVisitsQuery, useSoftDeleteVisitMutation} from "../../../../core/features/visitServerApi.ts";
 import SkeletonTable from "src/shared/components/SkeletonTable";
-import { useAppDispatch } from "../../../../core/store.ts";
-import { VisitsDto } from "../../../../core/models/dtos/visits/visitsDto.ts";
-import { VisitsUpdateDto } from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
+import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
+import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
 import QrCodeModal from './QrModal.tsx';
 import {toast} from "sonner";
 import DeleteModal from "../../../../shared/components/DeleteModal.tsx"; // Import your new modal component
 
 const ResidentialVisitsList = () => {
-    const { id } = useParams<{ id: string }>();
+    const {id} = useParams<{ id: string }>();
     const [visita, setVisita] = useState<VisitsUpdateDto>({
         id: "",
         homeId: "",
@@ -30,9 +29,8 @@ const ResidentialVisitsList = () => {
     const [qrCode, setQrCode] = useState<string>("");
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
     const [softDeleteId, setSoftDeleteId] = useState<string>("")
-    const { data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits } = useListVisitsQuery(id!, { skip: !id });
+    const {data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits} = useListVisitsQuery(id!, {skip: !id});
     const navigate = useNavigate();
-    const location = useLocation();
     const [softDelete] = useSoftDeleteVisitMutation();
 
     const toggleUpdateModal = (data: VisitsUpdateDto | void) => {
@@ -46,16 +44,16 @@ const ResidentialVisitsList = () => {
             navigate(`/residentials/${id}/visits`);
         }
         refetchVisits();
-};
+    };
 
 
     const toggleDeleteModal = (id?: string) => {
         setOpenDeleteModal(!openDeleteModal)
-
+        if (!id) return
         setSoftDeleteId(id)
     }
 
-    const handleDelete =  async (id: string) => {
+    const handleDelete = async (id: string) => {
         const softDeletePromise = softDelete(id).unwrap()
 
         toast.promise(softDeletePromise, {
@@ -85,7 +83,7 @@ const ResidentialVisitsList = () => {
         }
     }, [visitsData, visitsIsLoading]);
 
-    if (visitsIsLoading) return <SkeletonTable />;
+    if (visitsIsLoading) return <SkeletonTable/>;
 
     return (
         <>

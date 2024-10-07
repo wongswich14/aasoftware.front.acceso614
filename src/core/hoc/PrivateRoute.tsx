@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import { Navigate, Outlet } from "react-router-dom";
 import { useTokenQuery } from "../features/authServerApi";
-import { saveUserInfo, authenticate, selectIsAuthenticated, selectUserData } from "../slices/auth/authSlice";
+import { saveUserInfo, authenticate, selectIsAuthenticated } from "../slices/auth/authSlice";
 import { useDispatch, useSelector } from "react-redux";
 import LoaderBig from "src/shared/components/LoaderBig";
 
@@ -36,6 +36,8 @@ const PrivateRoute: React.FC = () => {
                     email: tokenData.dataObject.email,
                     token,
                     profileName: tokenData.dataObject.profileName,
+                    homeId: tokenData.dataObject.homeId,
+                    residentialId: tokenData.dataObject.residentialId
                 }));
                 dispatch(authenticate(true));
                 setIsAllowed(true);

@@ -6,5 +6,5 @@ export interface ProfileCreateDto {
 
 interface PermissionAddToProfileDto {
     permissionId: string
-    scopeId: string
+    scopeId?: string
 }

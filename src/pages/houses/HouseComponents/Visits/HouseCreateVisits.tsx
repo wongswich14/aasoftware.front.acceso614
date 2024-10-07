@@ -17,8 +17,6 @@ interface CreateResidentialModalProps {
 const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreateModal }) => {
     const [createResidential, { isLoading }] = useCreateVisitMutation();
 
-    const navigate = useNavigate();
-
     const {id} = useParams<{ id: string }>();
     const [data, setData] = useState<DoorDto[]>();
     const {data: visitData, isLoading: visitLoading} = useListDataForVisitQuery();
@@ -42,8 +40,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
         toast.promise(createResidentialPromise, {
             loading: "Creando...",
             success: () => {
-
-                navigate(`/residentials`);
+                toggleCreateModal();
                 return "Residencial creada";
             },
             error: (err) => {
@@ -67,7 +64,7 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                     className="absolute top-5 right-5 cursor-pointer"
                     onClick={toggleCreateModal}
                 />
-                <h3 className="p-2 text-lg text-gray-500 font-semibold">Crear Residencial</h3>
+                <h3 className="p-2 text-lg text-gray-500 font-semibold">Generar Visita</h3>
 
                 <form
                     className="flex flex-col mt-5 text-gray-700 text-base"
@@ -100,8 +97,19 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                             />
                             {errors.lastName && <span className="form-error">{errors.lastName.message}</span>}
                         </div>
-
                     </section>
+
+                    <div className="input-container">
+                        <label htmlFor="entries" className="label-form">Cantidad de accesos</label>
+                        <input
+                            type="number"
+                            id="entries"
+                            className="input-form"
+                            {...register("entries", {
+                                valueAsNumber: true
+                            })}
+                        />
+                    </div>
 
                     <section className="input-container">
                         <label htmlFor="typeOfVisitId" className="label-form">Tipo de Visita</label>
