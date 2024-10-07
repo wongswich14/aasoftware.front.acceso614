@@ -2,11 +2,13 @@ import {useNavigate, useParams} from "react-router-dom";
 import { useForm } from "react-hook-form";
 import { toast } from "sonner";
 import { IoClose } from "react-icons/io5";
-import React, {useEffect} from "react";
+import React, {useEffect, useState} from "react";
 import {CreateVisitDto} from "../../../../core/models/dtos/visits/CreateVisitDto.ts";
 import {useSelector} from "react-redux";
 import {selectUserData} from "../../../../core/slices/auth/authSlice.ts";
 import {useCreateVisitMutation} from "../../../../core/features/visitServerApi.ts";
+import {useListDataForVisitQuery} from "../../../../core/features/dataVisitServerApi.ts";
+import {DoorDto} from "../../../../core/models/dtos/doors/doorDto.ts";
 
 interface CreateResidentialModalProps {
     toggleCreateModal: () => void;
@@ -14,9 +16,12 @@ interface CreateResidentialModalProps {
 
 const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreateModal }) => {
     const [createResidential, { isLoading }] = useCreateVisitMutation();
+
     const navigate = useNavigate();
 
     const {id} = useParams<{ id: string }>();
+    const [data, setData] = useState<DoorDto[]>();
+    const {data: visitData, isLoading: visitLoading} = useListDataForVisitQuery();
     const userData = useSelector(selectUserData);
     const {
         register,
@@ -48,6 +53,12 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
         });
     };
 
+    useEffect(() => {
+        if (visitData && !visitLoading) {
+            setData(visitData!.dataObject!.typeOfVisits!);
+        }
+    }, [visitData, visitLoading]);
+
     return (
         <article className="fixed inset-0 flex justify-center items-center z-40 bg-black bg-opacity-70">
             <section className="bg-white rounded-lg p-10 relative min-w-[55%]">
@@ -62,56 +73,79 @@ const HouseCreateVisits: React.FC<CreateResidentialModalProps> = ({ toggleCreate
                     className="flex flex-col mt-5 text-gray-700 text-base"
                     onSubmit={handleSubmit(submitForm)}
                 >
-                    <div className="input-container">
-                        <label htmlFor="name" className="label-form">Nombre</label>
-                        <input
-                            type="text"
-                            id="name"
-                            className="input-form"
-                            {...register("name", {
-                                required: "Este campo es obligatorio"
-                            })}
-                        />
-                        {errors.name && <span className="form-error">{errors.name.message}</span>}
-                    </div>
+                    <section className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
 
-                    <div className="input-container">
-                        <label htmlFor="lastName" className="label-form">Apellido</label>
-                        <input
-                            type="text"
-                            id="lastName"
-                            className="input-form"
-                            {...register("lastName", {
-                                required: "Este campo es obligatorio"
-                            })}
-                        />
-                        {errors.lastName && <span className="form-error">{errors.lastName.message}</span>}
-                    </div>
+                        <div className="input-container">
+                            <label htmlFor="name" className="label-form">Nombre</label>
+                            <input
+                                type="text"
+                                id="name"
+                                className="input-form"
+                                {...register("name", {
+                                    required: "Este campo es obligatorio"
+                                })}
+                            />
+                            {errors.name && <span className="form-error">{errors.name.message}</span>}
+                        </div>
 
-                    <div className="input-container">
-                        <label htmlFor="entries" className="label-form">Entradas</label>
-                        <input
-                            type="number"
-                            id="entries"
-                            className="input-form"
-                            {...register("entries", {
-                                valueAsNumber: true
-                            })}
-                        />
-                    </div>
+                        <div className="input-container">
+                            <label htmlFor="lastName" className="label-form">Apellido</label>
+                            <input
+                                type="text"
+                                id="lastName"
+                                className="input-form"
+                                {...register("lastName", {
+                                    required: "Este campo es obligatorio"
+                                })}
+                            />
+                            {errors.lastName && <span className="form-error">{errors.lastName.message}</span>}
+                        </div>
 
-                    <div className="input-container">
-                        <label htmlFor="limitDate" className="label-form">Fecha Límite</label>
-                        <input
-                            type="date"
-                            id="limitDate"
+                    </section>
+
+                    <section className="input-container">
+                        <label htmlFor="typeOfVisitId" className="label-form">Tipo de Visita</label>
+                        <select
+                            id="typeOfVisitId"
                             className="input-form"
-                            {...register("limitDate", {
-                                required: "Este campo es obligatorio"
-                            })}
-                        />
-                        {errors.limitDate && <span className="form-error">{errors.limitDate.message}</span>}
-                    </div>
+                            {...register('typeOfVisitId', {required: 'Este campo es obligatorio'})}
+                        >
+                            <option value="">-- Seleccione una opción --</option>
+                            {data && data.map(door => (
+                                <option key={door.id} value={door.id}>{door.name}</option>
+                            ))}
+                        </select>
+                        {errors.typeOfVisitId && <span className="form-error">{errors.typeOfVisitId.message}</span>}
+                    </section>
+
+
+                    <section className="grid grid-cols-1 md:grid-cols-2 md:gap-5">
+
+                        <div className="input-container">
+                            <label htmlFor="entries" className="label-form">Entradas</label>
+                            <input
+                                type="number"
+                                id="entries"
+                                className="input-form"
+                                {...register("entries", {
+                                    valueAsNumber: true
+                                })}
+                            />
+                        </div>
+
+                        <div className="input-container">
+                            <label htmlFor="limitDate" className="label-form">Fecha Límite</label>
+                            <input
+                                type="date"
+                                id="limitDate"
+                                className="input-form"
+                                {...register("limitDate", {
+                                    required: "Este campo es obligatorio"
+                                })}
+                            />
+                            {errors.limitDate && <span className="form-error">{errors.limitDate.message}</span>}
+                        </div>
+                    </section>
 
                     <div className="flex justify-end gap-5">
                         <button

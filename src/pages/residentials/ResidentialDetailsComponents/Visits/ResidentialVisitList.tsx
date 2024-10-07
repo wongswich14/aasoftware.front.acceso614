@@ -124,6 +124,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                     <th className='text-left'>Apellido</th>
                     <th className='text-left'>Entradas</th>
                     <th className='text-left'>Visita</th>
+                    <th className='text-left'>Tipo de Visita</th>
                     <th className='text-left'>Fecha de Creación</th>
                     <th className='text-left'>Fecha Límite</th>
                     <th>Acciones</th>
@@ -132,12 +133,14 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                 <tbody>
                 {visits && visits.map((visit, i) => (
                 <>
-                    <tr key={visit.id} className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
+                    <tr key={visit.id}
+                        className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                         <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.name}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.lastName}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.entries}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.home?.name}</td>
+                        <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.typeOfVisits.name ? visit.typeOfVisits.name : "N/A"}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.createdDate).toLocaleString()}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
@@ -152,7 +155,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                                 qrString: visit.qrString,
                                 createdDate: new Date(visit.createdDate),
                                 limitDate: new Date(visit.limitDate),
-                            })} />
+                            })}/>
                         </td>
                     </tr>
                 </>
@@ -162,7 +165,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
 
 
             {
-                openUpdateDoorsModal
+            openUpdateDoorsModal
                 &&
                 <ResidentialUpdateVisitModal
                     toggleUpdateModal={toggleUpdateModal}
