@@ -15,7 +15,7 @@ export interface VisitsDto {
     name: string;
     lastName: string;
     entries: number;
-    qrString: string;
-    createdDate: Date; // Usar Date para manejar fechas
+    pin: string;
+    createdDate: Date;
     limitDate: Date;
 }

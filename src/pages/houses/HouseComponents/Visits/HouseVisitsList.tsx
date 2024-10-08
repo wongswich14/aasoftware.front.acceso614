@@ -1,6 +1,6 @@
 import {useState, useEffect} from "react";
 import {FaEye, FaTrash} from "react-icons/fa";
-import {useLocation, useNavigate, useParams} from "react-router-dom";
+import {useNavigate, useParams} from "react-router-dom";
 import {useListVisitsQuery, useSoftDeleteVisitMutation} from "../../../../core/features/visitServerApi.ts";
 import SkeletonTable from "src/shared/components/SkeletonTable";
 import {VisitsDto} from "../../../../core/models/dtos/visits/visitsDto.ts";
@@ -11,22 +11,12 @@ import DeleteModal from "../../../../shared/components/DeleteModal.tsx"; // Impo
 
 const ResidentialVisitsList = () => {
     const {id} = useParams<{ id: string }>();
-    const [visita, setVisita] = useState<VisitsUpdateDto>({
-        id: "",
-        homeId: "",
-        userWhoCreatedId: "",
-        typeOfVisitId: "",
-        name: "",
-        lastName: "",
-        entries: 0,
-        qrString: "",
-        createdDate: new Date(),
-        limitDate: new Date(),
-    });
+    const [visita, setVisita] = useState<VisitsUpdateDto>();
     const [visits, setVisits] = useState<VisitsDto[] | null>(null);
     const [openUpdateDoorsModal, setOpenUpdateDoorsModal] = useState<boolean>(false);
     const [openQrModal, setOpenQrModal] = useState<boolean>(false); // State for QR modal
     const [qrCode, setQrCode] = useState<string>("");
+    const [selectedPin, setSelectedPin] = useState<string>("");
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
     const [softDeleteId, setSoftDeleteId] = useState<string>("")
     const {data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits} = useListVisitsQuery(id!, {skip: !id});
@@ -35,7 +25,7 @@ const ResidentialVisitsList = () => {
 
     const toggleUpdateModal = (data: VisitsUpdateDto | void) => {
         if (data) {
-            setVisita(data);
+                setVisita(data);
         }
         setOpenUpdateDoorsModal(!openUpdateDoorsModal);
         if (!openUpdateDoorsModal) {
@@ -70,11 +60,12 @@ const ResidentialVisitsList = () => {
     }
 
 
-    const toggleGetQr = (data: string | void) => {
-        if (data) {
+    const toggleGetQr = (data?: string, pin?: string) => {
+        if (data)
             setQrCode(data);
-        }
-        setOpenQrModal(true); // Open QR modal
+        if (pin) setSelectedPin(pin)
+
+        setOpenQrModal(!openQrModal);
     };
 
     useEffect(() => {
@@ -111,7 +102,7 @@ const ResidentialVisitsList = () => {
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
                             <FaEye className='text-black hover:text-gray-800'
-                                   onClick={() => toggleGetQr(visit.qrString)}/>
+                                   onClick={() => toggleGetQr(visit.id, visit.pin)}/>
 
                             <FaTrash className='text-red-500 hover:text-red-400'
                                      onClick={() => toggleDeleteModal(visit.id)}/>
@@ -122,9 +113,9 @@ const ResidentialVisitsList = () => {
             </table>
 
             <QrCodeModal
-                isOpen={openQrModal}
                 qrCode={qrCode}
-                onClose={() => setOpenQrModal(false)}
+                toggleModal={toggleGetQr}
+                pin={selectedPin}
             />
 
             {openDeleteModal &&
