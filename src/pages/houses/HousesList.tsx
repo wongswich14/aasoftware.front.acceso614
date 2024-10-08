@@ -153,7 +153,7 @@ const HousesList: React.FC = () => {
                         <th className='text-left'>N. Casa</th>
                         <th className="text-left">Contacto</th>
                         <th className='text-left'>Código Postal</th>
-                        <th className='text-left'>Fecha de pago</th>
+                        {/*<th className='text-left'>Fecha de pago</th>*/}
                         <th className='text-left'>Estado</th>
                         <th>Acciones</th>
                     </tr>
@@ -174,7 +174,7 @@ const HousesList: React.FC = () => {
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.number}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.phoneContact}</td>
                                 <td className='whitespace-nowrap py-4 font-normal text-left'>{house.zip}</td>
-                                <td className='whitespace-nowrap py-4 font-normal text-left'>{format(new Date(house.lastPayDate), "yyyy-MM-dd", {locale: es})}</td>
+                                {/*<td className='whitespace-nowrap py-4 font-normal text-left'>{format(new Date(house.lastPayDate), "yyyy-MM-dd", {locale: es})}</td>*/}
                                 <td className={`whitespace-nowrap py-4 font-normal text-left ${!house.enabled && "text-red-500 font-medium"}`}>{house.enabled ? "En regla" : "Morosa"}</td>
                                 <td className='flex gap-6 items-center justify-center ml-5 py-4'>
                                     <Tooltip title={"Confirmar pago"}>
