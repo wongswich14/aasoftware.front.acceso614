@@ -137,21 +137,6 @@ const HouseBaseDetails: React.FC = () => {
                         <p className="text-gray-500">{house?.residential?.name} - {house?.residential?.description}</p>
                     </div>
 
-                    {/* Usuario principal (Responsable) */}
-                    {house?.principal && (
-                        <div className="p-4 bg-slate-100 rounded-md shadow-md">
-                            <h4 className="text-lg font-semibold text-gray-700">Responsable</h4>
-                            {house?.principal && (
-                                <div className="mt-2">
-                                    <p className="text-gray-700 font-medium">
-                                        {house.principal.name} {house.principal.lastName}
-                                    </p>
-                                    <p className="text-gray-500">{house.principal.email}</p>
-                                </div>
-                            )}
-                        </div>
-                    )}
-
                     {/* Usuarios que habitan la casa */}
                     <div>
                         <div className="flex gap-3">

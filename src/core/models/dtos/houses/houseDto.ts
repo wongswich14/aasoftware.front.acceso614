@@ -16,5 +16,5 @@ export interface HouseDto {
   number: string
   zip:string
   enabled: boolean
-  isDeleted: boolean
+  lastPayDate: string
 }

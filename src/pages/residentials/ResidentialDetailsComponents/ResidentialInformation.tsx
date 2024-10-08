@@ -1,11 +1,22 @@
 import React, {useState} from "react";
-import {useHardDeleteHouseMutation} from "../../../core/features/houseServerApi.ts";
+import {
+    useConfirmPaymentMutation,
+    useDisableHouseMutation,
+    useEnableHouseMutation,
+    useHardDeleteHouseMutation
+} from "../../../core/features/houseServerApi.ts";
 import {toast} from "sonner";
 import {Link} from "react-router-dom";
 import {FaEdit, FaTrash} from "react-icons/fa";
 import DeleteModal from "../../../shared/components/DeleteModal.tsx";
 import UpdateHouseFromResidentialModal from "../../houses/UpdateHouseFromResidentialModal.tsx";
 import {ResidentialDto} from "../../../core/models/dtos/residentials/ResidentialDto.ts";
+import {MdBlock} from "react-icons/md";
+import {IoIosCheckmarkCircle} from "react-icons/io";
+import Tooltip from "../../../shared/components/Tooltip.tsx";
+import { format } from "date-fns"
+import {es} from "date-fns/locale";
+import {BsCash} from "react-icons/bs";
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
@@ -19,6 +30,9 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
     const [openDeleteModal, setOpenDeleteModal] = useState(false)
 
     const [hardDelete] = useHardDeleteHouseMutation()
+    const [disableHouse] = useDisableHouseMutation()
+    const [enableHouse] = useEnableHouseMutation()
+    const [confirmPayment] = useConfirmPaymentMutation()
 
     const toggleDeleteModal = (id?: string) => {
         if (id) {
@@ -36,6 +50,36 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
             setUpdatedId("")
         }
         setOpenUpdateModal(!openUpdateModal)
+    }
+
+    const handleDisableHome = (id: string) => {
+        const disableHousePromise = disableHouse(id).unwrap()
+
+        toast.promise(disableHousePromise, {
+            loading: "Desabilitando hogar...",
+            success: "Casa desabilitada",
+            error: "Error al desabilitar"
+        })
+    }
+
+    const handleEnableHome = (id: string) => {
+        const enableHousePromise = enableHouse(id).unwrap()
+
+        toast.promise(enableHousePromise, {
+            loading: "Habilitando hogar....",
+            success: "Casa habilitada",
+            error: "Error al habilitar"
+        })
+    }
+
+    const handleConfirmPayment = (id: string) => {
+        const confirmPaymentPromise = confirmPayment(id).unwrap()
+
+        toast.promise(confirmPaymentPromise, {
+            loading: "Confirmando pago...",
+            success: "Pago confirmado",
+            error: "Error al confirmar pago"
+        })
     }
 
     const handleDelete = async (id: string) => {
@@ -63,6 +107,9 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
                     <th className='text-left'>Calle</th>
                     <th className='text-left'>Número</th>
                     <th className='text-left'>Contacto</th>
+                    <th className='text-left'>Código Postal</th>
+                    <th className='text-left'>Fecha de pago</th>
+                    <th className='text-left'>Estado</th>
                     <th>Acciones</th>
                 </tr>
                 </thead>
@@ -79,8 +126,38 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{house.street}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{house.number}</td>
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{house.phoneContact}</td>
+                        <td className='whitespace-nowrap py-4 font-normal text-left'>{house.zip}</td>
+                        <td className='whitespace-nowrap py-4 font-normal text-left'>{format(new Date(house.lastPayDate), "yyyy-MM-dd", {locale: es})}</td>
+                        <td className={`whitespace-nowrap py-4 font-normal text-left ${!house.enabled && "text-red-500 font-medium"}`}>{house.enabled ? "En regla" : "Morosa"}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
-                            <FaEdit className='text-sky-500 hover:text-sky-400' onClick={() => toggleUpdateModal(house.id)} />
+
+                            <Tooltip title={"Confirmar pago"}>
+                                <BsCash
+                                    className={"text-emerald-500 hover:text-emerald-400"}
+                                    size={18}
+                                    onClick={() => handleConfirmPayment(house.id)}
+                                />
+                            </Tooltip>
+
+                            {house.enabled ?
+                                (
+                                    <Tooltip title={"Desabilitar"}>
+                                        <MdBlock className="text-amber-500
+                                         hover:text-amber-400" size={18}
+                                                 onClick={() => handleDisableHome(house.id)}
+                                        />
+                                    </Tooltip>
+                                ) :
+                                (
+                                    <Tooltip title={"Habilitar"}>
+                                        <IoIosCheckmarkCircle className="text-emerald-500 hover:text-emerald-400"
+                                                              size={18}
+                                                              onClick={() => handleEnableHome(house.id)}
+                                        />
+                                    </Tooltip>
+                                )}
+                            <FaEdit className='text-sky-500 hover:text-sky-400'
+                                    onClick={() => toggleUpdateModal(house.id)}/>
                             <FaTrash className='text-red-500 hover:text-red-400'
                                      onClick={() => toggleDeleteModal(house.id)}/>
                         </td>
@@ -95,7 +172,7 @@ const ResidentialInformation: React.FC<ResidentialInformationProps> = ({resident
                     deleteAction={handleDelete}/>
             }
 
-            {openUpdateModal && <UpdateHouseFromResidentialModal toggleModal={toggleUpdateModal} houseId={updatedId} />}
+            {openUpdateModal && <UpdateHouseFromResidentialModal toggleModal={toggleUpdateModal} houseId={updatedId}/>}
         </>
     );
 }

@@ -1,7 +1,7 @@
-import { HouseCreateDto } from "../models/dtos/houses/houseCreateDto";
-import { HouseUpdateDto } from "../models/dtos/houses/houseUpdateDto";
-import { HouseResponse } from "../models/responses/house.response";
-import { serverApi } from "../serverApi";
+import {HouseCreateDto} from "../models/dtos/houses/houseCreateDto";
+import {HouseUpdateDto} from "../models/dtos/houses/houseUpdateDto";
+import {HouseResponse} from "../models/responses/house.response";
+import {serverApi} from "../serverApi";
 
 export const houseServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
@@ -38,6 +38,30 @@ export const houseServerApi = serverApi.injectEndpoints({
             invalidatesTags: ["House", "Residential"]
         }),
 
+        disableHouse: builder.mutation<HouseResponse, string>({
+            query: id => ({
+                url: `/home/disable/${id}`,
+                method: "PUT"
+            }),
+            invalidatesTags: ["House", "Residential"]
+        }),
+
+        enableHouse: builder.mutation<HouseResponse, string>({
+           query: id => ({
+               url: `/home/enable/${id}`,
+               method: 'PUT'
+           }),
+            invalidatesTags: ["House", "Residential"]
+        }),
+
+        confirmPayment: builder.mutation<HouseResponse, string>({
+           query: id => ({
+               url: `/home/pay/${id}`,
+               method: "POST",
+           }),
+            invalidatesTags: ["House", "Residential"]
+        }),
+
         softDeleteHouse: builder.mutation<HouseResponse, string>({
             query: (id) => ({
                 url: `/home/softdelete/${id}`,
@@ -63,6 +87,9 @@ export const {
     useListHousesByResidentialQuery,
     useCreateHouseMutation,
     useUpdateHouseMutation,
+    useConfirmPaymentMutation,
+    useDisableHouseMutation,
+    useEnableHouseMutation,
     useSoftDeleteHouseMutation,
     useHardDeleteHouseMutation
 } = houseServerApi
