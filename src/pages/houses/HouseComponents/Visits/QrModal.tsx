@@ -1,27 +1,84 @@
-import { QRCodeSVG } from 'qrcode.react'; // Ensure you're using QRCodeSVG
+import {QRCodeSVG} from 'qrcode.react';
+import {useRef} from "react";
+import html2canvas from "html2canvas";
+import {IoClose} from "react-icons/io5";
+import {CONFIG, Environment} from "@config/config.ts"; // Ensure you're using QRCodeSVG
 
 interface QrCodeModalProps {
     qrCode: string;
     pin: string
     toggleModal: () => void;
 }
-const QrCodeModal : React.FC<QrCodeModalProps> = ({ qrCode, toggleModal, pin }) => {
+
+const QrCodeModal: React.FC<QrCodeModalProps> = ({qrCode, toggleModal, pin}) => {
+
+    const qrRef = useRef<HTMLDivElement>(null);
+
+    let qrUrl = ""
+
+    switch (CONFIG.environment) {
+        case Environment.PROD:
+            qrUrl = CONFIG.prod.location
+            break
+        case Environment.DEV:
+            qrUrl = CONFIG.dev.location
+            break
+        case Environment.LOCAL:
+            qrUrl = CONFIG.local.location
+            break
+    }
+
+    const shareToWsp = async () => {
+        if (qrRef.current) {
+            const canvas = await html2canvas(qrRef.current)
+            const image = canvas.toDataURL("image/png")
+            const text = "Acceso a la vivienda"
+            const encodedText = encodeURIComponent(text)
+            const whatsappUrl = `https://wa.me/?text=${encodedText}%0A${image}`
+            window.open(whatsappUrl, "_blank")
+        }
+    }
+
+    const captureScreenshot = async () => {
+        if (qrRef.current) {
+            const canvas = await html2canvas(qrRef.current)
+            const image = canvas.toDataURL("image/png")
+            const link = document.createElement("a")
+            link.href = image
+            link.download = "acceso.png"
+            link.click()
+        }
+    }
+
     return (
         <div className="fixed inset-0 flex items-center justify-center bg-black bg-opacity-50">
-            <div className="bg-white p-8 rounded shadow-md w-1/2 max-w-lg flex flex-col gap-10"> {/* Increased padding and set width */}
-                <h2 className="text-lg font-bold mb-4">QR Code</h2>
-                <div className="flex justify-center mb-4">
-                    {qrCode && (
-                        <QRCodeSVG value={qrCode} size={256} />
-                    )}
+            <div className="bg-white p-8 rounded shadow-md w-1/2 max-w-lg relative">
+
+                <IoClose
+                    size={25}
+                    className="absolute top-5 right-5 cursor-pointer"
+                    onClick={() => toggleModal()}
+                />
+
+                <div ref={qrRef} className="flex flex-col gap-7 p-5">
+                    <p className="text-3xl text-center">Acceso</p>
+
+                    <div className="flex justify-center">
+                        {qrCode && (
+                            <QRCodeSVG value={`${qrUrl}/#/visits/${qrCode}`} size={256}/>
+                        )}
+                    </div>
+                    <p className="text-2xl text-center">PIN: {pin}</p>
                 </div>
-                <p>{ pin }</p>
-                <p>
-                    Para compatir tomar captura de pantalla
-                </p>
-                <div className="w-full flex flex-col-reverse">
-                    <button onClick={() => toggleModal()} className="cancel-button">
-                        Cerrar
+
+
+                <div className="flex mt-5 gap-5">
+                    <button onClick={shareToWsp} className="bg-emerald-500 rounded text-sm text-white w-full">
+                        Compartir
+                    </button>
+
+                    <button onClick={captureScreenshot} className="submit-button w-full">
+                        Descargar
                     </button>
                 </div>
             </div>

@@ -1,6 +1,5 @@
 import { useState, useEffect } from "react";
 import SkeletonTable from "src/shared/components/SkeletonTable";
-import {ResidentialDto} from "../../../../core/models/dtos/residentials/ResidentialDto.ts";
 import {useListLogDoorVisitsByResidentialQuery} from "../../../../core/features/logDoorsVisitServerApi.ts";
 import {LogDoorVisitDto} from "../../../../core/models/dtos/logDoorVisit/logDoorVisitDto.ts";
 import {HouseDto} from "../../../../core/models/dtos/houses/houseDto.ts";

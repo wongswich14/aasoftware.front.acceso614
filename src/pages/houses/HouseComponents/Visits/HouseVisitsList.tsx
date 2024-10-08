@@ -112,11 +112,13 @@ const ResidentialVisitsList = () => {
                 </tbody>
             </table>
 
-            <QrCodeModal
-                qrCode={qrCode}
-                toggleModal={toggleGetQr}
-                pin={selectedPin}
-            />
+            {openQrModal &&
+                <QrCodeModal
+                    qrCode={qrCode}
+                    toggleModal={toggleGetQr}
+                    pin={selectedPin}
+                />
+            }
 
             {openDeleteModal &&
                 <DeleteModal

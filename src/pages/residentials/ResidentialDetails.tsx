@@ -66,7 +66,7 @@ const ResidentialDetails: React.FC = () => {
                         <button onClick={toggleCreateModal}
                                 className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
                             <FaPlusCircle size={20} className='text-lg'/>
-                            <span className="text-base">Agregar Entrada o Salida</span>
+                            <span className="text-base">Agregar Puerta</span>
                         </button>
                     )
                 }
@@ -101,7 +101,7 @@ const ResidentialDetails: React.FC = () => {
                                 setActiveTab('entradasSalidas')
                                 navigate("doors");
                             }}>
-                        Entradas - Salidas
+                        Puertas
                     </button>
 
                     <button
@@ -113,14 +113,14 @@ const ResidentialDetails: React.FC = () => {
                         Visitas
                     </button>
 
-                    <button
-                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'historial' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}
-                        onClick={() => {
-                            setActiveTab('historial')
-                            navigate("history");
-                        }}>
-                        Historial
-                    </button>
+                    {/*<button*/}
+                    {/*    className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'historial' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}*/}
+                    {/*    onClick={() => {*/}
+                    {/*        setActiveTab('historial')*/}
+                    {/*        navigate("history");*/}
+                    {/*    }}>*/}
+                    {/*    Historial*/}
+                    {/*</button>*/}
 
                 </div>
 

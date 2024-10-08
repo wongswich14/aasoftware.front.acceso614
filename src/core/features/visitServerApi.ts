@@ -21,6 +21,7 @@ export const visitServerApi = serverApi.injectEndpoints({
         }),
 
 
+
         getVisit: builder.query<VisitResponse, string>({
             query: (id) => `visits/${id}`,
         }),

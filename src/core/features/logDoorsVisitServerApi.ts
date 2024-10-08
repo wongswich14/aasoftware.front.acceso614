@@ -3,26 +3,27 @@ import { LogDoorVisitResponse } from "../models/responses/logDoorVisit.response"
 import { serverApi } from "../serverApi";
 import {LogDoorVisitCreateDto} from "../models/dtos/logDoorVisit/LogDoorVisitCreateDto.ts";
 import {LogDoorVisitUpdateDto} from "../models/dtos/logDoorVisit/LogDoorVisitUpdateDto.ts";
+import {VisitResponse} from "../models/responses/visit.response.ts";
 
 export const logDoorVisitServerApi = serverApi.injectEndpoints({
     endpoints: builder => ({
         listLogDoorVisits: builder.query<LogDoorVisitResponse, string|undefined>({
-            query: (id) => id ?`LogDoorsVisits?homeId=${id}` : `LogDoorsVisits`,
+            query: (id) => id ?`doorsvisits?homeId=${id}` : `doorsvisits`,
             providesTags: ["LogDoorVisit"]
         }),
 
         listLogDoorVisitsByResidential: builder.query<LogDoorVisitResponse, string>({
-            query: (id) => `LogDoorsVisits/ResidentialId?residentialId=${id}`,
+            query: (id) => `doorsvisits/ResidentialId?residentialId=${id}`,
             providesTags: ["LogDoorVisit"]
         }),
 
         getLogDoorVisit: builder.query<LogDoorVisitResponse, string>({
-            query: (id) => `LogDoorsVisits/${id}`,
+            query: (id) => `doorsvisits/${id}`,
         }),
 
         createLogDoorVisit: builder.mutation<LogDoorVisitResponse, LogDoorVisitCreateDto>({
             query: newLog => ({
-                url: '/LogDoorsVisits',
+                url: '/doorsvisits',
                 method: 'POST',
                 body: newLog,
             }),
@@ -31,24 +32,25 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
 
         updateLogDoorVisit: builder.mutation<LogDoorVisitResponse, LogDoorVisitUpdateDto>({
             query: updatedLog => ({
-                url: `/LogDoorsVisits`,
+                url: `/doorsvisits`,
                 method: 'PUT',
                 body: updatedLog,
             }),
             invalidatesTags: ["LogDoorVisit"]
         }),
 
-        softDeleteLogDoorVisit: builder.mutation<LogDoorVisitResponse, string>({
-            query: (id) => ({
-                url: `/LogDoorsVisits/softdelete/${id}`,
-                method: "DELETE"
-            }),
-            invalidatesTags: ["LogDoorVisit"]
+        readQrCode: builder.query<VisitResponse, string>({
+            query: id => `doorsvisits/read-qr?id=${id}`
         }),
+
+        // softDeleteLogDoorVisit: builder.mutation<LogDoorVisitResponse, string>({
+        //     query: (id) => `/doorsvisits/read-qr?id=${id}`,
+        //     invalidatesTags: ["LogDoorVisit"]
+        // }),
 
         hardDeleteLogDoorVisit: builder.mutation<LogDoorVisitResponse, string>({
             query: id => ({
-                url: `/LogDoorsVisits/harddelete/${id}`,
+                url: `/doorsvisits/harddelete/${id}`,
                 method: "DELETE"
             }),
         })
@@ -62,6 +64,7 @@ export const {
     useGetLogDoorVisitQuery,
     useCreateLogDoorVisitMutation,
     useUpdateLogDoorVisitMutation,
-    useSoftDeleteLogDoorVisitMutation,
+    useReadQrCodeQuery,
+    // useSoftDeleteLogDoorVisitMutation,
     useHardDeleteLogDoorVisitMutation
 } = logDoorVisitServerApi;
