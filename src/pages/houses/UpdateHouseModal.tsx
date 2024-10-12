@@ -5,23 +5,19 @@ import { useNavigate, useParams } from "react-router-dom"
 import { toast } from "sonner"
 import { useGetHouseQuery, useUpdateHouseMutation } from "src/core/features/houseServerApi"
 import { useListResidentialsQuery } from "src/core/features/residentialServerApi"
-import { useListUsersQuery } from "src/core/features/userServerApi"
 import { HouseDto } from "src/core/models/dtos/houses/houseDto"
 import { HouseUpdateDto } from "src/core/models/dtos/houses/houseUpdateDto"
 import { ResidentialDto } from "src/core/models/dtos/residentials/ResidentialDto"
-import { UserDto } from "src/core/models/dtos/users/userDto"
 import LoaderBig from "src/shared/components/LoaderBig"
-import Switcher from "src/shared/components/Switcher"
 
 interface UpdateHouseModalProps {
     toggleUpdateModal: () => void
         lazyUpdateHouse?: (id: string, newItem: HouseDto) => void
 }
 
-const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, lazyUpdateHouse }) => {
+const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal }) => {
 
     const [residentials, setResidentials] = useState<ResidentialDto[]>()
-    const [users, setUsers] = useState<UserDto[]>()
     const { id } = useParams<{ id: string }>()
 
     const {
@@ -30,15 +26,10 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
     } = useListResidentialsQuery()
 
     const {
-        data: usersData,
-        isLoading: usersIsLoading
-    } = useListUsersQuery()
-
-    const {
         data: houseData,
         isLoading: houseLoading
     } = useGetHouseQuery(id!, { skip: !id })
-    const [updateHouse, { isLoading }] = useUpdateHouseMutation()
+    const [updateHouse] = useUpdateHouseMutation()
 
     const navigate = useNavigate()
 
@@ -48,7 +39,6 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
         formState: { errors },
         reset,
         setValue,
-        watch
     } = useForm<HouseUpdateDto>();
 
 
@@ -57,7 +47,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
 
         toast.promise(updateHousePromise, {
             loading: "Actualizando...",
-            success: (res) => {
+            success: () => {
                 // lazyUpdateHouse(id!, res.dataObject!)
                 navigate(`/houses`)
                 return "Vivienda actualizada"
@@ -75,7 +65,7 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
     }
 
     useEffect(() => {
-        if (!houseLoading && houseData && residentials && !residentialsIsLoading && users && !usersIsLoading) {
+        if (!houseLoading && houseData && residentials && !residentialsIsLoading) {
             if (houseData.dataObject) {
                 const serverData = houseData.dataObject
                 setValue("id", serverData.id)
@@ -90,24 +80,13 @@ const UpdateHouseModal: React.FC<UpdateHouseModalProps> = ({ toggleUpdateModal, 
                 setValue("enabled", serverData.enabled)
             }
         }
-    }, [houseLoading, houseData, residentials, residentialsIsLoading, users, usersIsLoading])
+    }, [houseLoading, houseData, residentials, residentialsIsLoading])
 
     useEffect(() => {
         if (residentialsData && !residentialsIsLoading) {
             setResidentials(residentialsData.listDataObject)
         }
     }, [residentialsData, residentialsIsLoading])
-
-    useEffect(() => {
-        if (usersData && !usersIsLoading)
-            setUsers(usersData.listDataObject)
-    }, [usersData, usersIsLoading])
-
-
-    // TODO: Quitarlo cuando se repare
-    useEffect(() => {
-        setValue("enabled", true)
-    }, [])
 
     useEffect(() => {
         return () => {
