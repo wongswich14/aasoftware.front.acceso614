@@ -13,6 +13,7 @@ import DeleteModal from "../../shared/components/DeleteModal.tsx";
 import {useSoftDeleteUserMutation} from "../../core/features/userServerApi.ts";
 import {useSoftDeleteRfidMutation} from "../../core/features/rfidServerApi.ts";
 import {toast} from "sonner";
+import {hasPermission} from "../../core/utils/hasPermission.ts";
 
 
 const HouseDetails: React.FC = () => {
@@ -190,12 +191,14 @@ const HouseDetails: React.FC = () => {
                                                     <span className="text-xs text-green-500">(Responsable)</span>}
                                             </div>
 
-                                            <FaTrash className='text-red-500 hover:text-red-400'
-                                                     size={18}
-                                                     onClick={(e) => {
-                                                         e.stopPropagation()
-                                                         toggleDeleteModal(user.id, "user")
-                                                     }}/>
+                                            {hasPermission("deleteUsers", "hogar") &&
+                                                <FaTrash className='text-red-500 hover:text-red-400'
+                                                         size={18}
+                                                         onClick={(e) => {
+                                                             e.stopPropagation()
+                                                             toggleDeleteModal(user.id, "user")
+                                                         }}/>
+                                            }
                                         </div>
                                     </li>
                                 ))}
@@ -209,9 +212,12 @@ const HouseDetails: React.FC = () => {
                     <div>
                         <div className={"flex gap-3"}>
                             <h4 className="text-lg font-semibold text-gray-600">Tarjetas de Acceso (RFID)</h4>
-                            <Link to={'add-rfid'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
-                                <FaPlusCircle className='text-lg'/>
-                            </Link>
+                            {(hasPermission("deleteRfids", "hogar") || hasPermission("deleteRfids", "residencial") || hasPermission("deleteRfids", "global")) &&
+                                <Link to={'add-rfid'}
+                                      className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                                    <FaPlusCircle className='text-lg'/>
+                                </Link>
+                            }
                         </div>
                         {house?.rfids?.length ? (
                             <ul className="space-y-2 mt-2">
@@ -224,11 +230,13 @@ const HouseDetails: React.FC = () => {
                                             <p className="text-gray-500 text-sm">Comentarios: {rfid.comments}</p>
                                         </div>
 
-                                        <FaTrash size={18} className='text-red-500 hover:text-red-400'
-                                                 onClick={(e) => {
-                                                     e.stopPropagation()
-                                                     toggleDeleteModal(rfid.id, "rfid")
-                                                 }}/>
+                                        {(hasPermission("deleteRfids", "hogar") || hasPermission("deleteRfids", "residencial") || hasPermission("deleteRfids", "global")) &&
+                                            <FaTrash size={18} className='text-red-500 hover:text-red-400'
+                                                     onClick={(e) => {
+                                                         e.stopPropagation()
+                                                         toggleDeleteModal(rfid.id, "rfid")
+                                                     }}/>
+                                        }
                                     </li>
                                 ))}
                             </ul>

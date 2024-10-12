@@ -11,7 +11,6 @@ import {
 import DeleteModal from "../../shared/components/DeleteModal.tsx";
 import {
     useListLogDoorVisitsQuery,
-    useSoftDeleteLogDoorVisitMutation
 } from "../../core/features/logDoorsVisitServerApi.ts";
 import {LogDoorVisitDto} from "../../core/models/dtos/logDoorVisit/logDoorVisitDto.ts";
 

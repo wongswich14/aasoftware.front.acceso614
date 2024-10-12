@@ -113,14 +113,14 @@ const ResidentialDetails: React.FC = () => {
                         Visitas
                     </button>
 
-                    {/*<button*/}
-                    {/*    className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'historial' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}*/}
-                    {/*    onClick={() => {*/}
-                    {/*        setActiveTab('historial')*/}
-                    {/*        navigate("history");*/}
-                    {/*    }}>*/}
-                    {/*    Historial*/}
-                    {/*</button>*/}
+                    <button
+                        className={`px-4 py-1 text-white font-semibold rounded-md ${activeTab === 'historial' ? 'bg-sky-400' : 'bg-gray-400 hover:bg-gray-300'}`}
+                        onClick={() => {
+                            setActiveTab('historial')
+                            navigate("history");
+                        }}>
+                        Historial
+                    </button>
 
                 </div>
 
@@ -140,7 +140,7 @@ const ResidentialDetails: React.FC = () => {
 
                 {/* Contenido según el tab */}
                 {activeTab === 'historial' &&
-                    <ResidentialHistoryList residential={residential!}/>
+                    <ResidentialHistoryList/>
                 }
 
             </div>

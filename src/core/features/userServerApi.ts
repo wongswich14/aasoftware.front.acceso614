@@ -6,8 +6,8 @@ import { serverApi } from "../serverApi";
 export const userServerApi = serverApi.injectEndpoints({
     endpoints: (builder) => ({
 
-        listUsers: builder.query<UserResponse, void>({
-            query: () => `user`,
+        listUsers: builder.query<UserResponse, number>({
+            query: (page) => `user?page=${page}`,
             providesTags: ["User"]
         }),
 

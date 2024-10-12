@@ -17,6 +17,7 @@ const ResidentialVisitsList = () => {
     const [openQrModal, setOpenQrModal] = useState<boolean>(false); // State for QR modal
     const [qrCode, setQrCode] = useState<string>("");
     const [selectedPin, setSelectedPin] = useState<string>("");
+    const [selectedEntries, setSelectedEntries] = useState<number>(0);
     const [openDeleteModal, setOpenDeleteModal] = useState<boolean>(false)
     const [softDeleteId, setSoftDeleteId] = useState<string>("")
     const {data: visitsData, isLoading: visitsIsLoading, refetch: refetchVisits} = useListVisitsQuery(id!, {skip: !id});
@@ -60,10 +61,11 @@ const ResidentialVisitsList = () => {
     }
 
 
-    const toggleGetQr = (data?: string, pin?: string) => {
+    const toggleGetQr = (data?: string, pin?: string, entries?: number) => {
         if (data)
             setQrCode(data);
         if (pin) setSelectedPin(pin)
+        if (entries) setSelectedEntries(entries)
 
         setOpenQrModal(!openQrModal);
     };
@@ -102,7 +104,7 @@ const ResidentialVisitsList = () => {
                         <td className='whitespace-nowrap py-4 font-normal text-left'>{new Date(visit.limitDate).toLocaleString()}</td>
                         <td className='flex gap-6 items-center justify-center ml-5 py-4'>
                             <FaEye className='text-black hover:text-gray-800'
-                                   onClick={() => toggleGetQr(visit.id, visit.pin)}/>
+                                   onClick={() => toggleGetQr(visit.id, visit.pin, visit.entries)}/>
 
                             <FaTrash className='text-red-500 hover:text-red-400'
                                      onClick={() => toggleDeleteModal(visit.id)}/>
@@ -117,6 +119,7 @@ const ResidentialVisitsList = () => {
                     qrCode={qrCode}
                     toggleModal={toggleGetQr}
                     pin={selectedPin}
+                    entries={selectedEntries}
                 />
             }
 

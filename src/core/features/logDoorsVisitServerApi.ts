@@ -12,8 +12,13 @@ export const logDoorVisitServerApi = serverApi.injectEndpoints({
             providesTags: ["LogDoorVisit"]
         }),
 
-        listLogDoorVisitsByResidential: builder.query<LogDoorVisitResponse, string>({
-            query: (id) => `doorsvisits/ResidentialId?residentialId=${id}`,
+        listHistoryByHome: builder.query<LogDoorVisitResponse, { id: string, page: number }>({
+            query: ({ id, page }) => `doorsvisits?homeId=${id}&page=${page}`,
+            providesTags: ["LogDoorVisit"]
+        }),
+
+        listLogDoorVisitsByResidential: builder.query<LogDoorVisitResponse, { id: string, page: number }>({
+            query: ({ id, page }) => `doorsvisits/ResidentialId?residentialId=${id}&page=${page}`,
             providesTags: ["LogDoorVisit"]
         }),
 
@@ -62,6 +67,7 @@ export const {
     useListLogDoorVisitsQuery,
     useListLogDoorVisitsByResidentialQuery,
     useGetLogDoorVisitQuery,
+    useListHistoryByHomeQuery,
     useCreateLogDoorVisitMutation,
     useUpdateLogDoorVisitMutation,
     useReadQrCodeQuery,

@@ -1,25 +1,36 @@
 import { useState, useEffect } from "react";
 import SkeletonTable from "src/shared/components/SkeletonTable";
-import {useListLogDoorVisitsByResidentialQuery} from "../../../../core/features/logDoorsVisitServerApi.ts";
+import {
+    useListHistoryByHomeQuery,
+} from "../../../../core/features/logDoorsVisitServerApi.ts";
 import {LogDoorVisitDto} from "../../../../core/models/dtos/logDoorVisit/logDoorVisitDto.ts";
-import {HouseDto} from "../../../../core/models/dtos/houses/houseDto.ts";
+import {formatRelative} from "date-fns";
+import {es} from "date-fns/locale";
+import {useParams} from "react-router-dom";
 
+const HouseHistoryList: React.FC = () => {
 
-interface ResidentialInformationProps {
-    house: HouseDto
-}
+    const [visits, setVisits] = useState<LogDoorVisitDto[]>();
+    const [page, setPage] = useState<number>(1)
 
-const HouseHistoryList: React.FC<ResidentialInformationProps> = ({ house }) => {
+    // Id de la casa
+    const { id } = useParams<string>()
 
-    const [visits, setVisits] = useState<LogDoorVisitDto[] | null>(null);
+    const { data: logDoorsVisitData, isFetching: logDoorsVisitIsLoading } = useListHistoryByHomeQuery( { id: id!, page: page }, {skip: !id, refetchOnMountOrArgChange: true});
 
-    const { data: logDoorsVisitData, isLoading: logDoorsVisitIsLoading } = useListLogDoorVisitsByResidentialQuery( house.id!, {skip: !house.id});
+    const handlePreviousPage = () => {
+        setPage(prev => prev - 1)
+    }
+
+    const handleNextPage = () => {
+        setPage(prev => prev + 1)
+    }
+
 
     useEffect(() => {
 
-        console.log(logDoorsVisitData);
         if (logDoorsVisitData && !logDoorsVisitIsLoading) {
-            setVisits(logDoorsVisitData.listDataObject || []);
+            setVisits(logDoorsVisitData.listDataObject);
         }
     }, [logDoorsVisitData, logDoorsVisitIsLoading]);
 
@@ -37,28 +48,42 @@ const HouseHistoryList: React.FC<ResidentialInformationProps> = ({ house }) => {
                     <th className='text-left'>Vigilante</th>
                     <th className='text-left'>Visita</th>
                     <th className='text-left'>Día</th>
-                    <th className='text-left'>Hora</th>
                 </tr>
                 </thead>
                 <tbody>
                 {visits && visits.map((visit, i) => (
-                    <>
                         <tr key={visit.id}
                             className="border-b text-gray-700 dark:border-neutral-500 hover:bg-blue-500/5 hover:cursor-pointer">
                             <td className='text-center whitespace-nowrap py-4 font-normal'>{i + 1}</td>
                             <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.visit?.name}</td>
                             <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.visit?.lastName}</td>
                             <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.door?.name || "N/A"}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{ visit.securityGrantedAccess ? visit.securityGrantedAccess?.name + ' ' + visit.securityGrantedAccess?.lastName     : "N/A" }</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.securityGrantedAccess ? visit.securityGrantedAccess?.name + ' ' + visit.securityGrantedAccess?.lastName : "N/A"}</td>
                             <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.visit?.home.name}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.accessDate}</td>
-                            <td className='whitespace-nowrap py-4 font-normal text-left'>{visit.accessHour}</td>
+                            <td className='whitespace-nowrap py-4 font-normal text-left'>{formatRelative(new Date(visit.accessDate), new Date(), {locale: es})}</td>
                         </tr>
-                    </>
                 ))}
                 </tbody>
             </table>
 
+            <div className="flex justify-center mt-10 gap-5">
+                <button
+                    type={"button"}
+                    disabled={page === 1} onClick={handlePreviousPage}
+                    className={"bg-gray-400 rounded-md text-white font-medium disabled:bg-gray-300 px-4 py-1 text-sm disabled:cursor-not-allowed"}
+                >
+                    Anterior
+                </button>
+
+                <button
+                    type={"button"}
+                    onClick={handleNextPage}
+                    disabled={!visits || visits.length < 10}
+                    className={"bg-gray-400 rounded-md text-white font-medium disabled:bg-gray-300 px-4 py-1 text-sm disabled:cursor-not-allowed"}
+                >
+                    Siguiente
+                </button>
+            </div>
         </>
     );
 }

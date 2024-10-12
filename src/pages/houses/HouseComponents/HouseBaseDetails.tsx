@@ -13,6 +13,7 @@ import DeleteModal from "../../../shared/components/DeleteModal.tsx";
 import {useSoftDeleteUserMutation} from "../../../core/features/userServerApi.ts";
 import {useSoftDeleteRfidMutation} from "../../../core/features/rfidServerApi.ts";
 import {toast} from "sonner";
+import {hasPermission} from "../../../core/utils/hasPermission.ts";
 
 
 const HouseBaseDetails: React.FC = () => {
@@ -112,6 +113,9 @@ const HouseBaseDetails: React.FC = () => {
         }
     };
 
+    const canTest = hasPermission("deleteCardsRFID", "hogar") || hasPermission("deleteCardsRFID", "residencial") || hasPermission("deleteCardsRFID", "global")
+    console.log(canTest)
+
     useEffect(() => {
         setOpenAddUserModal(location.pathname.includes("add-user"));
         setOpenAddRfidModal(location.pathname.includes("add-rfid"));
@@ -141,16 +145,19 @@ const HouseBaseDetails: React.FC = () => {
                     <div>
                         <div className="flex gap-3">
                             <h4 className="text-lg font-semibold text-gray-600">Habitantes</h4>
-                            <Link to={'add-user'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
-                                <FaPlusCircle className='text-lg'/>
-                            </Link>
+                            {hasPermission("createUsers") &&
+                                <Link to={'add-user'}
+                                      className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                                    <FaPlusCircle className='text-lg'/>
+                                </Link>
+                            }
                         </div>
                         {house?.users?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.users.map(user => (
                                     <li key={user.id}
                                         className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100"
-                                        onClick={() => toggleUpdateUserModal(user.id)}>
+                                        onClick={hasPermission("updateUsers") ? () => toggleUpdateUserModal(user.id) : undefined}>
                                         <div className="flex justify-between items-center">
                                             <div className="flex gap-7 items-center">
                                                 <div>
@@ -164,12 +171,14 @@ const HouseBaseDetails: React.FC = () => {
                                                     <span className="text-xs text-green-500">(Responsable)</span>}
                                             </div>
 
-                                            <FaTrash className='text-red-500 hover:text-red-400'
-                                                     size={18}
-                                                     onClick={(e) => {
-                                                         e.stopPropagation()
-                                                         toggleDeleteModal(user.id, "user")
-                                                     }}/>
+                                            {hasPermission("deleteUsers") && (
+                                                <FaTrash className='text-red-500 hover:text-red-400'
+                                                         size={18}
+                                                         onClick={(e) => {
+                                                             e.stopPropagation();
+                                                             toggleDeleteModal(user.id, "user");
+                                                         }}/>
+                                            )}
                                         </div>
                                     </li>
                                 ))}
@@ -183,27 +192,32 @@ const HouseBaseDetails: React.FC = () => {
                     <div>
                         <div className={"flex gap-3"}>
                             <h4 className="text-lg font-semibold text-gray-600">Tarjetas de Acceso (RFID)</h4>
-                            <Link to={'add-rfid'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
+                            {hasPermission("createCardsRFID") &&
+                                < Link to={'add-rfid'} className='flex items-center text-sky-500 hover:text-sky-400 gap-1'>
                                 <FaPlusCircle className='text-lg'/>
-                            </Link>
+                                </Link>
+                            }
                         </div>
                         {house?.rfids?.length ? (
                             <ul className="space-y-2 mt-2">
                                 {house.rfids.map(rfid => (
                                     <li key={rfid.id}
                                         className="p-4 border rounded-lg bg-gray-50 shadow-sm hover:cursor-pointer hover:bg-gray-100 flex justify-between items-center"
-                                        onClick={() => toggleUpdateRfidModal(rfid.id)}>
-                                        <div>
+                                        onClick={hasPermission("updateCardsRFID") ? () => toggleUpdateRfidModal(rfid.id) : undefined}>
+                                    <div>
                                             <p className="text-gray-700 font-medium">Folio: {rfid.folio}</p>
                                             <p className="text-gray-500 text-sm">Comentarios: {rfid.comments}</p>
                                         </div>
 
-                                        <FaTrash size={18} className='text-red-500 hover:text-red-400'
-                                                 onClick={(e) => {
-                                                     e.stopPropagation()
-                                                     toggleDeleteModal(rfid.id, "rfid")
-                                                 }}/>
+                                        {canTest && (
+                                            <FaTrash size={18} className="text-red-500 hover:text-red-400"
+                                                     onClick={(e) => {
+                                                         e.stopPropagation();
+                                                         toggleDeleteModal(rfid.id, "rfid");
+                                                     }}/>
+                                        )}
                                     </li>
+
                                 ))}
                             </ul>
                         ) : (

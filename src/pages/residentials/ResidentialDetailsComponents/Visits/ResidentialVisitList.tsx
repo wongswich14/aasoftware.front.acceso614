@@ -10,6 +10,8 @@ import {ResidentialDto} from "../../../../core/models/dtos/residentials/Resident
 import ResidentialCreateDoorsModal from "../Doors/ResidentialCreateDoorsModal.tsx";
 import ResidentialUpdateVisitModal from "./ResidentialUpdateVisit.tsx";
 import {VisitsUpdateDto} from "../../../../core/models/dtos/visits/visitsUpdateDto.ts";
+import QrCodeModal from "../../../houses/HouseComponents/Visits/QrModal.tsx";
+import {FaEye} from "react-icons/fa";
 
 interface ResidentialInformationProps {
     residential: ResidentialDto
@@ -34,6 +36,11 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
     const [openUpdateDoorsModal, setOpenUpdateDoorsModal] = useState<boolean>(false)
     const [openCreateDoorsModal, setOpenCreateDoorsModal] = useState<boolean>(false)
 
+    const [openQrModal, setOpenQrModal] = useState<boolean>(false); // State for QR modal
+    const [qrCode, setQrCode] = useState<string>("");
+    const [selectedPin, setSelectedPin] = useState<string>("");
+    const [seletedEntries, setSelectedEntries] = useState<number>(0)
+
     const {
         data: visitsData,
         isLoading: visitsIsLoading,
@@ -55,6 +62,15 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
         }
         refetchVisits()
     }
+
+    const toggleGetQr = (data?: string, pin?: string, entries?: number) => {
+        if (data)
+            setQrCode(data);
+        if (pin) setSelectedPin(pin)
+        if (entries) setSelectedEntries(entries)
+
+        setOpenQrModal(!openQrModal);
+    };
 
     const toggleCreateModal = () => {
         setOpenCreateDoorsModal(!openCreateDoorsModal);
@@ -100,7 +116,7 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                     <th className='text-left'>Visita</th>
                     <th className='text-left'>Fecha de Creación</th>
                     <th className='text-left'>Fecha Límite</th>
-                    {/*<th>Acciones</th>*/}
+                    <th>Acciones</th>
                 </tr>
                 </thead>
                 <tbody>
@@ -128,11 +144,19 @@ const ResidentialVisitsList: React.FC<ResidentialInformationProps> = () => {
                         {/*        limitDate: new Date(visit.limitDate),*/}
                         {/*    })}/>*/}
                         {/*</td>*/}
+                        <td className='flex gap-6 items-center justify-center ml-5 py-4'>
+
+                            <FaEye className='text-black hover:text-gray-800'
+                                   onClick={() => toggleGetQr(visit.id, visit.pin, visit.entries)}/>
+                        </td>
                     </tr>
-                ))}
+                    ))}
                 </tbody>
             </table>
 
+            {openQrModal &&
+                <QrCodeModal qrCode={qrCode} pin={selectedPin} toggleModal={toggleGetQr} entries={seletedEntries} />
+            }
 
             {
                 openUpdateDoorsModal

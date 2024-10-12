@@ -8,9 +8,10 @@ interface QrCodeModalProps {
     qrCode: string;
     pin: string
     toggleModal: () => void;
+    entries: number
 }
 
-const QrCodeModal: React.FC<QrCodeModalProps> = ({qrCode, toggleModal, pin}) => {
+const QrCodeModal: React.FC<QrCodeModalProps> = ({qrCode, toggleModal, pin, entries}) => {
 
     const qrRef = useRef<HTMLDivElement>(null);
 
@@ -69,6 +70,8 @@ const QrCodeModal: React.FC<QrCodeModalProps> = ({qrCode, toggleModal, pin}) => 
                         )}
                     </div>
                     <p className="text-2xl text-center">PIN: {pin}</p>
+
+                    <p className="text-xl text-gray-400 text-center">Válido para: {entries} entradas</p>
                 </div>
 
 
